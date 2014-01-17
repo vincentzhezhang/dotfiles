@@ -1,0 +1,53 @@
+[global_config]
+  handle_size = 1
+  enabled_plugins = TerminalShot, APTURLHandler, LaunchpadCodeURLHandler, LaunchpadBugURLHandler
+  always_split_with_profile = True
+  suppress_multiple_term_dialog = True
+  tab_position = hidden
+  inactive_color_offset = 0.88
+[keybindings]
+  go_left = <Alt>h
+  go_down = <Alt>k
+  go_right = <Alt>l
+  go_up = <Alt>j
+[profiles]
+  [[default]]
+    scrollbar_position = hidden
+    use_system_font = False
+    font = Droid Sans Mono 9
+    background_image = None
+    scrollback_infinite = True
+  [[solarized-dark]]
+    scrollbar_position = hidden
+    palette = "#073642:#dc322f:#859900:#b58900:#268bd2:#d33682:#2aa198:#eee8d5:#002b36:#cb4b16:#586e75:#657b83:#839496:#6c71c4:#93a1a1:#fdf6e3"
+    font = Source Code Pro Medium 10
+    background_image = None
+    use_system_font = False
+    cursor_color = "#eee8d5"
+    foreground_color = "#eee8d5"
+    show_titlebar = False
+    copy_on_selection = True
+    background_color = "#002b36"
+    scrollback_infinite = True
+  [[solarized-light]]
+    scrollbar_position = hidden
+    palette = "#073642:#dc322f:#859900:#b58900:#268bd2:#d33682:#2aa198:#eee8d5:#002b36:#cb4b16:#586e75:#657b83:#839496:#6c71c4:#93a1a1:#fdf6e3"
+    font = Droid Sans Mono 9
+    background_image = None
+    use_system_font = False
+    cursor_color = "#002b36"
+    foreground_color = "#002b36"
+    show_titlebar = False
+    copy_on_selection = True
+    background_color = "#eee8d5"
+    scrollback_infinite = True
+[layouts]
+  [[default]]
+    [[[child1]]]
+      type = Terminal
+      parent = window0
+      profile = solarized-dark
+    [[[window0]]]
+      type = Window
+      parent = ""
+[plugins]

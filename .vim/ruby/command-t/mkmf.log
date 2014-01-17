@@ -1,0 +1,68 @@
+find_header: checking for float.h... -------------------- yes
+
+"gcc -o conftest -I/home/vincent/.rbenv/versions/1.9.3-p194/include/ruby-1.9.1/x86_64-linux -I/home/vincent/.rbenv/versions/1.9.3-p194/include/ruby-1.9.1/ruby/backward -I/home/vincent/.rbenv/versions/1.9.3-p194/include/ruby-1.9.1 -I. -I'/home/vincent/.rbenv/versions/1.9.3-p194/include'   -I'/home/vincent/.rbenv/versions/1.9.3-p194/include'   -O3 -ggdb -Wextra -Wno-unused-parameter -Wno-parentheses -Wno-long-long -Wno-missing-field-initializers -Wpointer-arith -Wwrite-strings -Wdeclaration-after-statement -Wimplicit-function-declaration conftest.c  -L. -L/home/vincent/.rbenv/versions/1.9.3-p194/lib -Wl,-R/home/vincent/.rbenv/versions/1.9.3-p194/lib -L. -L'/home/vincent/.rbenv/versions/1.9.3-p194/lib'  -rdynamic -Wl,-export-dynamic     -Wl,-R -Wl,/home/vincent/.rbenv/versions/1.9.3-p194/lib -L/home/vincent/.rbenv/versions/1.9.3-p194/lib -lruby-static  -lpthread -lrt -ldl -lcrypt -lm   -lc"
+checked program was:
+/* begin */
+1: #include "ruby.h"
+2: 
+3: int main() {return 0;}
+/* end */
+
+"gcc -E -I/home/vincent/.rbenv/versions/1.9.3-p194/include/ruby-1.9.1/x86_64-linux -I/home/vincent/.rbenv/versions/1.9.3-p194/include/ruby-1.9.1/ruby/backward -I/home/vincent/.rbenv/versions/1.9.3-p194/include/ruby-1.9.1 -I. -I'/home/vincent/.rbenv/versions/1.9.3-p194/include'   -I'/home/vincent/.rbenv/versions/1.9.3-p194/include'   -O3 -ggdb -Wextra -Wno-unused-parameter -Wno-parentheses -Wno-long-long -Wno-missing-field-initializers -Wpointer-arith -Wwrite-strings -Wdeclaration-after-statement -Wimplicit-function-declaration  conftest.c -o conftest.i"
+checked program was:
+/* begin */
+1: #include "ruby.h"
+2: 
+3: #include <float.h>
+/* end */
+
+--------------------
+
+find_header: checking for ruby.h... -------------------- yes
+
+"gcc -E -I/home/vincent/.rbenv/versions/1.9.3-p194/include/ruby-1.9.1/x86_64-linux -I/home/vincent/.rbenv/versions/1.9.3-p194/include/ruby-1.9.1/ruby/backward -I/home/vincent/.rbenv/versions/1.9.3-p194/include/ruby-1.9.1 -I. -I'/home/vincent/.rbenv/versions/1.9.3-p194/include'   -I'/home/vincent/.rbenv/versions/1.9.3-p194/include'   -O3 -ggdb -Wextra -Wno-unused-parameter -Wno-parentheses -Wno-long-long -Wno-missing-field-initializers -Wpointer-arith -Wwrite-strings -Wdeclaration-after-statement -Wimplicit-function-declaration  conftest.c -o conftest.i"
+checked program was:
+/* begin */
+1: #include "ruby.h"
+2: 
+3: #include <ruby.h>
+/* end */
+
+--------------------
+
+find_header: checking for stdlib.h... -------------------- yes
+
+"gcc -E -I/home/vincent/.rbenv/versions/1.9.3-p194/include/ruby-1.9.1/x86_64-linux -I/home/vincent/.rbenv/versions/1.9.3-p194/include/ruby-1.9.1/ruby/backward -I/home/vincent/.rbenv/versions/1.9.3-p194/include/ruby-1.9.1 -I. -I'/home/vincent/.rbenv/versions/1.9.3-p194/include'   -I'/home/vincent/.rbenv/versions/1.9.3-p194/include'   -O3 -ggdb -Wextra -Wno-unused-parameter -Wno-parentheses -Wno-long-long -Wno-missing-field-initializers -Wpointer-arith -Wwrite-strings -Wdeclaration-after-statement -Wimplicit-function-declaration  conftest.c -o conftest.i"
+checked program was:
+/* begin */
+1: #include "ruby.h"
+2: 
+3: #include <stdlib.h>
+/* end */
+
+--------------------
+
+find_header: checking for string.h... -------------------- yes
+
+"gcc -E -I/home/vincent/.rbenv/versions/1.9.3-p194/include/ruby-1.9.1/x86_64-linux -I/home/vincent/.rbenv/versions/1.9.3-p194/include/ruby-1.9.1/ruby/backward -I/home/vincent/.rbenv/versions/1.9.3-p194/include/ruby-1.9.1 -I. -I'/home/vincent/.rbenv/versions/1.9.3-p194/include'   -I'/home/vincent/.rbenv/versions/1.9.3-p194/include'   -O3 -ggdb -Wextra -Wno-unused-parameter -Wno-parentheses -Wno-long-long -Wno-missing-field-initializers -Wpointer-arith -Wwrite-strings -Wdeclaration-after-statement -Wimplicit-function-declaration  conftest.c -o conftest.i"
+checked program was:
+/* begin */
+1: #include "ruby.h"
+2: 
+3: #include <string.h>
+/* end */
+
+--------------------
+
+have_header: checking for pthread.h... -------------------- yes
+
+"gcc -E -I/home/vincent/.rbenv/versions/1.9.3-p194/include/ruby-1.9.1/x86_64-linux -I/home/vincent/.rbenv/versions/1.9.3-p194/include/ruby-1.9.1/ruby/backward -I/home/vincent/.rbenv/versions/1.9.3-p194/include/ruby-1.9.1 -I. -I'/home/vincent/.rbenv/versions/1.9.3-p194/include'   -I'/home/vincent/.rbenv/versions/1.9.3-p194/include'   -O3 -ggdb -Wextra -Wno-unused-parameter -Wno-parentheses -Wno-long-long -Wno-missing-field-initializers -Wpointer-arith -Wwrite-strings -Wdeclaration-after-statement -Wimplicit-function-declaration  conftest.c -o conftest.i"
+checked program was:
+/* begin */
+1: #include "ruby.h"
+2: 
+3: #include <pthread.h>
+/* end */
+
+--------------------
+
