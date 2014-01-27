@@ -2,7 +2,7 @@
 alias ll='ls -alFh'
 alias la='ls -A'
 alias l='ls -CF'
-alias lg='ls | grep -i'
+alias lg='ll -A | grep -i'
 
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert

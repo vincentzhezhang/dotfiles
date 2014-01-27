@@ -59,3 +59,22 @@ cleanof ()
 {
   find . -mtime +$1 | xargs /bin/rm -Rf
 }
+
+#smart pwd 
+function smart_pwd {
+    local pwdmaxlen=25
+    local trunc_symbol=".."
+    local dir=${PWD##*/}
+    local tmp=""
+    pwdmaxlen=$(( ( pwdmaxlen < ${#dir} ) ? ${#dir} : pwdmaxlen ))
+    NEW_PWD=${PWD/#$HOME/\~}
+    local pwdoffset=$(( ${#NEW_PWD} - pwdmaxlen ))
+    if [ ${pwdoffset} -gt "0" ]
+    then
+        tmp=${NEW_PWD:$pwdoffset:$pwdmaxlen}
+        tmp=${trunc_symbol}/${tmp#*/}
+        if [ "${#tmp}" -lt "${#NEW_PWD}" ]; then
+            NEW_PWD=$tmp
+        fi
+    fi
+}
