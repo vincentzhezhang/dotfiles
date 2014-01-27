@@ -1,20 +1,65 @@
 if $COLORTERM == 'gnome-terminal'
-  set t_Co=16
+  set t_Co=256
 endif
 
-"pathogen
-execute pathogen#infect()
+" set nocompatible setting makes vim behave in a more useful way
+set nocompatible
+" required to be off before vundle
+filetype plugin indent on
 
-"colortheme
-let g:rehash256 = 1
+set rtp+=~/.vim/bundle/vundle/
+call vundle#rc()
+
+""""""""""""""""""""""""""""""""""
+"          Bundles start         "
+""""""""""""""""""""""""""""""""""
+" let vundle handle itself
+Bundle 'gmarik/vundle'
+
+" original repos on GitHub
+Bundle 'altercation/vim-colors-solarized'
+Bundle 'Lokaltog/vim-easymotion'
+Bundle 'mattn/emmet-vim'
+Bundle 'plasticboy/vim-markdown'
+Bundle 'scrooloose/nerdtree'
+Bundle 'slim-template/vim-slim.git'
+Bundle 'tpope/vim-fugitive'
+Bundle 'tpope/vim-rails.git'
+Bundle 'tpope/vim-surround'
+Bundle 'Valloric/YouCompleteMe'
+
+" vim-scripts repos
+Bundle 'L9'
+Bundle 'FuzzyFinder'
+
+" non-GitHub repos
+Bundle 'git://git.wincent.com/command-t.git'
+
+""""""""""""""""""""""""""""""""""
+"          Bundles ends          "
+""""""""""""""""""""""""""""""""""
+
+" needs cleanup
+
+set cursorline
+set list
+set listchars=nbsp:¬,tab:»·,trail:·
+
+
+" case-insensitive for some common commands
+command! Q q
+command! W w
+
+" turn off Ex mode
+map Q <Nop>
+let loaded_matchparen =1
+
+" turn back on after vundle 
+filetype plugin indent on
+
+" colortheme
 set background=dark
 colorscheme solarized
-
-"set nocompatible setting makes vim behave in a more useful way
-set nocompatible
- 
-" Enable filetype-specific indenting and plugins
-filetype plugin indent on
  
 " Turn syntax highlighting on
 syntax on
@@ -38,9 +83,17 @@ set expandtab
 set tabstop=2
 set shiftwidth=2
 
+" change leader key
+let mapleader=","
+
 " some magic for better tabs
 map  <C-l> :tabn<CR>
 map  <C-h> :tabp<CR>
 map  <C-n> :tabnew<CR>
 
-autocmd VimEnter * NERDTree | wincmd p
+" some tweak for CommandT
+set wildignore+=.*,vendor/*,public/*
+
+" start NERDTree by default
+map <C-n> :NERDTreeToggle<CR>
+autocmd vimenter * if !argc() | NERDTree | endif
