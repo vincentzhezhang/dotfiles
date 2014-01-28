@@ -1,2 +1,2 @@
-export PATH="$HOME/.rbenv/bin:$PATH"
-eval "$(rbenv init -)"
+if [ -r ~/.profile ]; then . ~/.profile; fi
+case "$-" in *i*) if [ -r ~/.bashrc ]; then . ~/.bashrc; fi;; esac

@@ -60,6 +60,7 @@ alias restart-apache='sudo /etc/init.d/apache2 restart'
 ## Misc
 alias edit='vim'
 alias pg='ps -ef | grep'
+alias colour='/bin/bash ~/workspace/personal/dot_files/256_colors.sh'
 
 ## apt-get related
 alias si='sudo apt-get install'

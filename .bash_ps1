@@ -1,46 +1,58 @@
-# Fill with minuses
-# (this is recalculated every time the prompt is shown in function prompt_command):
 fill="--- "
 
-reset_style='\[\e[00m\]'
-if [ -z "$VIM" ]; then
-  status_style=$reset_style'\[\e[1;32m\]' # gray color; use 0;37m for lighter color
-else
-  status_style=$reset_style'\[\e[0;90;107m\]'
-fi
-prompt_style=$reset_style
-command_style=$reset_style'\[\e[1;29m\]' # bold black
+generate_prompt() {
+  if [ $? = 0 ]; then
+      local last_state="${BCYAN}:)${COFF} "
+  else
+      local last_state="${BRED}:(${COFF} "
+  fi
+  # create a $fill of all screen width minus the time string and a space
+  prefix_str="$USER@$HOSTNAME"
+  let fillsize=${COLUMNS}-${#prefix_str}-10
+  fill=""
+  while [ "$fillsize" -gt "0" ]
+  do
+      fill="-${fill}" # fill with underscores to work on
+      let fillsize=${fillsize}-1
+  done
 
-# Prompt variable:
-OLD_PS1="$PS1"
-PS1="\n""${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\] ""$status_style"'$fill \t\n'"$prompt_style$OLD_PS1$command_style"
+  if [ $PWD = $HOME ]; then
+    local head="${BASE0}>${COFF} "
+  else
+    local head=" ${BASE0}~>${COFF} "
+  fi
 
-# Reset color for command output
-# (this one is invoked every time before a command is executed):
-trap 'echo -ne "\e[0m"' DEBUG
+  pwd="${BASE0}\w${COFF}"
 
+  git rev-parse --git-dir &> /dev/null
+  local git_status="$(git status 2> /dev/null)"
+  local branch_pattern="^# On branch ([^${IFS}]*)"
+  local remote_pattern="# Your branch is (.*) of"
+  local diverge_pattern="# Your branch and (.*) have diverged"
+  if [[ ! ${git_status} =~ "nothing" ]]; then
+    state="${BORANGE}*${COFF}"
+  fi
+  if [[ ${git_status} =~ ${remote_pattern} ]]; then
+    if [[ ${BASH_REMATCH[1]} == "ahead" ]]; then
+      remote="${YELLOW}↑${COFF}"
+    else
+      remote="${YELLOW}↓${COFF}"
+    fi
+  fi
+  if [[ ${git_status} =~ ${diverge_pattern} ]]; then
+    remote="${BRED}↕${COFF}"
+  else
+    unset remote
+  fi
+  if [[ ${git_status} =~ ${branch_pattern} ]]; then
+    branch=" ${CYAN}${BASH_REMATCH[1]}${COFF}"
+    local git_state="${branch}${remote}${state}"
+  fi
 
-function prompt_command {
-
-    # create a $fill of all screen width minus the time string and a space:
-    prefix_str="$USER@$HOSTNAME"
-    let fillsize=${COLUMNS}-${#prefix_str}-10
-    fill=""
-    while [ "$fillsize" -gt "0" ]
-    do
-        fill="-${fill}" # fill with underscores to work on 
-        let fillsize=${fillsize}-1
-    done
-
-    # If this is an xterm set the title to user@host:dir
-    case "$TERM" in
-    xterm*|rxvt*)
-        bname=`basename "${PWD/$HOME/~}"`
-        echo -ne "\033]0;${bname}: ${USER}@${HOSTNAME}: ${PWD/$HOME/~}\007"
-        ;;
-    *)
-        ;;
-    esac
-  
+  PS1="${last_state}${pwd}${git_state}${head}"
+  OLD_PS1="$PS1"
+  export PS1="${debian_chroot:+($debian_chroot)}${BASE00}\u@\h "'$fill \t\n'"${COFF}$OLD_PS1"
+  trap 'echo -ne "\e[0m"' DEBUG # this one is invoked every time before a command is executed
 }
-PROMPT_COMMAND=prompt_command
+
+PROMPT_COMMAND=generate_prompt
