@@ -54,6 +54,9 @@ command! W w
 map Q <Nop>
 let loaded_matchparen =1
 
+" bind paste mode for ease of use
+set pastetoggle=<F2>
+
 " turn back on after vundle 
 filetype plugin indent on
 
