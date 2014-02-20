@@ -61,6 +61,10 @@ fi
 export PATH="~/.rbenv/bin:$PATH"
 eval "$(rbenv init -)"
 
+# For npm packages
+export PATH=$HOME/.node/bin:$PATH
+export NODE_PATH=$NODE_PATH:/home/vincent/.node/lib/node_modules
+
 # Fortune shines over you
 files=(/usr/share/cowsay/cows/*)
 cowsay -f `echo ${files[$((RANDOM%${#files}))]}` `fortune` | toilet -F gay -f term
