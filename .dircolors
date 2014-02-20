@@ -248,6 +248,7 @@ EXEC 01;38;5;64
 
 # Video formats (as audio + bold)
 .mov    01;38;5;166
+.MOV    01;38;5;166 # Stupid but needed
 .mpg    01;38;5;166
 .mpeg   01;38;5;166
 .m2v    01;38;5;166
