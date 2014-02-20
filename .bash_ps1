@@ -1,11 +1,12 @@
 fill="--- "
 
-generate_prompt() {
+beutify_ps1() {
   if [ $? = 0 ]; then
       local last_state="${BCYAN}:)${COFF} "
   else
       local last_state="${BRED}:(${COFF} "
   fi
+
   # create a $fill of all screen width minus the time string and a space
   prefix_str="$USER@$HOSTNAME"
   let fillsize=${COLUMNS}-${#prefix_str}-10
@@ -16,10 +17,11 @@ generate_prompt() {
       let fillsize=${fillsize}-1
   done
 
+  # indicator treatment
   if [ $PWD = $HOME ]; then
-    local head="${BASE0}>${COFF} "
+    local indicator="${BASE0}>${COFF} "
   else
-    local head=" ${BASE0}~>${COFF} "
+    local indicator=" ${BASE0}~>${COFF} "
   fi
 
   pwd="${BASE0}\w${COFF}"
@@ -31,6 +33,8 @@ generate_prompt() {
   local diverge_pattern="# Your branch and (.*) have diverged"
   if [[ ! ${git_status} =~ "nothing" ]]; then
     state="${BORANGE}*${COFF}"
+  else
+    unset state
   fi
   if [[ ${git_status} =~ ${remote_pattern} ]]; then
     if [[ ${BASH_REMATCH[1]} == "ahead" ]]; then
@@ -49,10 +53,10 @@ generate_prompt() {
     local git_state="${branch}${remote}${state}"
   fi
 
-  PS1="${last_state}${pwd}${git_state}${head}"
+  PS1="${last_state}${pwd}${git_state}${indicator}"
   OLD_PS1="$PS1"
   export PS1="${debian_chroot:+($debian_chroot)}${BASE00}\u@\h "'$fill \t\n'"${COFF}$OLD_PS1"
   trap 'echo -ne "\e[0m"' DEBUG # this one is invoked every time before a command is executed
 }
 
-PROMPT_COMMAND=generate_prompt
+PROMPT_COMMAND=beutify_ps1
