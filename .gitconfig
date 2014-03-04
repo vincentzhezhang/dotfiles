@@ -1,0 +1,43 @@
+[alias]
+  ci = commit
+  co = checkout
+  st = status
+  br = branch
+  lg = log --graph --pretty=format:'%C(yellow)%h%Creset-%C(yellow)%d%Creset %s %C(green)(%cr)%Creset %C(bold cyan)<%an>%Creset' --abbrev-commit --date=short
+  sn = !bash -c 'git checkout -b snapshot_$(/bin/date "+%y%m%d_%H%M%S")'
+
+[user]
+  name = Vincent
+  email = v.zh@msn.com
+[gui]
+  editor = gedit
+[core]
+  editor = vim
+[color]
+  ui = auto
+[color "branch"]
+  current = cyan reverse
+  local = cyan
+  remote = magenta
+[color "diff"]
+  meta = yellow bold
+  frag = magenta bold
+  old = red bold
+  new = green bold
+[color "status"]
+  added = yellow
+  changed = green
+  untracked = cyan
+[credential]
+  helper = cache
+[diff]
+  tool = meld
+[merge]
+  tool = meld
+	confictstyle = diff3
+	conflictstyle = diff3
+[push]
+  default = simple
+[cola]
+  fontdiff = Source Code Pro,9,-1,5,50,0,0,0,0,0
+  tabwidth = 4
