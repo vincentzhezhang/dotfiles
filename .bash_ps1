@@ -28,35 +28,34 @@ beutify_ps1() {
 
   git rev-parse --git-dir &> /dev/null
   local git_status="$(git status 2> /dev/null)"
-  local branch_pattern="^# On branch ([^${IFS}]*)"
-  local remote_pattern="# Your branch is (.*) of"
-  local diverge_pattern="# Your branch and (.*) have diverged"
+  local branch_pattern="^On branch ([^${IFS}]*)"
+  local remote_pattern="Your branch is (.*) of"
+  local diverge_pattern="Your branch and (.*) have diverged"
+
   if [[ ! ${git_status} =~ "nothing" ]]; then
-    state="${BORANGE}*${COFF}"
+    local git_state="${BORANGE}*${COFF}"
   else
-    unset state
+    unset git_state
   fi
   if [[ ${git_status} =~ ${remote_pattern} ]]; then
     if [[ ${BASH_REMATCH[1]} == "ahead" ]]; then
-      remote="${YELLOW}↑${COFF}"
+      local git_remote="${YELLOW}↑${COFF}"
     else
-      remote="${YELLOW}↓${COFF}"
+      local git_remote="${YELLOW}↓${COFF}"
     fi
   fi
   if [[ ${git_status} =~ ${diverge_pattern} ]]; then
-    remote="${BRED}↕${COFF}"
+    local git_remote="${BRED}↕${COFF}"
   else
-    unset remote
+    unset git_remote
   fi
   if [[ ${git_status} =~ ${branch_pattern} ]]; then
-    branch=" ${CYAN}${BASH_REMATCH[1]}${COFF}"
-    local git_state="${branch}${remote}${state}"
+    local git_branch="${BYELLOW}@${COFF}${CYAN}${BASH_REMATCH[1]}${COFF}"
+    local git_string="${git_branch}${git_remote}${git_state}"
   fi
 
-  PS1="${last_state}${pwd}${git_state}${indicator}"
-  OLD_PS1="$PS1"
-  export PS1="${debian_chroot:+($debian_chroot)}${BASE00}\u@\h "'$fill \t\n'"${COFF}$OLD_PS1"
-  trap 'echo -ne "\e[0m"' DEBUG # this one is invoked every time before a command is executed
+  OLD_PS1="${last_state}${pwd}${git_string}${indicator}"
+  export PS1="${BASE00}\u@\h "'$fill \t\n'"${COFF}$OLD_PS1"
 }
 
 PROMPT_COMMAND=beutify_ps1
