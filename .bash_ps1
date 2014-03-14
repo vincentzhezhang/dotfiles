@@ -56,6 +56,9 @@ beutify_ps1() {
 
   OLD_PS1="${last_state}${pwd}${git_string}${indicator}"
   export PS1="${BASE00}\u@\h "'$fill \t\n'"${COFF}$OLD_PS1"
+  # Temporarily comment out the trap DEBUG line due to a Linux specific bug
+  # Wait until it get fixed
+  # Related forum post: http://gnu-bash.2382.n7.nabble.com/Latest-fix-for-DEBUG-causes-pipes-to-fail-when-used-with-trap-and-an-interactive-shell-td13044.html
+  #trap 'echo -ne "\e[0m"' DEBUG # this one is invoked every time before a command is executed
 }
-
 PROMPT_COMMAND=beutify_ps1
