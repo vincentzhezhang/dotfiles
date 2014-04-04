@@ -37,7 +37,7 @@ alias images='cd ~/pictures'
 alias videos='cd ~/videos'
 alias localhost='cd /var/www'
 alias work='cd ~/workspace'
-alias spree='cd ~/workspace/ceedfund/jinshisong/spree'
+alias spree='cd ~/workspace/jss/jinshisong-spree'
 
 ## App-specific
 alias nano='nano -W -m'
