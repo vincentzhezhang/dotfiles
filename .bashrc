@@ -78,3 +78,7 @@ export NODE_PATH=$NODE_PATH:/home/vincent/.node/lib/node_modules
 # Fortune shines over you
 files=(/usr/share/cowsay/cows/*)
 cowsay -f `echo ${files[$((RANDOM%${#files}))]}` `fortune` | toilet -F gay -f term
+
+# Activate vi mode for bash
+set -o vi
+
