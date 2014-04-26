@@ -28,7 +28,7 @@ beutify_ps1() {
 
   git rev-parse --git-dir &> /dev/null
   local git_status="$(git status 2> /dev/null)"
-  local branch_pattern="^On branch ([^${IFS}]*)"
+  local branch_pattern="On branch ([^${IFS}]*)"
   local remote_pattern="Your branch is (.*) of"
   local diverge_pattern="Your branch and (.*) have diverged"
 
