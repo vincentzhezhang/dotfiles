@@ -2,49 +2,59 @@ if $COLORTERM == 'gnome-terminal'
   set t_Co=256
 endif
 
-" set nocompatible setting makes vim behave in a more useful way
-set nocompatible
-" required to be off before vundle
+set nocompatible                    " be iMproved, required
+filetype off                        " required
+
+" set the runtime path to include Vundle and initialize
+set rtp+=~/.vim/bundle/Vundle.vim
+
+call vundle#begin()
+Plugin 'gmarik/Vundle.vim'
+Plugin 'L9'
+Plugin 'altercation/vim-colors-solarized'
+Plugin 'airblade/vim-gitgutter'
+Plugin 'bling/vim-airline'
+Plugin 'edkolev/tmuxline.vim'
+Plugin 'elzr/vim-json'
+Plugin 'flazz/vim-colorschemes'
+Plugin 'godlygeek/csapprox'
+Plugin 'justinmk/vim-sneak'
+Plugin 'kchmck/vim-coffee-script'
+Plugin 'kien/ctrlp.vim'
+Plugin 'mattn/emmet-vim'
+Plugin 'morhetz/gruvbox'
+Plugin 'othree/javascript-libraries-syntax.vim'
+Plugin 'plasticboy/vim-markdown'
+Plugin 'scrooloose/nerdtree'
+Plugin 'scrooloose/nerdcommenter'
+Plugin 'scrooloose/syntastic'
+Plugin 'slim-template/vim-slim'
+Plugin 'terryma/vim-multiple-cursors'
+Plugin 'thoughtbot/vim-rspec'
+Plugin 'tomasr/molokai'
+Plugin 'tpope/vim-fugitive'
+Plugin 'tpope/vim-rails'
+Plugin 'tpope/vim-surround'
+Plugin 'tpope/vim-cucumber'
+Plugin 'Valloric/YouCompleteMe'
+Plugin 'vim-ruby/vim-ruby'
+call vundle#end()
+
+" turn back on after vundle
 filetype plugin indent on
 
-set rtp+=~/.vim/bundle/vundle/
-call vundle#rc()
+""""""""""""
+let g:airline_powerline_fonts=1
 
-""""""""""""""""""""""""""""""""""
-"          Bundles start         "
-""""""""""""""""""""""""""""""""""
-" let vundle handle itself
-Bundle 'gmarik/vundle'
-
-" original repos on GitHub
-Bundle 'altercation/vim-colors-solarized'
-Bundle 'Lokaltog/vim-easymotion'
-Bundle 'mattn/emmet-vim'
-Bundle 'plasticboy/vim-markdown'
-Bundle 'scrooloose/nerdtree'
-Bundle 'slim-template/vim-slim.git'
-Bundle 'tpope/vim-fugitive'
-Bundle 'tpope/vim-rails.git'
-Bundle 'tpope/vim-surround'
-Bundle 'Valloric/YouCompleteMe'
-
-" vim-scripts repos
-Bundle 'L9'
-Bundle 'FuzzyFinder'
-
-" non-GitHub repos
-Bundle 'git://git.wincent.com/command-t.git'
-
-""""""""""""""""""""""""""""""""""
-"          Bundles ends          "
-""""""""""""""""""""""""""""""""""
+" enable per-project .vimrc files
+set exrc
+" Only execute safe per-project vimrc commands
+set secure
 
 " needs cleanup
-
 set cursorline
 set list
 set listchars=nbsp:¬,tab:»·,trail:·
-
 
 " case-insensitive for some common commands
 command! Q q
@@ -52,26 +62,30 @@ command! W w
 
 " turn off Ex mode
 map Q <Nop>
-let loaded_matchparen =1
+let loaded_matchparen = 1
 
 " bind paste mode for ease of use
 set pastetoggle=<F2>
 
-" turn back on after vundle 
-filetype plugin indent on
-
 " colortheme
 set background=dark
-colorscheme solarized
+" colorscheme solarized
+if !has("gui_running")
+  let g:gruvbox_italic=0
+endif
+colorscheme gruvbox
  
 " Turn syntax highlighting on
 syntax on
+
+" Syntax coloring lines that are too long just slows down the world
+set synmaxcol=256
+set ttyfast " u got a fast terminal
+set ttyscroll=3
+set lazyredraw " to avoid scrolling problems
  
 " Highlight search results
 set hlsearch
- 
-" Turn on line numbering
-set number
  
 " Make backspce behave more normally
 set backspace=indent,eol,start
@@ -93,9 +107,6 @@ let mapleader=","
 map  <C-l> :tabn<CR>
 map  <C-h> :tabp<CR>
 map  <C-n> :tabnew<CR>
-
-" some tweak for CommandT
-set wildignore+=.*,vendor/*,public/*
 
 " start NERDTree by default
 map <C-n> :NERDTreeToggle<CR>

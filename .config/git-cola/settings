@@ -1,0 +1,27 @@
+{
+    "gui_state": {
+        "mainview": {
+            "lock_layout": false, 
+            "height": 1056, 
+            "windowstate": "AAAA/wAAAAL9AAAAAwAAAAAAAAIVAAAEIPwCAAAAAfsAAAAMAFMAdABhAHQAdQBzAQAAAAAAAAQgAAAAYAD///8AAAABAAAFaAAABCD8AgAAAAL7AAAADABDAG8AbQBtAGkAdAEAAAAAAAAAkQAAAGEA/////AAAAJQAAAOMAAAAfgEAAB36AAAAAAEAAAAC+wAAAAgARABpAGYAZgEAAAAA/////wAAAGIA////+wAAABIAQgBvAG8AawBtAGEAcgBrAHMBAAADxwAAA7kAAACgAP///wAAAAMAAAAAAAAAAPwBAAAAAfwAAAAA/////wAAAAAA////+v////8BAAAAAvsAAAAOAEEAYwB0AGkAbwBuAHMAAAAAAP////8AAABkAP////sAAAAOAEMAbwBuAHMAbwBsAGUAAAAAAP////8AAABnAP///wAAAAAAAAQgAAAABAAAAAQAAAAIAAAACPwAAAAA", 
+            "width": 1920, 
+            "maximized": true, 
+            "y": 24, 
+            "x": 0
+        }, 
+        "gitdag": {
+            "count": 1000, 
+            "lock_layout": false, 
+            "height": 1056, 
+            "windowstate": "AAAA/wAAAAH9AAAAAgAAAAAAAAO/AAAEIPwCAAAAAvsAAAAGAEwAbwBnAQAAAAAAAAEsAAAAawD////7AAAACABEAGkAZgBmAQAAAS8AAALxAAAAUQD///8AAAABAAADvgAABCD8AgAAAAH8AAAAAAAABCAAAAB+AQAAHfoAAAABAQAAAAL7AAAACgBGAGkAbABlAHMBAAAAAP////8AAABSAP////sAAAAKAEcAcgBhAHAAaAEAAAPCAAADvgAAAKYA////AAAAAAAABCAAAAAEAAAABAAAAAgAAAAI/AAAAAA=", 
+            "width": 1920, 
+            "maximized": true, 
+            "y": 24, 
+            "x": 0
+        }
+    }, 
+    "bookmarks": [], 
+    "recent": [
+        "/data/workspace/jss/spree"
+    ]
+}

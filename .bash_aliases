@@ -2,6 +2,7 @@
 alias ll='ls -alFh'
 alias la='ls -A'
 alias l='ls -CF'
+alias lt='ll -t'
 alias lg='ll -A | grep -i'
 
 # Add an "alert" alias for long running commands.  Use like so:
@@ -37,7 +38,6 @@ alias images='cd ~/pictures'
 alias videos='cd ~/videos'
 alias localhost='cd /var/www'
 alias work='cd ~/workspace'
-alias spree='cd ~/workspace/jss/jinshisong-spree'
 
 ## App-specific
 alias nano='nano -W -m'
@@ -73,6 +73,10 @@ alias stg='ssh vincent@staging.jinshisong.com'
 alias mt='ssh vincent@211.155.86.126'
 
 # some development quick n dirty shortcuts
-alias ccache='/bin/rm -r /data/workspace/ceedfund/jinshisong/spree/tmp/* /data/workspace/ceedfund/jinshisong/spree/public/assets/*'
+alias s='cd /home/vincent/workspace/jss/spree'
+alias h='cd /home/vincent/workspace/jss/horsery'
+alias ccache='/bin/rm -r /home/vincent/workspace/jss/spree/tmp/* /home/vincent/workspace/jss/spree/public/assets/*'
 alias pryc='bundle exec pry -r ./config/environment'
 alias r='rails r'
+alias hs='python -m SimpleHTTPServer'
+alias dbreload='rake db:drop db:create db:migrate'
