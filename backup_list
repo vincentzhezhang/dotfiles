@@ -1,0 +1,15 @@
+.bash_aliases
+.bash_constants
+.bash_functions
+.bash_profile
+.bash_ps1
+.bashrc
+.config/git-cola/settings
+.config/terminator/config
+.dircolors
+.fonts
+.gemrc
+.gitconfig
+.profile
+.ssh
+.vimrc
