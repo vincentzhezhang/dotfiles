@@ -18,7 +18,7 @@ beutify_ps1() {
   done
 
   # indicator treatment
-  if [ $PWD = $HOME ]; then
+  if [ "${PWD}" = $HOME ]; then
     local indicator="${BASE0}>${COFF} "
   else
     local indicator=" ${BASE0}~>${COFF} "
