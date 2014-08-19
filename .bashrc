@@ -92,11 +92,17 @@ eval "$(rbenv init -)"
 export PATH="$HOME/.rbenv/plugins/ruby-build/bin:$PATH"
 
 # nodejs
-export PATH=$HOME/.node/bin:$PATH
-export NODE_PATH=$NODE_PATH:/home/vincent/.node/lib/node_modules
+export PATH=$HOME/.npm/bin:$PATH
+export NODE_PATH=$NODE_PATH:/home/vincent/.npm/lib/node_modules
 
 # textlive
 export PATH=/usr/local/texlive/2014/bin/x86_64-linux:$PATH
+
+# Initialization for FDK command line tools.Mon Aug 11 16:45:11 2014
+FDK_EXE="$HOME/tools/FDK/Tools/linux"
+PATH=${PATH}:"$HOME/tools/FDK/Tools/linux"
+export PATH
+export FDK_EXE
 
 # Fortune shines over you
 files=(/usr/share/cowsay/cows/*)
