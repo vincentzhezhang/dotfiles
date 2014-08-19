@@ -15,9 +15,9 @@ export VISUAL="vim"
 shopt -s checkwinsize
 shopt -s histappend
 
-HISTCONTROL=ignoredups:erasedups:ignorespace:ignoreboth
-HISTSIZE=1000
-HISTFILESIZE=2000
+HISTCONTROL=erasedups
+HISTSIZE=3000
+HISTFILESIZE=9999
 
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
