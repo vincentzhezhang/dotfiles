@@ -69,6 +69,7 @@ set pastetoggle=<F2>
 
 " colortheme
 set background=dark
+
 " colorscheme solarized
 if !has("gui_running")
   let g:gruvbox_italic=0
@@ -102,11 +103,6 @@ set shiftwidth=2
 
 " change leader key
 let mapleader=","
-
-" some magic for better tabs
-map  <C-l> :tabn<CR>
-map  <C-h> :tabp<CR>
-map  <C-n> :tabnew<CR>
 
 " start NERDTree by default
 map <C-n> :NERDTreeToggle<CR>
