@@ -5,6 +5,7 @@
   br = branch
   lg = log --graph --pretty=format:'%C(yellow)%h%Creset -%C(yellow)%d%Creset %s %C(green)(%cr)%Creset %C(bold cyan)<%an>%Creset' --abbrev-commit --date=short
   sn = !bash -c 'git checkout -b snapshot_$(/bin/date "+%y%m%d_%H%M%S")'
+  report = log --pretty=oneline --author='vincent@ekohe.com' --abbrev-commit --since='14.hours' --reverse
 
 [user]
   name = Vincent
