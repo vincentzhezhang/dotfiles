@@ -48,10 +48,19 @@ if [ -n "$force_color_prompt" ]; then
     fi
 fi
 
+if [[ $OSTYPE == darwin* ]]; then #OSX specific configuration
+  export CLICOLOR=1
+  export LSCOLORS=gxBxhxDxfxhxhxhxhxcxcx
+  alias ls='ls -Gp'
+  alias vim='/usr/local/Cellar/vim/7.4.430/bin/vim'
+  alias vi='/usr/local/Cellar/vim/7.4.430/bin/vim'
+else
+  test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+  alias ls='ls --color=auto'
+fi
+
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
-    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-    alias ls='ls --color=auto'
     alias grep='grep --color=auto'
     alias fgrep='fgrep --color=auto'
     alias egrep='egrep --color=auto'
@@ -104,9 +113,11 @@ PATH=${PATH}:"$HOME/tools/FDK/Tools/linux"
 export PATH
 export FDK_EXE
 
+export PATH=/usr/local/bin:$PATH
+
 # Fortune shines over you
 files=(/usr/share/cowsay/cows/*)
-cowsay -f `echo ${files[$((RANDOM%${#files}))]}` `fortune` | toilet -F gay -f term
+cowsay `fortune` | toilet -F gay -f term
 
 # viiiiiiiiiiiiiiii
 set -o vi
