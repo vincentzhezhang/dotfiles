@@ -3,7 +3,7 @@
   co = checkout
   st = status
   br = branch
-  lg = log --graph --pretty=format:'%C(yellow)%h%Creset-%C(yellow)%d%Creset %s %C(green)(%cr)%Creset %C(bold cyan)<%an>%Creset' --abbrev-commit --date=short
+  lg = log --graph --pretty=format:'%C(yellow)%h%Creset -%C(yellow)%d%Creset %s %C(green)(%cr)%Creset %C(bold cyan)<%an>%Creset' --abbrev-commit --date=short
   sn = !bash -c 'git checkout -b snapshot_$(/bin/date "+%y%m%d_%H%M%S")'
 
 [user]
@@ -39,5 +39,5 @@
 [push]
   default = simple
 [cola]
-  fontdiff = Source Code Pro,9,-1,5,50,0,0,0,0,0
+	fontdiff = Source Code Pro for Powerline,12,-1,5,50,0,0,0,0,0
   tabwidth = 4
