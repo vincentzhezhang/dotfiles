@@ -9,21 +9,19 @@ filetype off                        " required
 set rtp+=~/.vim/bundle/Vundle.vim
 
 call vundle#begin()
-Plugin 'gmarik/Vundle.vim'
-Plugin 'L9'
-Plugin 'altercation/vim-colors-solarized'
-Plugin 'airblade/vim-gitgutter'
+Plugin 'gmarik/Vundle.vim' "v
+Plugin 'L9' "v
+Plugin 'altercation/vim-colors-solarized' 
+Plugin 'airblade/vim-gitgutter' "v
 Plugin 'bling/vim-airline'
-Plugin 'edkolev/tmuxline.vim'
-Plugin 'elzr/vim-json'
+Plugin 'edkolev/tmuxline.vim' " should be alright with airline
+Plugin 'elzr/vim-json' " v
 Plugin 'flazz/vim-colorschemes'
-Plugin 'godlygeek/csapprox'
-Plugin 'justinmk/vim-sneak'
-Plugin 'kchmck/vim-coffee-script'
+Plugin 'kchmck/vim-coffee-script' "v
 Plugin 'kien/ctrlp.vim'
-Plugin 'mattn/emmet-vim'
 Plugin 'morhetz/gruvbox'
-Plugin 'othree/javascript-libraries-syntax.vim'
+Plugin 'othree/javascript-libraries-syntax.vim' "v
+Plugin 'godlygeek/tabular'
 Plugin 'plasticboy/vim-markdown'
 Plugin 'scrooloose/nerdtree'
 Plugin 'scrooloose/nerdcommenter'
@@ -38,6 +36,8 @@ Plugin 'tpope/vim-surround'
 Plugin 'tpope/vim-cucumber'
 Plugin 'Valloric/YouCompleteMe'
 Plugin 'vim-ruby/vim-ruby'
+Plugin 'Lokaltog/vim-easymotion'
+" Plugin 'justinmk/vim-sneak'
 call vundle#end()
 
 " turn back on after vundle
@@ -101,9 +101,20 @@ set expandtab
 set tabstop=2
 set shiftwidth=2
 
+" setup javascript-libraries-syntax
+let g:used_javascript_libs = 'underscore,backbone'
+
 " change leader key
 let mapleader=","
 
+" some key remappings to resolve conflict brought by vim-multiple-cursors
+let g:multi_cursor_use_default_mapping=0
+let g:multi_cursor_next_key='<S-n>'
+let g:multi_cursor_prev_key='<S-p>'
+let g:multi_cursor_skip_key='<S-x>'
+let g:multi_cursor_quit_key='<Esc>'
+
 " start NERDTree by default
+" 
 map <C-n> :NERDTreeToggle<CR>
-autocmd vimenter * if !argc() | NERDTree | endif
+" autocmd vimenter * if !argc() | NERDTree | endif
