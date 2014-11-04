@@ -2,11 +2,21 @@
     "gui_state": {
         "mainview": {
             "lock_layout": false, 
-            "height": 1056, 
-            "windowstate": "AAAA/wAAAAL9AAAAAwAAAAAAAAIVAAAEIPwCAAAAAfsAAAAMAFMAdABhAHQAdQBzAQAAAAAAAAQgAAAAYAD///8AAAABAAAFaAAABCD8AgAAAAL7AAAADABDAG8AbQBtAGkAdAEAAAAAAAAAkQAAAGEA/////AAAAJQAAAOMAAAAfgEAAB36AAAAAAEAAAAC+wAAAAgARABpAGYAZgEAAAAA/////wAAAGIA////+wAAABIAQgBvAG8AawBtAGEAcgBrAHMBAAADxwAAA7kAAACgAP///wAAAAMAAAAAAAAAAPwBAAAAAfwAAAAA/////wAAAAAA////+v////8BAAAAAvsAAAAOAEEAYwB0AGkAbwBuAHMAAAAAAP////8AAABkAP////sAAAAOAEMAbwBuAHMAbwBsAGUAAAAAAP////8AAABnAP///wAAAAAAAAQgAAAABAAAAAQAAAAIAAAACPwAAAAA", 
+            "height": 1029, 
+            "windowstate": "AAAA/wAAAAL9AAAAAwAAAAAAAAH8AAAD6/wCAAAAAfsAAAAMAFMAdABhAHQAdQBzAQAAABoAAAPrAAAAYgD///8AAAABAAAFfwAAA+v8AgAAAAL7AAAADABDAG8AbQBtAGkAdAEAAAAaAAAAjgAAAEMA/////AAAAKsAAANaAAAAJwD////6AAAAAAEAAAAC+wAAAAgARABpAGYAZgEAAAAA/////wAAAKAA////+wAAABIAQgBvAG8AawBtAGEAcgBrAHMBAAADxwAAA7kAAAAAAAAAAAAAAAMAAAAAAAAAAPwBAAAAAfwAAAAA/////wAAAAAA////+v////8BAAAAAvsAAAAOAEEAYwB0AGkAbwBuAHMAAAAAAP////8AAABYAP////sAAAAOAEMAbwBuAHMAbwBsAGUAAAAAAP////8AAABbAP///wAAAAAAAAPrAAAABAAAAAQAAAAIAAAACPwAAAAA", 
+            "width": 1918, 
+            "maximized": false, 
+            "y": -8, 
+            "x": -9
+        }, 
+        "dagview": {
+            "count": 1000, 
+            "lock_layout": false, 
+            "height": 1029, 
+            "windowstate": "AAAA/wAAAAH9AAAAAwAAAAAAAAO/AAAAxfwCAAAAAfsAAAAGAEwAbwBnAQAAABoAAADFAAAAbQD///8AAAABAAADvgAAAMX8AgAAAAH7AAAACgBHAHIAYQBwAGgBAAAAGgAAAMUAAABiAP///wAAAAMAAAeAAAADI/wBAAAAAfsAAAAIAEQAaQBmAGYBAAAAAAAAB4AAAAEpAP///wAAAAAAAADFAAAABAAAAAQAAAAIAAAACPwAAAAA", 
             "width": 1920, 
             "maximized": true, 
-            "y": 24, 
+            "y": 0, 
             "x": 0
         }, 
         "gitdag": {
@@ -22,6 +32,9 @@
     }, 
     "bookmarks": [], 
     "recent": [
-        "/data/workspace/jss/spree"
+        "/data/workspace/freelance/sclg_construction", 
+        "/data/workspace/jss/spree", 
+        "/data/workspace/my/dotfiles", 
+        "/data/workspace/jss/horsery"
     ]
 }

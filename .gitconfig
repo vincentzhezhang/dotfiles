@@ -10,7 +10,8 @@
   name = Vincent
   email = v.zh@msn.com
 [gui]
-  editor = gedit
+	editor = gedit
+	historybrowser = gitk
 [core]
   editor = vim
 [color]
@@ -31,7 +32,7 @@
 [credential]
   helper = cache
 [diff]
-  tool = meld
+	tool = meld
 [merge]
   tool = meld
 	confictstyle = diff3
@@ -39,5 +40,6 @@
 [push]
   default = simple
 [cola]
-  fontdiff = Source Code Pro,9,-1,5,50,0,0,0,0,0
+	fontdiff = Source Code Pro for Powerline,9,-1,5,50,0,0,0,0,0
   tabwidth = 4
+	textwidth = 80

@@ -104,6 +104,10 @@ PATH=${PATH}:"$HOME/tools/FDK/Tools/linux"
 export PATH
 export FDK_EXE
 
+# For princetion exercises
+PATH=${PATH}:"/home/vincent/algs4/bin"
+export PATH
+
 # Fortune shines over you
 files=(/usr/share/cowsay/cows/*)
 cowsay -f `echo ${files[$((RANDOM%${#files}))]}` `fortune` | toilet -F gay -f term
