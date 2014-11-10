@@ -80,3 +80,6 @@ alias pryc='bundle exec pry -r ./config/environment'
 alias r='rails r'
 alias hs='python -m SimpleHTTPServer'
 alias dbreload='rake db:drop db:create db:migrate'
+
+alias vi='$(which vim)'
+alias vim='$(which vim)'

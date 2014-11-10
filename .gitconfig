@@ -8,12 +8,13 @@
   report = log --pretty=oneline --author='vincent@ekohe.com' --abbrev-commit --since='14.hours' --reverse
 
 [user]
-  name = Vincent
-  email = v.zh@msn.com
+	name = Vincent Zhang
+	email = v.zh@msn.com
 [gui]
   editor = gedit
 [core]
   editor = vim
+	excludesfile = /Users/vincent/.gitignore_global
 [color]
   ui = auto
 [color "branch"]
@@ -40,5 +41,11 @@
 [push]
   default = simple
 [cola]
-	fontdiff = Source Code Pro for Powerline,12,-1,5,50,0,0,0,0,0
+	fontdiff = Source Code Pro for Powerline,14,-1,5,50,0,0,0,0,0
   tabwidth = 4
+[difftool "sourcetree"]
+	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
+	path = 
+[mergetool "sourcetree"]
+	cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
+	trustExitCode = true

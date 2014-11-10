@@ -52,8 +52,6 @@ if [[ $OSTYPE == darwin* ]]; then #OSX specific configuration
   export CLICOLOR=1
   export LSCOLORS=gxBxhxDxfxhxhxhxhxcxcx
   alias ls='ls -Gp'
-  alias vim='/usr/local/Cellar/vim/7.4.430/bin/vim'
-  alias vi='/usr/local/Cellar/vim/7.4.430/bin/vim'
 else
   test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
   alias ls='ls --color=auto'
