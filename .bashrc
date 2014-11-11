@@ -48,10 +48,17 @@ if [ -n "$force_color_prompt" ]; then
     fi
 fi
 
+if [[ $OSTYPE == darwin* ]]; then #OSX specific configuration
+  export CLICOLOR=1
+  export LSCOLORS=gxBxhxDxfxhxhxhxhxcxcx
+  alias ls='ls -Gp'
+else
+  test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+  alias ls='ls --color=auto'
+fi
+
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
-    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-    alias ls='ls --color=auto'
     alias grep='grep --color=auto'
     alias fgrep='fgrep --color=auto'
     alias egrep='egrep --color=auto'
@@ -86,6 +93,11 @@ if ! shopt -oq posix; then
   fi
 fi
 
+if [ -f $(brew --prefix)/etc/bash_completion ]; then
+  . $(brew --prefix)/etc/bash_completion
+fi
+
+
 # rbenv
 export PATH="$HOME/.rbenv/bin:$PATH"
 eval "$(rbenv init -)"
@@ -107,10 +119,11 @@ export FDK_EXE
 # For princetion exercises
 PATH=${PATH}:"/home/vincent/algs4/bin"
 export PATH
+export PATH=/usr/local/bin:$PATH
 
 # Fortune shines over you
 files=(/usr/share/cowsay/cows/*)
-cowsay -f `echo ${files[$((RANDOM%${#files}))]}` `fortune` | toilet -F gay -f term
+cowsay `fortune` | toilet -F gay -f term
 
 # viiiiiiiiiiiiiiii
 set -o vi

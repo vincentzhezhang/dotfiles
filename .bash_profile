@@ -5,3 +5,4 @@ FDK_EXE="/home/vincent/bin/FDK/Tools/linux"
 PATH=${PATH}:"/home/vincent/bin/FDK/Tools/linux"
 export PATH
 export FDK_EXE
+export PATH=/usr/local/bin:$PATH
