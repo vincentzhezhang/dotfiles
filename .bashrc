@@ -121,9 +121,20 @@ PATH=${PATH}:"/home/vincent/algs4/bin"
 export PATH
 export PATH=/usr/local/bin:$PATH
 
-# Fortune shines over you
-files=(/usr/share/cowsay/cows/*)
-cowsay `fortune` | toilet -F gay -f term
+# just for fun
+case $((RANDOM%3)) in
+0)
+    # Fortune shines over you
+    files=(/usr/share/cowsay/cows/*)
+    cowsay `fortune` | toilet -F gay -f term
+    ;;
+1)
+     retrogame invaders
+    ;;
+2)
+    retrogame pacman
+    ;;
+esac
 
 # viiiiiiiiiiiiiiii
 set -o vi
