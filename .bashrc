@@ -17,7 +17,7 @@ shopt -s histappend
 
 HISTCONTROL=erasedups
 HISTSIZE=3000
-HISTFILESIZE=9999
+HISTFILESIZE=99999
 
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
@@ -48,10 +48,14 @@ if [ -n "$force_color_prompt" ]; then
     fi
 fi
 
-if [[ $OSTYPE == darwin* ]]; then #OSX specific configuration
+#OSX specific configuration
+if [[ $OSTYPE == darwin* ]]; then
   export CLICOLOR=1
   export LSCOLORS=gxBxhxDxfxhxhxhxhxcxcx
   alias ls='ls -Gp'
+  if [ -f $(brew --prefix)/etc/bash_completion ]; then
+    . $(brew --prefix)/etc/bash_completion
+  fi
 else
   test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
   alias ls='ls --color=auto'
@@ -92,11 +96,6 @@ if ! shopt -oq posix; then
     . /etc/bash_completion
   fi
 fi
-
-if [ -f $(brew --prefix)/etc/bash_completion ]; then
-  . $(brew --prefix)/etc/bash_completion
-fi
-
 
 # rbenv
 export PATH="$HOME/.rbenv/bin:$PATH"
