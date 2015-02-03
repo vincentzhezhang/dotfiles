@@ -116,9 +116,6 @@ PATH=${PATH}:"$HOME/tools/FDK/Tools/linux"
 export PATH
 export FDK_EXE
 
-# For princetion exercises
-PATH=${PATH}:"/home/vincent/algs4/bin"
-export PATH
 export PATH=/usr/local/bin:$PATH
 
 # just for fun

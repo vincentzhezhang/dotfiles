@@ -11,8 +11,7 @@
 	name = Vincent Zhang
 	email = v.zh@msn.com
 [gui]
-	editor = gedit
-	historybrowser = gitk
+  editor = gedit
 [core]
   editor = vim
 	excludesfile = /Users/vincent/.gitignore_global
@@ -34,7 +33,7 @@
 [credential]
   helper = cache
 [diff]
-	tool = meld
+  tool = meld
 [merge]
   tool = meld
 	confictstyle = diff3
@@ -42,10 +41,8 @@
 [push]
   default = simple
 [cola]
-	fontdiff = Source Code Pro for Powerline,9,-1,5,50,0,0,0,0,0
-  fontdiff = Source Code Pro,9,-1,5,50,0,0,0,0,0
+	fontdiff = Source Code Pro for Powerline,14,-1,5,50,0,0,0,0,0
   tabwidth = 4
-	textwidth = 80
 [difftool "sourcetree"]
 	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
 	path = 

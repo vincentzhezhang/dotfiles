@@ -11,7 +11,7 @@ set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 Plugin 'gmarik/Vundle.vim' "v
 Plugin 'L9' "v
-Plugin 'altercation/vim-colors-solarized' 
+Plugin 'altercation/vim-colors-solarized'
 Plugin 'airblade/vim-gitgutter' "v
 Plugin 'bling/vim-airline'
 Plugin 'edkolev/tmuxline.vim' " should be alright with airline
@@ -20,6 +20,7 @@ Plugin 'flazz/vim-colorschemes'
 Plugin 'kchmck/vim-coffee-script' "v
 Plugin 'kien/ctrlp.vim'
 Plugin 'morhetz/gruvbox'
+Plugin 'ntpeters/vim-better-whitespace'
 Plugin 'othree/javascript-libraries-syntax.vim' "v
 Plugin 'godlygeek/tabular'
 Plugin 'plasticboy/vim-markdown'
@@ -45,6 +46,7 @@ filetype plugin indent on
 
 """"""""""""
 let g:airline_powerline_fonts=1
+set guifont=Source\ Code\ Pro\ for\ Powerline:h14
 
 " enable per-project .vimrc files
 set exrc
@@ -75,28 +77,28 @@ if !has("gui_running")
   let g:gruvbox_italic=0
 endif
 colorscheme gruvbox
- 
+
 " Turn syntax highlighting on
 syntax on
 
 " Syntax coloring lines that are too long just slows down the world
-set synmaxcol=256
+set synmaxcol=1024
 set ttyfast " u got a fast terminal
 set ttyscroll=3
 set lazyredraw " to avoid scrolling problems
- 
+
 " Highlight search results
 set hlsearch
- 
+
 " Make backspce behave more normally
 set backspace=indent,eol,start
- 
+
 " Turn on automatic indenting
 set smartindent
- 
+
 " Insert space characters whenever the tab key is pressed
 set expandtab
- 
+
 " Set tabs
 set tabstop=2
 set shiftwidth=2
@@ -114,7 +116,16 @@ let g:multi_cursor_prev_key='<S-p>'
 let g:multi_cursor_skip_key='<S-x>'
 let g:multi_cursor_quit_key='<Esc>'
 
+" scss lint
+" temporarly remove due to the it's bug
+" let g:syntastic_scss_checkers = ['scss_lint']
+
+" GUI related settings
+set guioptions-=L
+:nnoremap <NL> i<CR><ESC>
+
 " start NERDTree by default
-" 
+"
 map <C-n> :NERDTreeToggle<CR>
+nmap ,n :NERDTreeFind<CR>
 " autocmd vimenter * if !argc() | NERDTree | endif
