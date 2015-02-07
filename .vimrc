@@ -45,8 +45,6 @@ call vundle#end()
 filetype plugin indent on
 
 """"""""""""
-let g:airline_powerline_fonts=1
-set guifont=Source\ Code\ Pro\ for\ Powerline:h14
 
 " enable per-project .vimrc files
 set exrc
@@ -69,13 +67,17 @@ let loaded_matchparen = 1
 " bind paste mode for ease of use
 set pastetoggle=<F2>
 
-" colortheme
 set background=dark
 
-" colorscheme solarized
 if !has("gui_running")
   let g:gruvbox_italic=0
 endif
+
+if has("gui_running")
+  set guifont=Source\ Code\ Pro\ for\ Powerline\ 12
+endif
+let g:airline_powerline_fonts=1
+
 colorscheme gruvbox
 
 " Turn syntax highlighting on
@@ -121,11 +123,15 @@ let g:multi_cursor_quit_key='<Esc>'
 " let g:syntastic_scss_checkers = ['scss_lint']
 
 " GUI related settings
+set guioptions-=m
+set guioptions-=T
 set guioptions-=L
+set guioptions-=l
+set guioptions-=R
+set guioptions-=r
 :nnoremap <NL> i<CR><ESC>
 
 " start NERDTree by default
 "
 map <C-n> :NERDTreeToggle<CR>
 nmap ,n :NERDTreeFind<CR>
-" autocmd vimenter * if !argc() | NERDTree | endif
