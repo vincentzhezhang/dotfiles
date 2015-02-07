@@ -9,19 +9,19 @@ filetype off                        " required
 set rtp+=~/.vim/bundle/Vundle.vim
 
 call vundle#begin()
-Plugin 'gmarik/Vundle.vim' "v
-Plugin 'L9' "v
+Plugin 'gmarik/Vundle.vim'
+Plugin 'L9'
 Plugin 'altercation/vim-colors-solarized'
-Plugin 'airblade/vim-gitgutter' "v
+Plugin 'airblade/vim-gitgutter'
 Plugin 'bling/vim-airline'
-Plugin 'edkolev/tmuxline.vim' " should be alright with airline
-Plugin 'elzr/vim-json' " v
+Plugin 'edkolev/tmuxline.vim'
+Plugin 'elzr/vim-json'
 Plugin 'flazz/vim-colorschemes'
-Plugin 'kchmck/vim-coffee-script' "v
+Plugin 'kchmck/vim-coffee-script'
 Plugin 'kien/ctrlp.vim'
 Plugin 'morhetz/gruvbox'
 Plugin 'ntpeters/vim-better-whitespace'
-Plugin 'othree/javascript-libraries-syntax.vim' "v
+Plugin 'othree/javascript-libraries-syntax.vim'
 Plugin 'godlygeek/tabular'
 Plugin 'plasticboy/vim-markdown'
 Plugin 'scrooloose/nerdtree'
@@ -38,7 +38,7 @@ Plugin 'tpope/vim-cucumber'
 Plugin 'Valloric/YouCompleteMe'
 Plugin 'vim-ruby/vim-ruby'
 Plugin 'Lokaltog/vim-easymotion'
-" Plugin 'justinmk/vim-sneak'
+" Plugin 'justinmk/vim-sneak' " seems conflicting with other montion plugin
 call vundle#end()
 
 " turn back on after vundle
@@ -69,14 +69,26 @@ set pastetoggle=<F2>
 
 set background=dark
 
-if !has("gui_running")
+let g:airline_powerline_fonts=1
+
+if has("gui_running")
+  let s:uname = system("uname -s")
+  if s:uname == "Darwin"
+    set guifont=Source\ Code\ Pro\ for\ Powerline:h14
+  else
+    let s:dpi = system("xrdb -query -all | grep dpi | awk '{ print $(NF) }'")
+    if s:dpi > 100
+      set guifont=Source\ Code\ Pro\ for\ Powerline\ 12
+    else
+      set guifont=Source\ Code\ Pro\ for\ Powerline\ 10
+    end
+  endif
+else
   let g:gruvbox_italic=0
 endif
 
-if has("gui_running")
-  set guifont=Source\ Code\ Pro\ for\ Powerline\ 12
-endif
-let g:airline_powerline_fonts=1
+" nmap <C-F9> :let &guifont = substitute(&guifont, ':h\(\d\+\)', '\=":h" . (submatch(1) - 1)', '')<CR>
+" nmap <C-F10> :let &guifont = substitute(&guifont, ':h\(\d\+\)', '\=":h" . (submatch(1) + 1)', '')<CR>
 
 colorscheme gruvbox
 
@@ -133,5 +145,4 @@ set guioptions-=r
 
 " start NERDTree by default
 "
-map <C-n> :NERDTreeToggle<CR>
-nmap ,n :NERDTreeFind<CR>
+map <C-n> :NERDTreeFind<CR>
