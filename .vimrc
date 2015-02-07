@@ -101,6 +101,16 @@ set ttyfast " u got a fast terminal
 set ttyscroll=3
 set lazyredraw " to avoid scrolling problems
 
+function! ToggleSyntax()
+  if exists("g:syntax_on")
+    syntax off
+  else
+    syntax enable
+  endif
+endfunction
+
+nmap <silent> <C-F12> :call ToggleSyntax()<CR>
+
 " Highlight search results
 set hlsearch
 
