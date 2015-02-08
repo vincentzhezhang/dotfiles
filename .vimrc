@@ -76,9 +76,11 @@ if has("gui_running")
   if s:uname == "Darwin"
     set guifont=Source\ Code\ Pro\ for\ Powerline:h14
   else
-    let s:dpi = system("xrdb -query -all | grep dpi | awk '{ print $(NF) }'")
-    if s:dpi > 100
-      set guifont=Source\ Code\ Pro\ for\ Powerline\ 12
+    " let s:dpi = system("xrdb -query -all | grep dpi | awk '{ print $(NF) }'")
+    " workaround since dpi is not correctly detected
+    let s:hostname = system("uname -n")
+    if s:hostname =~ "xps"
+      set guifont=Source\ Code\ Pro\ for\ Powerline\ 14
     else
       set guifont=Source\ Code\ Pro\ for\ Powerline\ 10
     end
