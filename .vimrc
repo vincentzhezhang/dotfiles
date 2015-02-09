@@ -73,7 +73,7 @@ let g:airline_powerline_fonts=1
 
 if has("gui_running")
   let s:uname = system("uname -s")
-  if s:uname == "Darwin"
+  if s:uname =~ "Darwin"
     set guifont=Source\ Code\ Pro\ for\ Powerline:h14
   else
     " let s:dpi = system("xrdb -query -all | grep dpi | awk '{ print $(NF) }'")
