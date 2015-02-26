@@ -10,6 +10,10 @@
 [user]
 	name = Vincent Zhang
 	email = v.zh@msn.com
+
+[github]
+  user = vincentzhezhang
+
 [gui]
   editor = gedit
 [core]
