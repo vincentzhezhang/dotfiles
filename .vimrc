@@ -80,7 +80,7 @@ if has("gui_running")
     " workaround since dpi is not correctly detected
     let s:hostname = system("uname -n")
     if s:hostname =~ "xps"
-      set guifont=Source\ Code\ Pro\ for\ Powerline\ 14
+      set guifont=Source\ Code\ Pro\ for\ Powerline\ 12
     else
       set guifont=Source\ Code\ Pro\ for\ Powerline\ 10
     end
@@ -155,6 +155,13 @@ set guioptions-=R
 set guioptions-=r
 :nnoremap <NL> i<CR><ESC>
 
+nmap <A-h> <C-w>h
+nmap <A-j> <C-w>j
+nmap <A-k> <C-w>k
+nmap <A-l> <C-w>l
+
+nmap <A--> <C-w>-
+nmap <A-=> <C-w>+
 " start NERDTree by default
 "
 map <C-n> :NERDTreeFind<CR>
