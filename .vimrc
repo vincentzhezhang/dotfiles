@@ -11,18 +11,19 @@ set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 Plugin 'gmarik/Vundle.vim'
 Plugin 'L9'
+Plugin 'AndrewRadev/splitjoin.vim'
 Plugin 'altercation/vim-colors-solarized'
 Plugin 'airblade/vim-gitgutter'
 Plugin 'bling/vim-airline'
 Plugin 'edkolev/tmuxline.vim'
 Plugin 'elzr/vim-json'
 Plugin 'flazz/vim-colorschemes'
+Plugin 'godlygeek/tabular'
 Plugin 'kchmck/vim-coffee-script'
 Plugin 'kien/ctrlp.vim'
 Plugin 'morhetz/gruvbox'
 Plugin 'ntpeters/vim-better-whitespace'
 Plugin 'othree/javascript-libraries-syntax.vim'
-Plugin 'godlygeek/tabular'
 Plugin 'plasticboy/vim-markdown'
 Plugin 'scrooloose/nerdtree'
 Plugin 'scrooloose/nerdcommenter'
@@ -145,6 +146,10 @@ let g:multi_cursor_quit_key='<Esc>'
 " scss lint
 " temporarly remove due to the it's bug
 " let g:syntastic_scss_checkers = ['scss_lint']
+
+
+" spell checking
+set spell spelllang=en_gb
 
 " GUI related settings
 set guioptions-=m
