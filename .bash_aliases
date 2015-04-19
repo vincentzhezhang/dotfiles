@@ -1,25 +1,25 @@
 # some more ls aliases
-alias ll='ls -alFh'
-alias la='ls -A'
 alias l='ls -CF'
-alias lt='ll -t'
+alias la='ls -A'
 alias lg='ll -A | grep -i'
+alias ll='ls -alFh'
+alias lt='ll -t'
 
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 
 ## Keeping things organized
-alias rm='mv -t ~/.local/share/Trash/files'
-alias prm='/bin/rm'
+alias biggest='BLOCKSIZE=1048576; du -x | sort -nr | head -10'
 alias cp='cp -i'
-alias mv='mv -i'
-alias mkdir='mkdir -p -v'
 alias df='df -h'
 alias du='du -h -c'
-alias reload='source ~/.bashrc'
-alias biggest='BLOCKSIZE=1048576; du -x | sort -nr | head -10'
 alias fsort='~/workspace/personal/auto_sorter/sort'
+alias mkdir='mkdir -p -v'
+alias mv='mv -i'
+alias prm='/bin/rm'
+alias reload='source ~/.bashrc'
+alias rm='mv -t ~/.local/share/Trash/files'
 
 ## Moving around & all that jazz
 alias back='cd $OLDPWD'
@@ -30,14 +30,7 @@ alias .....="cd ../../../.."
 alias ......="cd ../../../../.."
 
 ## Dir shortcuts
-alias home='cd ~/'
-alias documents='cd ~/Documents'
-alias downloads='cd ~/Downloads'
-alias books='cd ~/eBooks'
-alias images='cd ~/pictures'
-alias videos='cd ~/videos'
 alias localhost='cd /var/www'
-alias work='cd ~/workspace'
 
 ## App-specific
 alias nano='nano -W -m'

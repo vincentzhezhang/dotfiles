@@ -1,3 +1,8 @@
+# ~/.bashrc: executed by bash(1) for non-login shells.
+# see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
+# for examples
+
+# If not running interactively, don't do anything
 case $- in
     *i*) ;;
       *) return;;
@@ -15,7 +20,7 @@ export VISUAL="vim"
 shopt -s checkwinsize
 shopt -s histappend
 
-HISTCONTROL=erasedups
+HISTCONTROL=ignoreboth
 HISTSIZE=3000
 HISTFILESIZE=99999
 
