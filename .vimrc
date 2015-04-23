@@ -22,8 +22,11 @@ Plugin 'godlygeek/tabular'
 Plugin 'kchmck/vim-coffee-script'
 Plugin 'kien/ctrlp.vim'
 Plugin 'morhetz/gruvbox'
+Plugin 'mtscout6/vim-cjsx'
+Plugin 'mxw/vim-jsx'
 Plugin 'ntpeters/vim-better-whitespace'
 Plugin 'othree/javascript-libraries-syntax.vim'
+Plugin 'pangloss/vim-javascript'
 Plugin 'plasticboy/vim-markdown'
 Plugin 'scrooloose/nerdtree'
 Plugin 'scrooloose/nerdcommenter'
@@ -31,11 +34,12 @@ Plugin 'scrooloose/syntastic'
 Plugin 'slim-template/vim-slim'
 Plugin 'terryma/vim-multiple-cursors'
 Plugin 'thoughtbot/vim-rspec'
-Plugin 'tomasr/molokai'
+Plugin 'tpope/vim-cucumber'
+Plugin 'tpope/vim-endwise'
 Plugin 'tpope/vim-fugitive'
 Plugin 'tpope/vim-rails'
+Plugin 'tpope/vim-repeat'
 Plugin 'tpope/vim-surround'
-Plugin 'tpope/vim-cucumber'
 Plugin 'Valloric/YouCompleteMe'
 Plugin 'vim-ruby/vim-ruby'
 Plugin 'Lokaltog/vim-easymotion'
@@ -68,14 +72,14 @@ let loaded_matchparen = 1
 " bind paste mode for ease of use
 set pastetoggle=<F2>
 
-set background=dark
-
 let g:airline_powerline_fonts=1
 
+" some OS detection and customization here
 if has("gui_running")
   let s:uname = system("uname -s")
   if s:uname =~ "Darwin"
     set guifont=Source\ Code\ Pro\ for\ Powerline:h14
+    set background=dark
   else
     " let s:dpi = system("xrdb -query -all | grep dpi | awk '{ print $(NF) }'")
     " workaround since dpi is not correctly detected
@@ -84,6 +88,8 @@ if has("gui_running")
       set guifont=Source\ Code\ Pro\ for\ Powerline\ 12
     else
       set guifont=Source\ Code\ Pro\ for\ Powerline\ 10
+      " HATE XPS 13 ADAPTIVE BRIGHTNESS
+      set background=dark
     end
   endif
 else
@@ -93,7 +99,7 @@ endif
 " nmap <C-F9> :let &guifont = substitute(&guifont, ':h\(\d\+\)', '\=":h" . (submatch(1) - 1)', '')<CR>
 " nmap <C-F10> :let &guifont = substitute(&guifont, ':h\(\d\+\)', '\=":h" . (submatch(1) + 1)', '')<CR>
 
-colorscheme gruvbox
+colorscheme solarized
 
 " Turn syntax highlighting on
 syntax on
@@ -143,6 +149,23 @@ let g:multi_cursor_prev_key='<S-p>'
 let g:multi_cursor_skip_key='<S-x>'
 let g:multi_cursor_quit_key='<Esc>'
 
+" JavaScript settings
+let g:javascript_conceal_function   = "ƒ"
+let g:javascript_conceal_null       = "ø"
+let g:javascript_conceal_this       = "@"
+let g:javascript_conceal_return     = "⇚"
+let g:javascript_conceal_undefined  = "¿"
+let g:javascript_conceal_NaN        = "ℕ"
+let g:javascript_conceal_prototype  = "¶"
+let g:javascript_conceal_static     = "•"
+let g:javascript_conceal_super      = "Ω"
+
+" jsx settings
+" if want to have jsx in side js
+let g:jsx_ext_required = 0
+" only for compatibility of pre-v0.12 react
+" let g:jsx_pragma_required = 1
+
 " scss lint
 " temporarly remove due to the it's bug
 " let g:syntastic_scss_checkers = ['scss_lint']
@@ -150,6 +173,9 @@ let g:multi_cursor_quit_key='<Esc>'
 
 " spell checking
 set spell spelllang=en_gb
+
+" 80 column reminder
+set colorcolumn=80
 
 " GUI related settings
 set guioptions-=m
