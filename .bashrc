@@ -55,15 +55,31 @@ fi
 
 #OSX specific configuration
 if [[ $OSTYPE == darwin* ]]; then
-  export CLICOLOR=1
-  export LSCOLORS=gxBxhxDxfxhxhxhxhxcxcx
-  alias ls='ls -Gp'
   if [ -f $(brew --prefix)/etc/bash_completion ]; then
     . $(brew --prefix)/etc/bash_completion
   fi
+
+  export CLICOLOR=1
+  export LSCOLORS=gxBxhxDxfxhxhxhxhxcxcx
+  alias ls='ls -Gp'
 else
+  # enable programmable completion features (you don't need to enable
+  # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
+  # sources /etc/bash.bashrc).
+  if ! shopt -oq posix; then
+    if [ -f /usr/share/bash-completion/bash_completion ]; then
+      . /usr/share/bash-completion/bash_completion
+    elif [ -f /etc/bash_completion ]; then
+      . /etc/bash_completion
+    fi
+  fi
+
   test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
   alias ls='ls --color=auto'
+fi
+
+if [ -f ~/.git-completion.bash ]; then
+  . ~/.git-completion.bash
 fi
 
 # enable color support of ls and also add handy aliases
@@ -91,17 +107,6 @@ xterm*|rxvt*)
     ;;
 esac
 
-# enable programmable completion features (you don't need to enable
-# this, if it's already enabled in /etc/bash.bashrc and /etc/profile
-# sources /etc/bash.bashrc).
-if ! shopt -oq posix; then
-  if [ -f /usr/share/bash-completion/bash_completion ]; then
-    . /usr/share/bash-completion/bash_completion
-  elif [ -f /etc/bash_completion ]; then
-    . /etc/bash_completion
-  fi
-fi
-
 # rbenv
 export PATH="$HOME/.rbenv/bin:$PATH"
 eval "$(rbenv init -)"
@@ -114,14 +119,6 @@ export NODE_PATH=$NODE_PATH:/home/vincent/.npm/lib/node_modules
 # textlive
 export PATH=/usr/local/texlive/2014/bin/x86_64-linux:$PATH
 
-# Initialization for FDK command line tools.Mon Aug 11 16:45:11 2014
-FDK_EXE="$HOME/tools/FDK/Tools/linux"
-PATH=${PATH}:"$HOME/tools/FDK/Tools/linux"
-export PATH
-export FDK_EXE
-
-export PATH=/usr/local/bin:$PATH
-
 # just for fun
 case $((RANDOM%3)) in
 0)
@@ -130,12 +127,12 @@ case $((RANDOM%3)) in
     cowsay `fortune` | toilet -F gay -f term
     ;;
 1)
-     retrogame invaders
+    retrogame invaders
     ;;
 2)
     retrogame pacman
     ;;
 esac
 
-# viiiiiiiiiiiiiiii
+# viiiiiiiiiiiiiiii ftw
 set -o vi
