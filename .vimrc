@@ -76,22 +76,24 @@ set pastetoggle=<F2>
 
 let g:airline_powerline_fonts=1
 
+colorscheme gruvbox
+set background=dark
+
 " some OS detection and customization here
 if has("gui_running")
   let s:uname = system("uname -s")
   if s:uname =~ "Darwin"
     set guifont=Source\ Code\ Pro\ for\ Powerline:h14
-    set background=dark
   else
     " let s:dpi = system("xrdb -query -all | grep dpi | awk '{ print $(NF) }'")
     " workaround since dpi is not correctly detected
     let s:hostname = system("uname -n")
     if s:hostname =~ "xps"
       set guifont=Source\ Code\ Pro\ for\ Powerline\ 12
+      " FUCKING HATE XPS 13 ADAPTIVE BRIGHTNESS
+      set background=light
     else
       set guifont=Source\ Code\ Pro\ for\ Powerline\ 10
-      " HATE XPS 13 ADAPTIVE BRIGHTNESS
-      set background=dark
     end
   endif
 else
@@ -100,8 +102,6 @@ endif
 
 " nmap <C-F9> :let &guifont = substitute(&guifont, ':h\(\d\+\)', '\=":h" . (submatch(1) - 1)', '')<CR>
 " nmap <C-F10> :let &guifont = substitute(&guifont, ':h\(\d\+\)', '\=":h" . (submatch(1) + 1)', '')<CR>
-
-colorscheme solarized
 
 " Turn syntax highlighting on
 syntax on
