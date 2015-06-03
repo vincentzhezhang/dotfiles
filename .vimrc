@@ -12,6 +12,7 @@ call vundle#begin()
 Plugin 'gmarik/Vundle.vim'
 Plugin 'L9'
 Plugin 'AndrewRadev/splitjoin.vim'
+Plugin 'ap/vim-css-color'
 Plugin 'altercation/vim-colors-solarized'
 Plugin 'airblade/vim-gitgutter'
 Plugin 'bling/vim-airline'
@@ -187,13 +188,14 @@ set guioptions-=R
 set guioptions-=r
 :nnoremap <NL> i<CR><ESC>
 
-nmap <A-h> <C-w>h
-nmap <A-j> <C-w>j
-nmap <A-k> <C-w>k
-nmap <A-l> <C-w>l
-
+" Window related settings
+map <C-J> <C-W>j<C-W>_
+map <C-k> <C-W>k<C-W>_
+map <C-h> <C-W>h<C-W>_
+map <C-l> <C-W>l<C-W>_
 nmap <A--> <C-w>-
 nmap <A-=> <C-w>+
+
 " start NERDTree by default
 "
 map <C-n> :NERDTreeFind<CR>
