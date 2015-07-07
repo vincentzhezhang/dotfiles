@@ -1,0 +1,37 @@
+{
+    "gui_state": {
+        "mainview": {
+            "lock_layout": false, 
+            "height": 1028, 
+            "windowstate": "AAAA/wAAAAL9AAAAAwAAAAAAAAH8AAAEBPwCAAAAAfsAAAAMAFMAdABhAHQAdQBzAQAAAAAAAAQEAAAAYAD///8AAAABAAAFfwAABAT8AgAAAAL7AAAADABDAG8AbQBtAGkAdAEAAAAAAAAAkwAAAEIA/////AAAAJYAAANuAAAAHgD////6AAAAAAEAAAAC+wAAAAgARABpAGYAZgEAAAAA/////wAAAK4A////+wAAABIAQgBvAG8AawBtAGEAcgBrAHMBAAADxwAAA7kAAAAAAAAAAAAAAAMAAAAAAAAAAPwBAAAAAfwAAAAA/////wAAAAAA////+v////8BAAAAAvsAAAAOAEEAYwB0AGkAbwBuAHMAAAAAAP////8AAABkAP////sAAAAOAEMAbwBuAHMAbwBsAGUAAAAAAP////8AAABnAP///wAAAAAAAAQEAAAABAAAAAQAAAAIAAAACPwAAAAA", 
+            "width": 1918, 
+            "maximized": false, 
+            "y": 14, 
+            "x": -10
+        }, 
+        "dagview": {
+            "count": 1000, 
+            "lock_layout": false, 
+            "height": 1029, 
+            "windowstate": "AAAA/wAAAAH9AAAAAwAAAAAAAAO/AAAAxfwCAAAAAfsAAAAGAEwAbwBnAQAAABoAAADFAAAAbQD///8AAAABAAADvgAAAMX8AgAAAAH7AAAACgBHAHIAYQBwAGgBAAAAGgAAAMUAAABiAP///wAAAAMAAAeAAAADI/wBAAAAAfsAAAAIAEQAaQBmAGYBAAAAAAAAB4AAAAEpAP///wAAAAAAAADFAAAABAAAAAQAAAAIAAAACPwAAAAA", 
+            "width": 1920, 
+            "maximized": true, 
+            "y": 0, 
+            "x": 0
+        }, 
+        "gitdag": {
+            "count": 1000, 
+            "lock_layout": false, 
+            "height": 1056, 
+            "windowstate": "AAAA/wAAAAH9AAAAAgAAAAAAAAO/AAAEIPwCAAAAAvsAAAAGAEwAbwBnAQAAAAAAAAEsAAAAawD////7AAAACABEAGkAZgBmAQAAAS8AAALxAAAAUQD///8AAAABAAADvgAABCD8AgAAAAH8AAAAAAAABCAAAAB+AQAAHfoAAAABAQAAAAL7AAAACgBGAGkAbABlAHMBAAAAAP////8AAABSAP////sAAAAKAEcAcgBhAHAAaAEAAAPCAAADvgAAAKYA////AAAAAAAABCAAAAAEAAAABAAAAAgAAAAI/AAAAAA=", 
+            "width": 1920, 
+            "maximized": true, 
+            "y": 24, 
+            "x": 0
+        }
+    }, 
+    "bookmarks": [], 
+    "recent": [
+        "/data/workspace/my/dotfiles"
+    ]
+}
