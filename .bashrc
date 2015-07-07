@@ -114,10 +114,8 @@ export PATH="$HOME/.rbenv/plugins/ruby-build/bin:$PATH"
 
 # nodejs
 export PATH=$HOME/.npm/bin:$PATH
-export NODE_PATH=$NODE_PATH:/home/vincent/.npm/lib/node_modules
-
-# textlive
-export PATH=/usr/local/texlive/2014/bin/x86_64-linux:$PATH
+export NODE_PATH=$NODE_PATH:$HOME/.npm-packages/lib/node_modules
+export PATH="$HOME/.npm-packages/bin:$PATH"
 
 # just for fun
 case $((RANDOM%3)) in
