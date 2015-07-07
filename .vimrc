@@ -90,8 +90,12 @@ if has("gui_running")
     let s:hostname = system("uname -n")
     if s:hostname =~ "xps"
       set guifont=Source\ Code\ Pro\ for\ Powerline\ 12
-      " FUCKING HATE XPS 13 ADAPTIVE BRIGHTNESS
-      set background=light
+      " FUCKING HATE XPS 13 ADAPTIVE BRIGHTNESS, DELL FIX IT PLZ
+      let s:sys_hour = system("date +'%k'")
+      if s:sys_hour >= 9 && s:sys_hour <= 17
+        colorscheme solarized
+        set background=light
+      endif
     else
       set guifont=Source\ Code\ Pro\ for\ Powerline\ 10
     end
