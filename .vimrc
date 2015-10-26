@@ -200,6 +200,9 @@ map <C-l> <C-W>l<C-W>_
 nmap <A--> <C-w>-
 nmap <A-=> <C-w>+
 
+" Run current script!
+nnoremap <F8> :!%:p<Enter>
+
 " start NERDTree by default
 "
 map <C-n> :NERDTreeFind<CR>
