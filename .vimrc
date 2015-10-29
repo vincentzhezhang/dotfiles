@@ -21,6 +21,7 @@ Plugin 'elzr/vim-json'
 Plugin 'flazz/vim-colorschemes'
 Plugin 'godlygeek/tabular'
 Plugin 'kchmck/vim-coffee-script'
+Plugin 'klen/python-mode.git'
 Plugin 'kien/ctrlp.vim'
 Plugin 'morhetz/gruvbox'
 Plugin 'mtscout6/vim-cjsx'
@@ -83,7 +84,7 @@ set background=dark
 if has("gui_running")
   let s:uname = system("uname -s")
   if s:uname =~ "Darwin"
-    set guifont=Source\ Code\ Pro\ for\ Powerline:h14
+    set guifont=Source\ Code\ Pro\ for\ Powerline:h12
   else
     " let s:dpi = system("xrdb -query -all | grep dpi | awk '{ print $(NF) }'")
     " workaround since dpi is not correctly detected
@@ -135,12 +136,10 @@ set backspace=indent,eol,start
 " Turn on automatic indenting
 set smartindent
 
-" Insert space characters whenever the tab key is pressed
-set expandtab
-
 " Set tabs
-set tabstop=2
-set shiftwidth=2
+set tabstop=2 shiftwidth=2 softtabstop=0 smarttab expandtab
+" language specific settings
+autocmd FileType python setlocal tabstop=4 shiftwidth=4
 
 " setup javascript-libraries-syntax
 let g:used_javascript_libs = 'underscore,backbone'
