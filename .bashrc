@@ -20,9 +20,9 @@ export VISUAL="vim"
 shopt -s checkwinsize
 shopt -s histappend
 
-HISTCONTROL=ignoreboth
-HISTSIZE=3000
-HISTFILESIZE=99999
+export HISTCONTROL=ignoreboth:erasedups
+export HISTSIZE=3000
+export HISTFILESIZE=99999
 
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
@@ -132,5 +132,8 @@ case $((RANDOM%3)) in
     ;;
 esac
 
+complete -W "$(echo $(grep '^ssh ' .bash_history | sort -u | sed 's/^ssh //'))" ssh
+
 # viiiiiiiiiiiiiiii ftw
+set -o history
 set -o vi
