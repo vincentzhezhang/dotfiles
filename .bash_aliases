@@ -52,6 +52,7 @@ alias pyserver='python -m SimpleHTTPServer'
 
 alias vi='vim'
 
+
 # OSX specific aliases
 if [[ $OSTYPE == darwin* ]]; then
   alias gvim='mvim'
@@ -65,4 +66,8 @@ else
   # apt-get
   alias si='sudo apt-get install'
   alias sd='sudo apt-get update'
+
+  # just fuck it
+  alias fuck='sudo "$BASH" -c "$(history -p !!)"'
 fi
+
