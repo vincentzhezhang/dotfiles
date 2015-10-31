@@ -16,6 +16,7 @@ Plugin 'ap/vim-css-color'
 Plugin 'altercation/vim-colors-solarized'
 Plugin 'airblade/vim-gitgutter'
 Plugin 'bling/vim-airline'
+Plugin 'chriskempson/base16-vim'
 Plugin 'edkolev/tmuxline.vim'
 Plugin 'elzr/vim-json'
 Plugin 'flazz/vim-colorschemes'
@@ -181,6 +182,9 @@ set spell spelllang=en_gb
 
 " 80 column reminder
 set colorcolumn=80
+
+" no soft wrap
+set nowrap
 
 " GUI related settings
 set guioptions-=m
