@@ -8,21 +8,22 @@ set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 Plugin 'gmarik/Vundle.vim'
 Plugin 'L9'
-Plugin 'AndrewRadev/splitjoin.vim'
-Plugin 'Lokaltog/vim-easymotion'
-Plugin 'Valloric/YouCompleteMe'
 Plugin 'airblade/vim-gitgutter'
 Plugin 'altercation/vim-colors-solarized'
+Plugin 'AndrewRadev/splitjoin.vim'
 Plugin 'ap/vim-css-color'
 Plugin 'bling/vim-airline'
+Plugin 'bling/vim-bufferline'
 Plugin 'chriskempson/base16-vim'
 Plugin 'edkolev/tmuxline.vim'
 Plugin 'elzr/vim-json'
+Plugin 'ervandew/supertab'
 Plugin 'flazz/vim-colorschemes'
 Plugin 'godlygeek/tabular'
 Plugin 'kchmck/vim-coffee-script'
 Plugin 'kien/ctrlp.vim'
 Plugin 'klen/python-mode.git'
+Plugin 'Lokaltog/vim-easymotion'
 Plugin 'morhetz/gruvbox'
 Plugin 'mtscout6/vim-cjsx'
 Plugin 'mxw/vim-jsx'
@@ -30,7 +31,7 @@ Plugin 'ntpeters/vim-better-whitespace'
 Plugin 'othree/javascript-libraries-syntax.vim'
 Plugin 'pangloss/vim-javascript'
 Plugin 'plasticboy/vim-markdown'
-Plugin 'rizzatti/dash.vim'
+Plugin 'rking/ag.vim'
 Plugin 'scrooloose/nerdcommenter'
 Plugin 'scrooloose/nerdtree'
 Plugin 'scrooloose/syntastic'
@@ -40,12 +41,18 @@ Plugin 'thoughtbot/vim-rspec'
 Plugin 'tpope/vim-cucumber'
 Plugin 'tpope/vim-endwise'
 Plugin 'tpope/vim-fugitive'
+Plugin 'tpope/vim-haml'
 Plugin 'tpope/vim-rails'
 Plugin 'tpope/vim-repeat'
 Plugin 'tpope/vim-surround'
+Plugin 'Valloric/YouCompleteMe'
 Plugin 'vim-ruby/vim-ruby'
+Plugin 'Xuyuanp/nerdtree-git-plugin'
+Plugin 'zenorocha/dracula-theme', {'rtp': 'vim/'}
+
+
+" FIXME
 " Plugin 'justinmk/vim-sneak' " seems conflicting with other montion plugin
-"
 call vundle#end()
 
 " turn back on after vundle
@@ -63,6 +70,11 @@ set cursorline
 set list
 set listchars=nbsp:¬,tab:»·,trail:·
 
+" Recommended settings from powerline
+set laststatus=2 " Always display the statusline in all windows
+set showtabline=2 " Always display the tabline, even if there is only one tab
+set noshowmode " Hide the default mode text (e.g. -- INSERT -- below the statusline)
+
 " case-insensitive for some common commands
 command! Q q
 command! W w
@@ -74,50 +86,55 @@ let loaded_matchparen = 1
 " bind paste mode for ease of use
 set pastetoggle=<F2>
 
+" bind F5 to toggle background color
+call togglebg#map("<F5>")
+
 let g:airline_powerline_fonts=1
 let base16colorspace=256  " Access colors present in 256 colorspace
 
-" some OS detection and customization here
-if has("gui_running")
-  let s:uname = system("uname -s")
-  if s:uname =~ "Darwin"
-    set guifont=Source\ Code\ Pro\ for\ Powerline:h12
-  else
-    " let s:dpi = system("xrdb -query -all | grep dpi | awk '{ print $(NF) }'")
-    " workaround since dpi is not correctly detected
-    let s:hostname = system("uname -n")
-    if s:hostname =~ "xps"
-      set guifont=Source\ Code\ Pro\ for\ Powerline\ 12
-      " FUCKING HATE XPS 13 ADAPTIVE BRIGHTNESS, DELL FIX IT PLZ
-      let s:sys_hour = system("date +'%k'")
-      if s:sys_hour >= 9 && s:sys_hour <= 17
-        colorscheme solarized
-        set background=light
-      endif
+
+" some OS detection and customization here, should bind some dark/light theme
+" switcher hotkey
+let s:uname = system("uname -s")
+let s:hostname = system("uname -n")
+
+if s:uname =~ "Darwin"
+  colorscheme gruvbox
+  set background=dark
+
+elseif s:uname =~ "Linux"
+  if s:hostname =~ "xps" " For XPS 13
+
+    " FUCKING HATE XPS 13 ADAPTIVE BRIGHTNESS, IT'S A BUG NOT A FEATURE, DELL FIX IT!!!
+    let s:sys_hour = system("date '+%k'")
+    if s:sys_hour >= 9 && s:sys_hour <= 10 " might use dynamic sunset time?
+      colorscheme solarized
+      set background=light
     else
-      set guifont=Source\ Code\ Pro\ for\ Powerline\ 10
-    end
-  endif
-
+      colorscheme gruvbox
+      set background=dark
+    endif
+  end
 else
-
-  let g:gruvbox_italic=1
+ " ignored
 endif
 
-colorscheme gruvbox
-set background=dark
 
-
-" nmap <C-F9> :let &guifont = substitute(&guifont, ':h\(\d\+\)', '\=":h" . (submatch(1) - 1)', '')<CR>
-" nmap <C-F10> :let &guifont = substitute(&guifont, ':h\(\d\+\)', '\=":h" . (submatch(1) + 1)', '')<CR>
-
-" Turn syntax highlighting on
+" SYNTAX
 syntax on
 
-" Syntax coloring lines that are too long just slows down the world
-set synmaxcol=1024
+" Syntastic recommended settings
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
+
+set synmaxcol=1024 " Syntax coloring lines that are too long just slows down the world
 set ttyfast " u got a fast terminal
-set ttyscroll=3
 set lazyredraw " to avoid scrolling problems
 
 function! ToggleSyntax()
@@ -130,8 +147,11 @@ endfunction
 
 nmap <silent> <C-F12> :call ToggleSyntax()<CR>
 
+
 " Highlight search results
 set hlsearch
+highlight Search ctermfg=202 ctermbg=NONE cterm=bold,underline
+
 
 " Make backspce behave more normally
 set backspace=indent,eol,start
@@ -148,14 +168,14 @@ autocmd FileType python setlocal tabstop=4 shiftwidth=4
 let g:used_javascript_libs = 'underscore,backbone'
 
 " change leader key
-let mapleader=","
+let mapleader=" "
 
 " some key remappings to resolve conflict brought by vim-multiple-cursors
-let g:multi_cursor_use_default_mapping=0
-let g:multi_cursor_next_key='<S-n>'
-let g:multi_cursor_prev_key='<S-p>'
-let g:multi_cursor_skip_key='<S-x>'
-let g:multi_cursor_quit_key='<Esc>'
+let g:multi_cursor_use_default_mapping = 0
+let g:multi_cursor_next_key            = '<S-n>'
+let g:multi_cursor_prev_key            = '<S-p>'
+let g:multi_cursor_skip_key            = '<S-x>'
+let g:multi_cursor_quit_key            = '<Esc>'
 
 " JavaScript settings
 let g:javascript_conceal_function   = "ƒ"
@@ -174,28 +194,20 @@ let g:jsx_ext_required = 0
 " only for compatibility of pre-v0.12 react
 " let g:jsx_pragma_required = 1
 
-" scss lint
-" temporarly remove due to the it's bug
-" let g:syntastic_scss_checkers = ['scss_lint']
 
+" Rails specific plugin settings
+vmap <Leader>z :call I18nTranslateString()<CR>
+vmap <Leader>dt :call I18nDisplayTranslation()<CR>
 
 " spell checking
-set spell spelllang=en_gb
+set spell spelllang=en_us
 
-" 80 column reminder
 set colorcolumn=80
-
-" no soft wrap
 set nowrap
+set number
 
-" GUI related settings
-set guioptions-=m
-set guioptions-=T
-set guioptions-=L
-set guioptions-=l
-set guioptions-=R
-set guioptions-=r
-:nnoremap <NL> i<CR><ESC>
+" what's this for anyway?
+nnoremap <NL> i<CR><ESC>
 
 " Window related settings
 map <C-J> <C-W>j<C-W>_
@@ -205,9 +217,24 @@ map <C-l> <C-W>l<C-W>_
 nmap <A--> <C-w>-
 nmap <A-=> <C-w>+
 
+
 " Run current script!
 nnoremap <F8> :!%:p<Enter>
 
-" start NERDTree by default
-"
-map <C-n> :NERDTreeFind<CR>
+
+" NERDTree
+map <C-\> :NERDTreeFind<CR>
+autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+
+let g:NERDTreeIndicatorMapCustom = {
+    \ "Modified"  : "✹",
+    \ "Staged"    : "✚",
+    \ "Untracked" : "✭",
+    \ "Renamed"   : "➜",
+    \ "Unmerged"  : "╖",
+    \ "Dirty"     : "✗",
+    \ "Clean"     : "✔︎",
+    \ "Unknown"   : "?"
+    \ }
+
