@@ -1,65 +1,55 @@
 set t_Co=256
 set nocompatible                    " be iMproved, required
-filetype off                        " required
 
-" set the runtime path to include Vundle and initialize
-set rtp+=~/.vim/bundle/Vundle.vim
+" replace Vundle with vim-plug for the sake of active development/support
+call plug#begin('~/.vim/bundle')
+Plug 'gmarik/Vundle.vim'
+Plug 'L9'
+Plug 'airblade/vim-gitgutter'
+Plug 'altercation/vim-colors-solarized'
+Plug 'AndrewRadev/splitjoin.vim'
+Plug 'ap/vim-css-color'
+Plug 'bling/vim-airline'
+Plug 'bling/vim-bufferline'
+Plug 'chriskempson/base16-vim'
+Plug 'edkolev/tmuxline.vim'
+Plug 'elzr/vim-json'
+Plug 'ervandew/supertab'
+Plug 'flazz/vim-colorschemes'
+Plug 'godlygeek/tabular'
+Plug 'kchmck/vim-coffee-script'
+Plug 'kien/ctrlp.vim'
+Plug 'https://github.com/klen/python-mode.git'
+Plug 'Lokaltog/vim-easymotion'
+Plug 'mhinz/vim-startify'
+Plug 'morhetz/gruvbox'
+Plug 'mtscout6/vim-cjsx'
+Plug 'mxw/vim-jsx'
+Plug 'ntpeters/vim-better-whitespace'
+Plug 'othree/javascript-libraries-syntax.vim'
+Plug 'pangloss/vim-javascript'
+Plug 'plasticboy/vim-markdown'
+Plug 'rking/ag.vim'
+Plug 'scrooloose/nerdcommenter'
+Plug 'scrooloose/nerdtree'
+Plug 'scrooloose/syntastic'
+Plug 'slim-template/vim-slim'
+Plug 'terryma/vim-multiple-cursors'
+Plug 'thoughtbot/vim-rspec'
+Plug 'tpope/vim-cucumber'
+Plug 'tpope/vim-endwise'
+Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-haml'
+Plug 'tpope/vim-rails'
+Plug 'tpope/vim-repeat'
+Plug 'tpope/vim-surround'
+Plug 'Valloric/YouCompleteMe'
+Plug 'vim-ruby/vim-ruby'
+Plug 'Xuyuanp/nerdtree-git-plugin'
+Plug 'zenorocha/dracula-theme', {'rtp': 'vim/'}
+" Plug 'justinmk/vim-sneak' " FIXME seems conflicting with other montion plugin
+call plug#end()
 
-call vundle#begin()
-Plugin 'gmarik/Vundle.vim'
-Plugin 'L9'
-Plugin 'airblade/vim-gitgutter'
-Plugin 'altercation/vim-colors-solarized'
-Plugin 'AndrewRadev/splitjoin.vim'
-Plugin 'ap/vim-css-color'
-Plugin 'bling/vim-airline'
-Plugin 'bling/vim-bufferline'
-Plugin 'chriskempson/base16-vim'
-Plugin 'edkolev/tmuxline.vim'
-Plugin 'elzr/vim-json'
-Plugin 'ervandew/supertab'
-Plugin 'flazz/vim-colorschemes'
-Plugin 'godlygeek/tabular'
-Plugin 'kchmck/vim-coffee-script'
-Plugin 'kien/ctrlp.vim'
-Plugin 'klen/python-mode.git'
-Plugin 'Lokaltog/vim-easymotion'
-Plugin 'mhinz/vim-startify'
-Plugin 'morhetz/gruvbox'
-Plugin 'mtscout6/vim-cjsx'
-Plugin 'mxw/vim-jsx'
-Plugin 'ntpeters/vim-better-whitespace'
-Plugin 'othree/javascript-libraries-syntax.vim'
-Plugin 'pangloss/vim-javascript'
-Plugin 'plasticboy/vim-markdown'
-Plugin 'rking/ag.vim'
-Plugin 'scrooloose/nerdcommenter'
-Plugin 'scrooloose/nerdtree'
-Plugin 'scrooloose/syntastic'
-Plugin 'slim-template/vim-slim'
-Plugin 'terryma/vim-multiple-cursors'
-Plugin 'thoughtbot/vim-rspec'
-Plugin 'tpope/vim-cucumber'
-Plugin 'tpope/vim-endwise'
-Plugin 'tpope/vim-fugitive'
-Plugin 'tpope/vim-haml'
-Plugin 'tpope/vim-rails'
-Plugin 'tpope/vim-repeat'
-Plugin 'tpope/vim-surround'
-Plugin 'Valloric/YouCompleteMe'
-Plugin 'vim-ruby/vim-ruby'
-Plugin 'Xuyuanp/nerdtree-git-plugin'
-Plugin 'zenorocha/dracula-theme', {'rtp': 'vim/'}
-
-
-" FIXME
-" Plugin 'justinmk/vim-sneak' " seems conflicting with other montion plugin
-call vundle#end()
-
-" turn back on after vundle
-filetype plugin indent on
-
-""""""""""""
 
 " enable per-project .vimrc files
 set exrc
@@ -120,9 +110,6 @@ else
  " ignored
 endif
 
-
-" SYNTAX
-syntax on
 
 " Syntastic recommended settings
 set statusline+=%#warningmsg#
