@@ -24,6 +24,7 @@ Plugin 'kchmck/vim-coffee-script'
 Plugin 'kien/ctrlp.vim'
 Plugin 'klen/python-mode.git'
 Plugin 'Lokaltog/vim-easymotion'
+Plugin 'mhinz/vim-startify'
 Plugin 'morhetz/gruvbox'
 Plugin 'mtscout6/vim-cjsx'
 Plugin 'mxw/vim-jsx'
@@ -224,8 +225,6 @@ nnoremap <F8> :!%:p<Enter>
 
 " NERDTree
 map <C-\> :NERDTreeFind<CR>
-autocmd StdinReadPre * let s:std_in=1
-autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
 
 let g:NERDTreeIndicatorMapCustom = {
     \ "Modified"  : "✹",
@@ -238,3 +237,9 @@ let g:NERDTreeIndicatorMapCustom = {
     \ "Unknown"   : "?"
     \ }
 
+autocmd VimEnter *
+            \   if !argc()
+            \ |   Startify
+            \ |   NERDTree
+            \ |   wincmd w
+            \ | endif
