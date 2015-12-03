@@ -18,11 +18,13 @@ export EDITOR="vim"
 export VISUAL="vim"
 
 shopt -s checkwinsize
-shopt -s histappend
 
-export HISTCONTROL=ignoreboth:erasedups
 export HISTSIZE=3000
 export HISTFILESIZE=99999
+# Nice snippet from http://unix.stackexchange.com/questions/18212/bash-history-ignoredups-and-erasedups-setting-conflict-with-common-history
+export HISTCONTROL=ignoredups:erasedups
+shopt -s histappend
+PROMPT_COMMAND="history -n; history -w; history -c; history -r; $PROMPT_COMMAND"
 
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
