@@ -74,6 +74,10 @@ command! W w
 map Q <Nop>
 let loaded_matchparen = 1
 
+" strip trailing whitespaces before save
+autocmd BufWritePre * StripWhitespace
+
+
 " bind paste mode for ease of use
 set pastetoggle=<F2>
 
