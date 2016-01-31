@@ -50,7 +50,8 @@ alias cap='bundle exec cap'
 alias rake='bundle exec rake'
 alias pyserver='python -m SimpleHTTPServer'
 
-alias vi='vim'
+alias vim='nvim'
+alias vi='nvim'
 
 
 # OSX specific aliases
