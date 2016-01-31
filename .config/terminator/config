@@ -1,5 +1,5 @@
 [global_config]
-  enabled_plugins = InactivityWatch, ActivityWatch, TerminalShot, APTURLHandler
+  enabled_plugins = InactivityWatch, CustomCommandsMenu, TestPlugin, ActivityWatch, TerminalShot, LaunchpadCodeURLHandler, APTURLHandler, Logger
   always_split_with_profile = True
   handle_size = 3
   inactive_color_offset = 0.88
