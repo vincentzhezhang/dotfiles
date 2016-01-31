@@ -45,7 +45,7 @@
 [push]
   default = simple
 [cola]
-	fontdiff = Source Code Pro for Powerline,14,-1,5,50,0,0,0,0,0
+	fontdiff = Source Code Pro for Powerline,10,-1,5,50,0,0,0,0,0
   tabwidth = 4
 	textwidth = 80
 [difftool "sourcetree"]
