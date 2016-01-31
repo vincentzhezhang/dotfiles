@@ -3,7 +3,6 @@ set nocompatible                    " be iMproved, required
 
 " replace Vundle with vim-plug for the sake of active development/support
 call plug#begin('~/.vim/bundle')
-Plug 'gmarik/Vundle.vim'
 Plug 'L9'
 Plug 'airblade/vim-gitgutter'
 Plug 'altercation/vim-colors-solarized'
@@ -16,12 +15,16 @@ Plug 'edkolev/tmuxline.vim'
 Plug 'elzr/vim-json'
 Plug 'ervandew/supertab'
 Plug 'flazz/vim-colorschemes'
+Plug 'floobits/floobits-neovim'
 Plug 'godlygeek/tabular'
+Plug 'gregsexton/gitv'
+Plug 'hail2u/vim-css3-syntax'
 Plug 'kchmck/vim-coffee-script'
 Plug 'kien/ctrlp.vim'
-Plug 'https://github.com/klen/python-mode.git'
+Plug 'klen/python-mode'
 Plug 'Lokaltog/vim-easymotion'
 Plug 'mhinz/vim-startify'
+Plug 'mbbill/undotree'
 Plug 'morhetz/gruvbox'
 Plug 'mtscout6/vim-cjsx'
 Plug 'mxw/vim-jsx'
@@ -188,8 +191,10 @@ let g:jsx_ext_required = 0
 
 
 " Rails specific plugin settings
-vmap <Leader>z :call I18nTranslateString()<CR>
-vmap <Leader>dt :call I18nDisplayTranslation()<CR>
+
+" Git key mapping
+map <C-`> :Gblame<CR>
+
 
 " spell checking
 set spell spelllang=en_us
@@ -202,7 +207,7 @@ set number
 nnoremap <NL> i<CR><ESC>
 
 " Window related settings
-map <C-J> <C-W>j<C-W>_
+map <C-j> <C-W>j<C-W>_
 map <C-k> <C-W>k<C-W>_
 map <C-h> <C-W>h<C-W>_
 map <C-l> <C-W>l<C-W>_
