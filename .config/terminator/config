@@ -6,10 +6,10 @@
   suppress_multiple_term_dialog = True
 [keybindings]
   zoom_in = <Primary>equal
-  go_up = <Alt>j
+  go_up = <Alt>k
   zoom_out = <Primary>minus
   next_tab = <Primary>Tab
-  go_down = <Alt>k
+  go_down = <Alt>j
   go_right = <Alt>l
   go_left = <Alt>h
 [profiles]
