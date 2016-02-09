@@ -5,15 +5,14 @@ set nocompatible                    " be iMproved, required
 call plug#begin('~/.vim/bundle')
 Plug 'L9'
 Plug 'airblade/vim-gitgutter'
-Plug 'altercation/vim-colors-solarized'
 Plug 'AndrewRadev/splitjoin.vim'
 Plug 'ap/vim-css-color'
-Plug 'bling/vim-airline'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
 Plug 'bling/vim-bufferline'
 Plug 'chriskempson/base16-vim'
 Plug 'edkolev/tmuxline.vim'
 Plug 'elzr/vim-json'
-Plug 'ervandew/supertab'
 Plug 'flazz/vim-colorschemes'
 Plug 'floobits/floobits-neovim'
 Plug 'godlygeek/tabular'
@@ -25,13 +24,13 @@ Plug 'klen/python-mode'
 Plug 'Lokaltog/vim-easymotion'
 Plug 'mhinz/vim-startify'
 Plug 'mbbill/undotree'
-Plug 'morhetz/gruvbox'
 Plug 'mtscout6/vim-cjsx'
 Plug 'mxw/vim-jsx'
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'othree/javascript-libraries-syntax.vim'
 Plug 'pangloss/vim-javascript'
 Plug 'plasticboy/vim-markdown'
+Plug 'Raimondi/delimitMate'
 Plug 'rking/ag.vim'
 Plug 'scrooloose/nerdcommenter'
 Plug 'scrooloose/nerdtree'
@@ -49,8 +48,6 @@ Plug 'tpope/vim-surround'
 Plug 'Valloric/YouCompleteMe'
 Plug 'vim-ruby/vim-ruby'
 Plug 'Xuyuanp/nerdtree-git-plugin'
-Plug 'zenorocha/dracula-theme', {'rtp': 'vim/'}
-" Plug 'justinmk/vim-sneak' " FIXME seems conflicting with other montion plugin
 call plug#end()
 
 
@@ -65,9 +62,11 @@ set list
 set listchars=nbsp:¬,tab:»·,trail:·
 
 " Recommended settings from powerline
-set laststatus=2 " Always display the statusline in all windows
-set showtabline=2 " Always display the tabline, even if there is only one tab
-set noshowmode " Hide the default mode text (e.g. -- INSERT -- below the statusline)
+" set laststatus=2 " Always display the statusline in all windows
+" set showtabline=2 " Always display the tabline, even if there is only one tab
+" set noshowmode " Hide the default mode text (e.g. -- INSERT -- below the statusline)
+let g:airline_powerline_fonts=1
+let g:airline#extensions#tabline#enabled = 1
 
 " case-insensitive for some common commands
 command! Q q
@@ -108,7 +107,6 @@ endfunction
 " some quick color tweak
 map <F5> :call ToggleLook()<CR>
 
-let g:airline_powerline_fonts=1
 let base16colorspace=256  " Access colors present in 256 colorspace
 
 
