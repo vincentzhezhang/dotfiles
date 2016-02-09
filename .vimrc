@@ -195,6 +195,8 @@ let g:jsx_ext_required = 0
 " Git key mapping
 map <C-`> :Gblame<CR>
 
+" experimental key mapping
+inoremap jk <Esc>
 
 " spell checking
 set spell spelllang=en_us
