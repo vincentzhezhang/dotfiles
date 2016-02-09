@@ -77,7 +77,7 @@ command! W w
 map Q <Nop>
 let loaded_matchparen = 1
 
-" strip trailing whitespaces before save
+" strip trailing whitespace before save
 autocmd BufWritePre * StripWhitespace
 
 
