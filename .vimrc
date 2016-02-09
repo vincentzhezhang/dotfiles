@@ -177,6 +177,8 @@ set smartindent
 set tabstop=2 shiftwidth=2 softtabstop=0 smarttab expandtab
 " language specific settings
 autocmd FileType python setlocal tabstop=4 shiftwidth=4
+autocmd FileType c setlocal tabstop=4 shiftwidth=4
+autocmd FileType cpp setlocal tabstop=4 shiftwidth=4
 
 " setup javascript-libraries-syntax
 let g:used_javascript_libs = 'underscore,backbone'
