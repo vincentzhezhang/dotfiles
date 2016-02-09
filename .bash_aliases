@@ -17,9 +17,7 @@ alias du='du -h -c'
 alias fsort='~/workspace/personal/auto_sorter/sort'
 alias mkdir='mkdir -p -v'
 alias mv='mv -i'
-alias prm='/bin/rm'
 alias reload='source ~/.bashrc'
-alias rm='mv -t ~/.local/share/Trash/files'
 
 ## Moving around & all that jazz
 alias back='cd $OLDPWD'
@@ -53,12 +51,18 @@ alias pyserver='python -m SimpleHTTPServer'
 alias vim='nvim'
 alias vi='nvim'
 
+# use most recent version of git-cola
+alias cola='git-cola'
+
 
 # OSX specific aliases
 if [[ $OSTYPE == darwin* ]]; then
   alias gvim='mvim'
 
 else
+  alias vi='nvim'
+  alias vim='nvim'
+
   # Sudo fixes
   alias orphand='sudo deborphan | xargs sudo apt-get -y remove --purge'
   alias cleanup='sudo apt-get autoclean && sudo apt-get autoremove && sudo apt-get clean && sudo apt-get remove && orphand'
