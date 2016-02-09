@@ -84,8 +84,29 @@ autocmd BufWritePre * StripWhitespace
 " bind paste mode for ease of use
 set pastetoggle=<F2>
 
-" bind F5 to toggle background color
-call togglebg#map("<F5>")
+function LightSide()
+  colorscheme solarized
+  set background=light
+endfunction
+
+function DarkSide()
+  colorscheme gruvbox
+  set background=dark
+endfunction
+
+function ToggleLook()
+  let bg = &background
+  if bg == 'dark'
+    call LightSide()
+  elseif bg == 'light'
+    call DarkSide()
+  else
+    " ignored
+  end
+endfunction
+
+" some quick color tweak
+map <F5> :call ToggleLook()<CR>
 
 let g:airline_powerline_fonts=1
 let base16colorspace=256  " Access colors present in 256 colorspace
@@ -97,20 +118,18 @@ let s:uname = system("uname -s")
 let s:hostname = system("uname -n")
 
 if s:uname =~ "Darwin"
-  colorscheme gruvbox
-  set background=dark
+  call DarkSide()
 
 elseif s:uname =~ "Linux"
   if s:hostname =~ "xps" " For XPS 13
 
     " FUCKING HATE XPS 13 ADAPTIVE BRIGHTNESS, IT'S A BUG NOT A FEATURE, DELL FIX IT!!!
     let s:sys_hour = system("date '+%k'")
-    if s:sys_hour >= 9 && s:sys_hour <= 10 " might use dynamic sunset time?
-      colorscheme solarized
-      set background=light
+    " might use a more adaptive time or even sunset time?
+    if s:sys_hour >= 7 && s:sys_hour <= 17
+      call LightSide()
     else
-      colorscheme gruvbox
-      set background=dark
+      call DarkSide()
     endif
   end
 else
