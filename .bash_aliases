@@ -5,10 +5,6 @@ alias lg='ll -A | grep -i'
 alias ll='ls -alFh'
 alias lt='ll -t'
 
-# Add an "alert" alias for long running commands.  Use like so:
-#   sleep 10; alert
-alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
-
 ## Keeping things organized
 alias biggest='BLOCKSIZE=1048576; du -x | sort -nr | head -10'
 alias cp='cp -i'
@@ -48,21 +44,19 @@ alias cap='bundle exec cap'
 alias rake='bundle exec rake'
 alias pyserver='python -m SimpleHTTPServer'
 
-alias vim='nvim'
+# NeoVim for the win
 alias vi='nvim'
+alias vim='nvim'
+alias gvim='nvim'
 
 # use most recent version of git-cola
 alias cola='git-cola'
 
-
-# OSX specific aliases
+# OS specific aliases
 if [[ $OSTYPE == darwin* ]]; then
-  alias gvim='mvim'
-
+  # OSX specific aliases
+  alias wtf='bbq'
 else
-  alias vi='nvim'
-  alias vim='nvim'
-
   # Sudo fixes
   alias orphand='sudo deborphan | xargs sudo apt-get -y remove --purge'
   alias cleanup='sudo apt-get autoclean && sudo apt-get autoremove && sudo apt-get clean && sudo apt-get remove && orphand'

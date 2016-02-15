@@ -134,8 +134,9 @@ case $((RANDOM%3)) in
     ;;
 esac
 
-complete -W "$(echo $(grep --text '^ssh ' /home/vincent/.bash_history | sort -u | sed 's/^ssh //'))" ssh
+complete -W "$(echo $(grep --text '^ssh ' $HOME/.bash_history | sort -u | sed 's/^ssh //'))" ssh
 
 # viiiiiiiiiiiiiiii ftw
 set -o history
 set -o vi
+export PATH=$PATH:/usr/local/opt/go/libexec/bin
