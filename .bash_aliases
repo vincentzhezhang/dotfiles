@@ -52,6 +52,8 @@ alias gvim='nvim'
 # use most recent version of git-cola
 alias cola='git-cola'
 
+# handy git shortcut
+
 # OS specific aliases
 if [[ $OSTYPE == darwin* ]]; then
   # OSX specific aliases
@@ -70,3 +72,4 @@ else
   alias fuck='sudo "$BASH" -c "$(history -p !!)"'
 fi
 
+alias ngrok=/Users/vincent/tools/ngrok
