@@ -1,7 +1,6 @@
 set t_Co=256
-set nocompatible                    " be iMproved, required
+set nocompatible
 
-" replace Vundle with vim-plug for the sake of active development/support
 call plug#begin('~/.vim/bundle')
 Plug 'L9'
 Plug 'airblade/vim-gitgutter'
@@ -62,9 +61,9 @@ set list
 set listchars=nbsp:¬,tab:»·,trail:·
 
 " Recommended settings from powerline
-" set laststatus=2 " Always display the statusline in all windows
-" set showtabline=2 " Always display the tabline, even if there is only one tab
-" set noshowmode " Hide the default mode text (e.g. -- INSERT -- below the statusline)
+set laststatus=2 " Always display the statusline in all windows
+set showtabline=2 " Always display the tabline, even if there is only one tab
+set noshowmode " Hide the default mode text (e.g. -- INSERT -- below the statusline)
 let g:airline_powerline_fonts=1
 let g:airline#extensions#tabline#enabled = 1
 
@@ -74,11 +73,12 @@ command! W w
 
 " turn off Ex mode
 map Q <Nop>
+" turn off Recording mode
+map q <Nop>
 let loaded_matchparen = 1
 
 " strip trailing whitespace before save
 autocmd BufWritePre * StripWhitespace
-
 
 " bind paste mode for ease of use
 set pastetoggle=<F2>
@@ -147,9 +147,9 @@ let g:syntastic_auto_loc_list = 1
 let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 0
 
-set synmaxcol=1024 " Syntax coloring lines that are too long just slows down the world
-set ttyfast " u got a fast terminal
-set lazyredraw " to avoid scrolling problems
+set synmaxcol=1024  " limit syntax color for long lines
+set ttyfast         " fast terminal
+set lazyredraw      " to avoid scrolling problems
 
 function! ToggleSyntax()
   if exists("g:syntax_on")
@@ -158,7 +158,6 @@ function! ToggleSyntax()
     syntax enable
   endif
 endfunction
-
 nmap <silent> <C-F12> :call ToggleSyntax()<CR>
 
 
@@ -170,15 +169,21 @@ highlight Search ctermfg=202 ctermbg=NONE cterm=bold,underline
 " Make backspce behave more normally
 set backspace=indent,eol,start
 
-" Turn on automatic indenting
-set smartindent
 
-" Set tabs
-set tabstop=2 shiftwidth=2 softtabstop=0 smarttab expandtab
-" language specific settings
+" Default format config
+set smartindent
+set colorcolumn=80
+set tabstop=2
+set shiftwidth=2
+set softtabstop=0
+set smarttab
+set expandtab
+
+" language specific indentation settings
+autocmd FileType c      setlocal tabstop=4 shiftwidth=4
+autocmd FileType cpp    setlocal tabstop=4 shiftwidth=4
 autocmd FileType python setlocal tabstop=4 shiftwidth=4
-autocmd FileType c setlocal tabstop=4 shiftwidth=4
-autocmd FileType cpp setlocal tabstop=4 shiftwidth=4
+autocmd FileType ruby   setlocal colorcolumn=100
 
 " setup javascript-libraries-syntax
 let g:used_javascript_libs = 'underscore,backbone'
@@ -211,8 +216,6 @@ let g:jsx_ext_required = 0
 " let g:jsx_pragma_required = 1
 
 
-" Rails specific plugin settings
-
 " Git key mapping
 map <C-`> :Gblame<CR>
 
@@ -222,7 +225,6 @@ inoremap jk <Esc>
 " spell checking
 set spell spelllang=en_us
 
-set colorcolumn=80
 set nowrap
 set number
 
