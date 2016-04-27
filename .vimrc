@@ -10,6 +10,7 @@ Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'bling/vim-bufferline'
 Plug 'chriskempson/base16-vim'
+Plug 'digitaltoad/vim-pug'
 Plug 'edkolev/tmuxline.vim'
 Plug 'elzr/vim-json'
 Plug 'flazz/vim-colorschemes'
@@ -208,6 +209,12 @@ let g:javascript_conceal_NaN        = "ℕ"
 let g:javascript_conceal_prototype  = "¶"
 let g:javascript_conceal_static     = "•"
 let g:javascript_conceal_super      = "Ω"
+
+" TypeScript settings
+if !exists("g:ycm_semantic_triggers")
+  let g:ycm_semantic_triggers = {}
+endif
+let g:ycm_semantic_triggers['typescript'] = ['.']
 
 " jsx settings
 " if want to have jsx in side js
