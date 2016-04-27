@@ -85,15 +85,17 @@ set pastetoggle=<F2>
 
 function LightSide()
   colorscheme solarized
+  let g:airline_theme='solarized'
   set background=light
 endfunction
 
 function DarkSide()
   colorscheme gruvbox
+  let g:airline_theme='zenburn'
   set background=dark
 endfunction
 
-function ToggleLook()
+function SwitchSide()
   let bg = &background
   if bg == 'dark'
     call LightSide()
@@ -105,7 +107,7 @@ function ToggleLook()
 endfunction
 
 " some quick color tweak
-map <F5> :call ToggleLook()<CR>
+map <F5> :call SwitchSide()<CR>
 
 let base16colorspace=256  " Access colors present in 256 colorspace
 
