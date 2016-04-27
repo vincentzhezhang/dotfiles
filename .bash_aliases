@@ -58,7 +58,9 @@ alias cola='git-cola'
 if [[ $OSTYPE == darwin* ]]; then
   # OSX specific aliases
   alias wtf='bbq'
+  alias ngrok=/Users/vincent/tools/ngrok
 else
+  alias ngrok=/home/vincent/tools/ngrok
   # Sudo fixes
   alias orphand='sudo deborphan | xargs sudo apt-get -y remove --purge'
   alias cleanup='sudo apt-get autoclean && sudo apt-get autoremove && sudo apt-get clean && sudo apt-get remove && orphand'
@@ -71,5 +73,3 @@ else
   # just fuck it
   alias fuck='sudo "$BASH" -c "$(history -p !!)"'
 fi
-
-alias ngrok=/Users/vincent/tools/ngrok
