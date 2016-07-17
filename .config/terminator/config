@@ -1,7 +1,8 @@
 [global_config]
   always_split_with_profile = True
-  enabled_plugins = InactivityWatch, CustomCommandsMenu, TestPlugin, ActivityWatch, TerminalShot, LaunchpadCodeURLHandler, APTURLHandler, Logger
+  enabled_plugins = InactivityWatch, ActivityWatch, Logger
   focus = system
+  geometry_hinting = False
   handle_size = 3
   inactive_color_offset = 0.95
   suppress_multiple_term_dialog = True
