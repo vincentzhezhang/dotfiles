@@ -1,29 +1,39 @@
+" TODO:
+" try fzf, vim-easy-align
 set t_Co=256
-set nocompatible
+set nocompatible      " Vim behavior, not Vi.
+filetype off
+
+function! BuildYCM(info)
+  " info is a dictionary with 3 fields
+  " - name:   name of the plugin
+  " - status: 'installed', 'updated', or 'unchanged'
+  " - force:  set on PlugInstall! or PlugUpdate!
+  if a:info.status == 'installed' || a:info.status == 'updated' || a:info.force
+    !./install.py --clang-completer --tern-completer
+  endif
+endfunction
 
 call plug#begin('~/.vim/bundle')
 Plug 'L9'
 Plug 'airblade/vim-gitgutter'
 Plug 'AndrewRadev/splitjoin.vim'
 Plug 'ap/vim-css-color'
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
 Plug 'bling/vim-bufferline'
 Plug 'chriskempson/base16-vim'
+Plug 'ctrlpvim/ctrlp.vim'
 Plug 'digitaltoad/vim-pug'
 Plug 'edkolev/tmuxline.vim'
 Plug 'elzr/vim-json'
 Plug 'flazz/vim-colorschemes'
-Plug 'floobits/floobits-neovim'
 Plug 'godlygeek/tabular'
 Plug 'gregsexton/gitv'
 Plug 'hail2u/vim-css3-syntax'
 Plug 'kchmck/vim-coffee-script'
-Plug 'kien/ctrlp.vim'
 Plug 'klen/python-mode'
 Plug 'Lokaltog/vim-easymotion'
-Plug 'mhinz/vim-startify'
 Plug 'mbbill/undotree'
+Plug 'mhinz/vim-startify'
 Plug 'mtscout6/vim-cjsx'
 Plug 'mxw/vim-jsx'
 Plug 'ntpeters/vim-better-whitespace'
@@ -32,6 +42,7 @@ Plug 'pangloss/vim-javascript'
 Plug 'plasticboy/vim-markdown'
 Plug 'Raimondi/delimitMate'
 Plug 'rking/ag.vim'
+Plug 'ryanoasis/vim-devicons'
 Plug 'scrooloose/nerdcommenter'
 Plug 'scrooloose/nerdtree'
 Plug 'scrooloose/syntastic'
@@ -45,11 +56,23 @@ Plug 'tpope/vim-haml'
 Plug 'tpope/vim-rails'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-surround'
-Plug 'Valloric/YouCompleteMe'
+Plug 'Valloric/YouCompleteMe', { 'do': function('BuildYCM') }
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
 Plug 'vim-ruby/vim-ruby'
 Plug 'Xuyuanp/nerdtree-git-plugin'
 call plug#end()
 
+set encoding=utf-8    " Use UTF-8 encoding
+set nobackup          " Don't backup
+set nowritebackup     " Write file in place
+set noswapfile        " Don't use swap files (.swp)
+set autoread          " Autoreload buffers
+set autowrite         " Automatically save changes before switching buffers
+syntax enable         " Enable syntax highlight
+filetype on           " Enable filetype detection
+filetype indent on    " Enable filetype-specific indenting
+filetype plugin on    " Enable filetype-specific plugins
 
 " enable per-project .vimrc files
 set exrc
@@ -93,6 +116,8 @@ endfunction
 function DarkSide()
   colorscheme gruvbox
   let g:airline_theme='zenburn'
+  let g:gruvbox_contrast_dark='soft'
+  let g:gruvbox_contrast_light='hard'
   set background=dark
 endfunction
 
@@ -107,8 +132,11 @@ function SwitchSide()
   end
 endfunction
 
-" some quick color tweak
+" flip your side
 map <F5> :call SwitchSide()<CR>
+
+" Quick switch between numbers ruler
+noremap <silent> <F12> :set number!<CR>
 
 let base16colorspace=256  " Access colors present in 256 colorspace
 
@@ -117,6 +145,9 @@ let base16colorspace=256  " Access colors present in 256 colorspace
 " switcher hotkey
 let s:uname = system("uname -s")
 let s:hostname = system("uname -n")
+
+" set guifont=Droid\ Sans\ Mono\ for\ Powerline\ Nerd\ Font\ Complete\ Mono\ 12
+
 
 if s:uname =~ "Darwin"
   call DarkSide()
@@ -170,21 +201,26 @@ highlight Search ctermfg=202 ctermbg=NONE cterm=bold,underline
 " Make backspce behave more normally
 set backspace=indent,eol,start
 
+set nowrap " Don't wrap lines
+set number " Show line numbers
 
 " Default format config
 set smartindent
-set colorcolumn=80
 set tabstop=2
 set shiftwidth=2
 set softtabstop=0
 set smarttab
 set expandtab
 
+if exists('+colorcolumn')
+  let &colorcolumn="80,".join(range(120,240),",")
+  highlight ColorColumn ctermbg=237
+endif
+
 " language specific indentation settings
 autocmd FileType c      setlocal tabstop=4 shiftwidth=4
 autocmd FileType cpp    setlocal tabstop=4 shiftwidth=4
 autocmd FileType python setlocal tabstop=4 shiftwidth=4
-autocmd FileType ruby   setlocal colorcolumn=100
 
 " setup javascript-libraries-syntax
 let g:used_javascript_libs = 'underscore,backbone'
@@ -224,16 +260,16 @@ let g:jsx_ext_required = 0
 
 
 " Git key mapping
-map <C-`> :Gblame<CR>
+nnoremap <space>gb :Gblame<CR>
+nnoremap <space>gs :Gstatus<CR>
+
+
 
 " experimental key mapping
 inoremap jk <Esc>
 
 " spell checking
 set spell spelllang=en_us
-
-set nowrap
-set number
 
 " what's this for anyway?
 nnoremap <NL> i<CR><ESC>
@@ -250,9 +286,16 @@ nmap <A-=> <C-w>+
 " Run current script!
 nnoremap <F8> :!%:p<Enter>
 
+" Clean highlight when esc is pressed
+nnoremap <esc> :noh<return><esc>
+
+" Break line, note this catches control + enter in my terminal, ymmv
+nnoremap <C-J> i<return><esc>
 
 " NERDTree
 map <C-\> :NERDTreeFind<CR>
+
+let g:NERDTreeWinSize=30
 
 let g:NERDTreeIndicatorMapCustom = {
     \ "Modified"  : "✹",
@@ -264,6 +307,16 @@ let g:NERDTreeIndicatorMapCustom = {
     \ "Clean"     : "✔︎",
     \ "Unknown"   : "?"
     \ }
+
+" NERDCommenter
+" Add spaces after comment delimiters by default
+let g:NERDSpaceDelims = 1
+
+" Allow commenting and inverting empty lines (useful when commenting a region)
+let g:NERDCommentEmptyLines = 1
+
+" Enable trimming of trailing whitespace when uncommenting
+let g:NERDTrimTrailingWhitespace = 1
 
 autocmd VimEnter *
             \   if !argc()
