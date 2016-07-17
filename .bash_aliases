@@ -47,7 +47,6 @@ alias pyserver='python -m SimpleHTTPServer'
 # NeoVim for the win
 alias vi='nvim'
 alias vim='nvim'
-alias gvim='nvim'
 
 # use most recent version of git-cola
 alias cola='git-cola'
