@@ -119,6 +119,9 @@ export PATH=$HOME/.npm/bin:$PATH
 export NODE_PATH=$NODE_PATH:$HOME/.npm-packages/lib/node_modules
 export PATH="$HOME/.npm-packages/bin:$PATH"
 
+# user bin
+export PATH="$HOME/.local/bin:$PATH"
+
 # just for fun
 case $((RANDOM%3)) in
 0)
