@@ -37,7 +37,7 @@ alias show-info='~/.bin/info.pl'
 alias show-colors='~/.bin/colors.sh'
 
 ## Misc
-alias pg='ps -ef | grep'
+alias pg='ps aux | grep'
 
 # some development quick n dirty shortcuts
 alias cap='bundle exec cap'
