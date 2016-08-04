@@ -1,18 +1,15 @@
-" TODO:
-" try fzf, vim-easy-align
+" TODO: try fzf, vim-easy-align
+
+" set useful variables
+source ~/.vim/variables.vim
+
+" load helper functions
+source ~/.vim/functions.vim
+
 set t_Co=256
 set nocompatible      " Vim behavior, not Vi.
+set termguicolors
 filetype off
-
-function! BuildYCM(info)
-  " info is a dictionary with 3 fields
-  " - name:   name of the plugin
-  " - status: 'installed', 'updated', or 'unchanged'
-  " - force:  set on PlugInstall! or PlugUpdate!
-  if a:info.status == 'installed' || a:info.status == 'updated' || a:info.force
-    !./install.py --clang-completer --tern-completer
-  endif
-endfunction
 
 call plug#begin('~/.vim/bundle')
 Plug 'L9'
@@ -42,7 +39,6 @@ Plug 'pangloss/vim-javascript'
 Plug 'plasticboy/vim-markdown'
 Plug 'Raimondi/delimitMate'
 Plug 'rking/ag.vim'
-Plug 'ryanoasis/vim-devicons'
 Plug 'scrooloose/nerdcommenter'
 Plug 'scrooloose/nerdtree'
 Plug 'scrooloose/syntastic'
@@ -59,7 +55,7 @@ Plug 'tpope/vim-surround'
 Plug 'Valloric/YouCompleteMe', { 'do': function('BuildYCM') }
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-Plug 'vim-ruby/vim-ruby'
+Plug 'vim-ruby/vim-ruby', { 'do': function('InstallRubySupport') }
 Plug 'Xuyuanp/nerdtree-git-plugin'
 call plug#end()
 
@@ -69,6 +65,8 @@ set nowritebackup     " Write file in place
 set noswapfile        " Don't use swap files (.swp)
 set autoread          " Autoreload buffers
 set autowrite         " Automatically save changes before switching buffers
+set autoindent
+
 syntax enable         " Enable syntax highlight
 filetype on           " Enable filetype detection
 filetype indent on    " Enable filetype-specific indenting
@@ -85,9 +83,9 @@ set list
 set listchars=nbsp:¬,tab:»·,trail:·
 
 " Recommended settings from powerline
-set laststatus=2 " Always display the statusline in all windows
-set showtabline=2 " Always display the tabline, even if there is only one tab
-set noshowmode " Hide the default mode text (e.g. -- INSERT -- below the statusline)
+set laststatus=2        " Always display the statusline in all windows
+set showtabline=2       " Always display the tabline, even if there is only one tab
+set noshowmode          " Hide the default mode text
 let g:airline_powerline_fonts=1
 let g:airline#extensions#tabline#enabled = 1
 
@@ -107,47 +105,19 @@ autocmd BufWritePre * StripWhitespace
 " bind paste mode for ease of use
 set pastetoggle=<F2>
 
-function LightSide()
-  colorscheme solarized
-  let g:airline_theme='solarized'
-  set background=light
-endfunction
-
-function DarkSide()
-  colorscheme gruvbox
-  let g:airline_theme='zenburn'
-  let g:gruvbox_contrast_dark='soft'
-  let g:gruvbox_contrast_light='hard'
-  set background=dark
-endfunction
-
-function SwitchSide()
-  let bg = &background
-  if bg == 'dark'
-    call LightSide()
-  elseif bg == 'light'
-    call DarkSide()
-  else
-    " ignored
-  end
-endfunction
-
-" flip your side
-map <F5> :call SwitchSide()<CR>
-
 " Quick switch between numbers ruler
 noremap <silent> <F12> :set number!<CR>
 
 let base16colorspace=256  " Access colors present in 256 colorspace
 
-
 " some OS detection and customization here, should bind some dark/light theme
 " switcher hotkey
 let s:uname = system("uname -s")
 let s:hostname = system("uname -n")
-
-" set guifont=Droid\ Sans\ Mono\ for\ Powerline\ Nerd\ Font\ Complete\ Mono\ 12
-
+let s:sys_hour = system("date '+%k'")
+" TODO: dynamic day/night range
+" let s:day_hour_start
+" let s:night_hour_start
 
 if s:uname =~ "Darwin"
   call DarkSide()
@@ -155,8 +125,6 @@ if s:uname =~ "Darwin"
 elseif s:uname =~ "Linux"
   if s:hostname =~ "xps" " For XPS 13
 
-    " FUCKING HATE XPS 13 ADAPTIVE BRIGHTNESS, IT'S A BUG NOT A FEATURE, DELL FIX IT!!!
-    let s:sys_hour = system("date '+%k'")
     " might use a more adaptive time or even sunset time?
     if s:sys_hour >= 7 && s:sys_hour <= 17
       call LightSide()
@@ -166,6 +134,15 @@ elseif s:uname =~ "Linux"
   end
 else
  " ignored
+endif
+
+if exists('+colorcolumn')
+  let &colorcolumn="80,".join(range(120,360),",")
+  if s:sys_hour >= 7 && s:sys_hour <= 17
+    highlight ColorColumn ctermbg=7
+  else
+    highlight ColorColumn ctermbg=237
+  end
 endif
 
 
@@ -179,18 +156,12 @@ let g:syntastic_auto_loc_list = 1
 let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 0
 
+let g:syntastic_ruby_checkers = ['mri', 'rubocop']
+
 set synmaxcol=1024  " limit syntax color for long lines
 set ttyfast         " fast terminal
 set lazyredraw      " to avoid scrolling problems
 
-function! ToggleSyntax()
-  if exists("g:syntax_on")
-    syntax off
-  else
-    syntax enable
-  endif
-endfunction
-nmap <silent> <C-F12> :call ToggleSyntax()<CR>
 
 
 " Highlight search results
@@ -212,15 +183,10 @@ set softtabstop=0
 set smarttab
 set expandtab
 
-if exists('+colorcolumn')
-  let &colorcolumn="80,".join(range(120,240),",")
-  highlight ColorColumn ctermbg=237
-endif
-
 " language specific indentation settings
-autocmd FileType c      setlocal tabstop=4 shiftwidth=4
-autocmd FileType cpp    setlocal tabstop=4 shiftwidth=4
-autocmd FileType python setlocal tabstop=4 shiftwidth=4
+autocmd FileType c      setlocal tabstop=4 softtabstop=4 shiftwidth=4
+autocmd FileType cpp    setlocal tabstop=4 softtabstop=4 shiftwidth=4
+autocmd FileType python setlocal tabstop=4 softtabstop=4 shiftwidth=4
 
 " setup javascript-libraries-syntax
 let g:used_javascript_libs = 'underscore,backbone'
@@ -279,15 +245,12 @@ map <C-j> <C-W>j<C-W>_
 map <C-k> <C-W>k<C-W>_
 map <C-h> <C-W>h<C-W>_
 map <C-l> <C-W>l<C-W>_
-nmap <A--> <C-w>-
-nmap <A-=> <C-w>+
-
 
 " Run current script!
 nnoremap <F8> :!%:p<Enter>
 
 " Clean highlight when esc is pressed
-nnoremap <esc> :noh<return><esc>
+nnoremap <silent> <CR> :nohlsearch<CR><CR>
 
 " Break line, note this catches control + enter in my terminal, ymmv
 nnoremap <C-J> i<return><esc>
