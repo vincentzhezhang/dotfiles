@@ -3,26 +3,26 @@
 "
 
 "
-" Vim Plug callback functons
+" Vim Plug callback functions
 "
 " Note: info is a dictionary with 3 fields
 " - name:   name of the plugin
 " - status: 'installed', 'updated', or 'unchanged'
 " - force:  set on PlugInstall! or PlugUpdate!
 function! BuildYCM(info)
-  if a:info.status == 'installed' || a:info.status == 'updated' || a:info.force
+  if a:info.status ==? 'installed' || a:info.status ==? 'updated' || a:info.force
     !./install.py --clang-completer --tern-completer
   endif
 endfunction
 
 function! InstallRubySupport(info)
-  if a:info.status == 'installed' || a:info.force
+  if a:info.status ==? 'installed' || a:info.force
     !gem install neovim
   endif
 endfunction
 
 function! InstallPythonSupport(info)
-  if a:info.status == 'installed' || a:info.force
+  if a:info.status ==? 'installed' || a:info.force
     !pip install neovim
   endif
 endfunction
@@ -46,9 +46,9 @@ endfunction
 
 function SwitchSide()
   let bg = &background
-  if bg == 'dark'
+  if bg ==? 'dark'
     call LightSide()
-  elseif bg == 'light'
+  elseif bg ==? 'light'
     call DarkSide()
   else
     " ignored
@@ -61,7 +61,7 @@ map <F5> :call SwitchSide()<CR>
 " Other handy helpers
 "
 function! ToggleSyntax()
-  if exists("g:syntax_on")
+  if exists('g:syntax_on')
     syntax off
   else
     syntax enable
