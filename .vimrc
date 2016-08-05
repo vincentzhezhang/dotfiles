@@ -261,8 +261,18 @@ nnoremap <F8> :!%:p<Enter>
 " Clean highlight when esc is pressed
 nnoremap <silent> <CR> :nohlsearch<CR><CR>
 
-" Break line, note this catches control + enter in my terminal, ymmv
-nnoremap <C-J> i<return><esc>
+" Visually select the text that was last edited/pasted
+nnoremap gV `[v`]
+" selelct what you've just pasted
+nnoremap gp `[v`]
+" reselect visual block after indent/outdent
+vnoremap < <gv
+vnoremap > >gv
+" quick jump between recent two files
+nnoremap <leader>b :b#<cr>
+" quick edit .vimrc
+nnoremap <leader>V :e $MYVIMRC<cr>
+
 " Break line using ctrl + enter, note this maps to ^J in Ubuntu,
 " but in MacOS, it maps to ^M
 if s:uname =~? 'Darwin'
