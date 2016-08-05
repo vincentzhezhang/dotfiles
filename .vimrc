@@ -70,6 +70,7 @@ Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'vim-ruby/vim-ruby', { 'do': function('InstallRubySupport') }
 Plug 'Xuyuanp/nerdtree-git-plugin'
+Plug 'zenbro/mirror.vim'
 call plug#end()
 
 " General formatting config
