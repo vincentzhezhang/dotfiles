@@ -31,7 +31,7 @@ endfunction
 " quick switch between color schemes
 "
 function LightSide()
-  colorscheme solarized
+  colorscheme solarized8_light
   let g:airline_theme='solarized'
   set background=light
 endfunction
