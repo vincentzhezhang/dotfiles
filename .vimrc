@@ -263,6 +263,15 @@ nnoremap <silent> <CR> :nohlsearch<CR><CR>
 
 " Break line, note this catches control + enter in my terminal, ymmv
 nnoremap <C-J> i<return><esc>
+" Break line using ctrl + enter, note this maps to ^J in Ubuntu,
+" but in MacOS, it maps to ^M
+if s:uname =~? 'Darwin'
+  nnoremap <C-M> i<return><esc>
+elseif s:uname =~? 'Linux'
+  nnoremap <C-J> i<return><esc>
+else
+  " ignored for now
+endif
 
 " NERDTree
 map <C-\> :NERDTreeFind<CR>
