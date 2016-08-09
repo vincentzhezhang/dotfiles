@@ -4,22 +4,26 @@
   st = status
   br = branch
   lg = log --graph --pretty=format:'%C(yellow)%h%Creset%C(yellow)%d%Creset %s %C(green)(%cd)%Creset %C(bold cyan)<%aE>%Creset' --abbrev-commit --date=short
-  sn = !bash -c 'git checkout -b snapshot_$(/bin/date "+%y%m%d_%H%M%S")'
-  report = log --pretty=oneline --author='vincent\\|Vincent' --abbrev-commit --since='14.hours' --no-merges --reverse
-
+  sn = !bash -c 'git checkout -b snapshot_$(/usr/bin/env date "+%y%m%d_%H%M%S")'
+  summary = !/usr/bin/env bash -c '\
+    git log --pretty=oneline \
+    --abbrev-commit \
+    --committer=$(git config user.email) \
+    --no-merges \
+    --reverse \
+    --since=$(date -u +"%Y-%m-%dT00:00:00") \
+    --use-mailmap \
+    '
 [user]
   name = Vincent Zhang
   email = v.zh@msn.com
-
 [github]
   user = vincentzhezhang
-
 [gui]
   editor = gedit
   historybrowser = gitk
 [core]
   editor = vim
-  excludesfile = /Users/vincent/.gitignore_global
 [color]
   ui = auto
 [color "branch"]
@@ -46,16 +50,10 @@
 [push]
   default = simple
 [cola]
-	fontdiff = Input,12,-1,5,50,0,0,0,0,0
+  fontdiff = Input Mono,14,-1,5,50,0,0,0,0,0
   tabwidth = 2
   textwidth = 80
   boldheaders = true
-[difftool "sourcetree"]
-  cmd = opendiff \"$LOCAL\" \"$REMOTE\"
-  path =
-[mergetool "sourcetree"]
-  cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
-  trustExitCode = true
 [filter "lfs"]
   clean = git-lfs clean %f
   smudge = git-lfs smudge %f
