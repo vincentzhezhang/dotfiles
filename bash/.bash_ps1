@@ -1,6 +1,7 @@
+#! /usr/bin/env bash
 fill="--- "
 
-beutify_ps1() {
+beautify_ps1() {
   if [ $? = 0 ]; then
       local last_state="${BCYAN}:)${COFF} "
   else
@@ -18,7 +19,7 @@ beutify_ps1() {
   done
 
   # indicator treatment
-  if [ "${PWD}" = $HOME ]; then
+  if [ "${PWD}" = "$HOME" ]; then
     local indicator="${BASE0}>${COFF} "
   else
     local indicator=" ${BASE0}~>${COFF} "
@@ -27,7 +28,9 @@ beutify_ps1() {
   pwd="${BASE0}\w${COFF}"
 
   git rev-parse --git-dir &> /dev/null
-  local git_status="$(git status 2> /dev/null)"
+  local git_status
+  git_status="$(git status 2> /dev/null)"
+
   local branch_pattern="On branch ([^${IFS}]*)"
   local remote_pattern="Your branch is (.*) of"
   local diverge_pattern="Your branch and (.*) have diverged"
@@ -61,4 +64,5 @@ beutify_ps1() {
   # Related forum post: http://gnu-bash.2382.n7.nabble.com/Latest-fix-for-DEBUG-causes-pipes-to-fail-when-used-with-trap-and-an-interactive-shell-td13044.html
   #trap 'echo -ne "\e[0m"' DEBUG # this one is invoked every time before a command is executed
 }
-PROMPT_COMMAND=beutify_ps1
+
+export PROMPT_COMMAND="beautify_ps1; $PROMPT_COMMAND"
