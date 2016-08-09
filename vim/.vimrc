@@ -193,6 +193,7 @@ augroup indentations
   autocmd FileType c      setlocal tabstop=4 softtabstop=4 shiftwidth=4
   autocmd FileType cpp    setlocal tabstop=4 softtabstop=4 shiftwidth=4
   autocmd FileType python setlocal tabstop=4 softtabstop=4 shiftwidth=4
+  autocmd FileType sh     setlocal tabstop=4 softtabstop=4 shiftwidth=4
 augroup END
 
 " change leader key
