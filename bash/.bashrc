@@ -25,7 +25,7 @@ export HISTSIZE=999
 export HISTFILESIZE=999
 export HISTCONTROL=ignoredups:erasedups
 shopt -s histappend
-export PROMPT_COMMAND="history -a; history -n; $PROMPT_COMMAND"
+export PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
 
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
