@@ -141,19 +141,16 @@ let s:sys_hour = system("date '+%k'")
 " TODO: dynamic day/night range from system or external API
 let s:sunrise = 6
 let s:sunset = 18
-if s:uname =~? 'Darwin'
-  call DarkSide()
-elseif s:uname =~? 'Linux'
-  if s:hostname =~? 'xps' " For XPS 13
-    if s:sys_hour >= s:sunrise && s:sys_hour <= s:sunset
-      call LightSide()
-    else
-      call DarkSide()
-    endif
-  end
+
+" Adaptive colorscheme switching
+if s:sys_hour >= s:sunrise && s:sys_hour <= s:sunset
+  call LightSide()
 else
- " ignored
-endif
+  call DarkSide()
+end
+
+" display a recommended column width guide and gray out columns after maximum
+" width
 if exists('+colorcolumn')
   let &colorcolumn='80,'.join(range(120,360),',')
   if s:sys_hour >= s:sunrise && s:sys_hour <= s:sunset
@@ -174,12 +171,9 @@ let g:syntastic_check_on_wq = 0
 let g:syntastic_ruby_checkers = ['mri', 'rubocop']
 let g:syntastic_vim_checkers = ['vint']
 set synmaxcol=1024  " limit syntax color for long lines
-set ttyfast         " fast terminal
 set lazyredraw      " to avoid scrolling problems
-" Have some context around the current line always on screen
-set scrolloff=3
-" Highlight search results
-set hlsearch
+set scrolloff=3     " Have some context around the current line always on screen
+set hlsearch        " Highlight search results
 highlight Search ctermfg=202 ctermbg=NONE cterm=bold,underline
 
 augroup ruby_rails
@@ -237,14 +231,16 @@ inoremap jk <Esc>
 " spell checking, en_us for better collaboration
 set spell spelllang=en_us
 
-" what's this for anyway?
-nnoremap <NL> i<CR><ESC>
-
 " Window related settings
-map <C-j> <C-W>j<C-W>_
-map <C-k> <C-W>k<C-W>_
-map <C-h> <C-W>h<C-W>_
-map <C-l> <C-W>l<C-W>_
+" mitigate ctrl-h mess within some terminal
+if has('nvim')
+  nmap <BS> <C-W>h
+endif
+" quick switch between spit panes
+map <C-j> <C-W>j
+map <C-k> <C-W>k
+map <C-h> <C-W>h
+map <C-l> <C-W>l
 
 " Run current script!
 nnoremap <F8> :!%:p<Enter>
@@ -252,27 +248,13 @@ nnoremap <F8> :!%:p<Enter>
 " Clean highlight when esc is pressed
 nnoremap <silent> <CR> :nohlsearch<CR><CR>
 
-" Visually select the text that was last edited/pasted
-nnoremap gV `[v`]
-" selelct what you've just pasted
-nnoremap gp `[v`]
-" reselect visual block after indent/outdent
-vnoremap < <gv
-vnoremap > >gv
 " quick jump between recent two files
 nnoremap <leader>b :b#<cr>
 " quick edit .vimrc
 nnoremap <leader>V :e $MYVIMRC<cr>
 
-" Break line using ctrl + enter, note this maps to ^J in Ubuntu,
-" but in MacOS, it maps to ^M
-if s:uname =~? 'Darwin'
-  nnoremap <C-M> i<return><esc>
-elseif s:uname =~? 'Linux'
-  nnoremap <C-J> i<return><esc>
-else
-  " ignored for now
-endif
+" Break line at cursor
+nnoremap <leader>j i<return><esc>
 
 " NERDTree
 map <C-\> :NERDTreeFind<CR>
@@ -295,6 +277,7 @@ let g:NERDSpaceDelims = 1
 let g:NERDCommentEmptyLines = 1
 " Enable trimming of trailing whitespace when uncommenting
 let g:NERDTrimTrailingWhitespace = 1
+
 augroup on_startup
   autocmd VimEnter *
               \   if !argc()
