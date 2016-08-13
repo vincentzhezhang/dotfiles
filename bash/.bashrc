@@ -1,3 +1,4 @@
+#! /usr/bin/env bash
 # ~/.bashrc: executed by bash(1) for non-login shells.
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
@@ -9,7 +10,6 @@ case $- in
 esac
 
 # Load essential constants
-# shellcheck source=/dev/null
 if [ -f "$HOME/.bash_constants" ]; then
     . "$HOME/.bash_constants"
 fi
@@ -38,7 +38,6 @@ fi
 #OSX specific configuration
 if [[ $OSTYPE == darwin* ]]; then
     if [ -f "$(brew --prefix)"/etc/bash_completion ]; then
-        # shellcheck source=/dev/null
         . "$(brew --prefix)"/etc/bash_completion
     fi
 
@@ -51,10 +50,8 @@ else
     # sources /etc/bash.bashrc).
     if ! shopt -oq posix; then
         if [ -f /usr/share/bash-completion/bash_completion ]; then
-            # shellcheck source=/dev/null
             . /usr/share/bash-completion/bash_completion
         elif [ -f /etc/bash_completion ]; then
-            # shellcheck source=/dev/null
             . /etc/bash_completion
         fi
     fi
@@ -68,7 +65,6 @@ else
     alias ls='ls --color=auto'
 fi
 
-# shellcheck source=/dev/null
 if [ -f ~/.git-completion.bash ]; then
     . ~/.git-completion.bash
 fi
@@ -83,7 +79,6 @@ fi
 DECORATORS=(ps1 aliases functions)
 for decorator in "${DECORATORS[@]}"; do
     if [ -f ~/.bash_"${decorator}" ]; then
-        # shellcheck source=/dev/null
         . ~/.bash_"${decorator}"
     fi
 done
@@ -117,7 +112,6 @@ case $((RANDOM%3)) in
     0)
         bullshit
         ;;
-
     1)
         retrogame invaders
         ;;

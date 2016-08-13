@@ -1,3 +1,4 @@
+#! /usr/bin/env bash
 # some more ls aliases
 alias l='ls -CF'
 alias la='ls -A'
@@ -51,15 +52,11 @@ alias vim='nvim'
 # use most recent version of git-cola
 alias cola='git-cola'
 
-# handy git shortcut
-
 # OS specific aliases
 if [[ $OSTYPE == darwin* ]]; then
   # OSX specific aliases
   alias wtf='bbq'
-  alias ngrok=/Users/vincent/tools/ngrok
 else
-  alias ngrok=/home/vincent/tools/ngrok
   # Sudo fixes
   alias orphand='sudo deborphan | xargs sudo apt-get -y remove --purge'
   alias cleanup='sudo apt-get autoclean && sudo apt-get autoremove && sudo apt-get clean && sudo apt-get remove && orphand'

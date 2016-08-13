@@ -46,7 +46,7 @@ prettify_prompt() {
   local remote_pattern="Your branch is (.*) of"
   local diverge_pattern="Your branch and (.*) have diverged"
 
-  if [[ ! ${git_status} =~ "nothing" ]]; then
+  if [[ ! ${git_status} = *'nothing'* ]]; then
     local git_state="${BORANGE}*${COFF}"
   else
     unset git_state
