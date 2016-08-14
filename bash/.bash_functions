@@ -206,9 +206,9 @@ git_prompt()
             if [ "$local_rev" = "$remote_rev" ]; then
                 repo_state="${GREEN}[✓]${COFF}"
             elif [ "$local_rev" = "$base_rev" ]; then
-                repo_state="${YELLOW}↓$(git rev-list "$local_rev".."$remote_rev" --count)${COFF}"
+                repo_state="${YELLOW}↓$(git rev-list "$base_rev".."$remote_rev" --count)${COFF}"
             elif [ "$remote_rev" = "$base_rev" ]; then
-                repo_state="${YELLOW}↑$(git rev-list "$local_rev".."$remote_rev" --count)${COFF}"
+                repo_state="${YELLOW}↑$(git rev-list "$base_rev".."$local_rev" --count)${COFF}"
             else
                 repo_state="${BRED}↑$(git rev-list "$base_rev".."$local_rev" --count)${COFF}"
                 repo_state+="${BRED}↓$(git rev-list "$base_rev".."$remote_rev" --count)${COFF}"
