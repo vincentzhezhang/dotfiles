@@ -1,85 +1,58 @@
 #! /usr/bin/env bash
 
 prettify_prompt() {
-  if [[ $? == 0 ]]; then
-      if [[ $OSTYPE == darwin* ]]; then
-          local last_state="😃  "
-      else
-          local last_state="${BGREEN}:)${COFF} "
-      fi
-  else
-      if [[ $OSTYPE == darwin* ]]; then
-          local last_state="😡  "
-      else
-          local last_state="${BRED}:(${COFF} "
-      fi
-  fi
-
-  # create a dash line which has a length of the current terminal columns minus
-  # user@hostname, time string and padding spaces
-  short_hostname=$(/usr/bin/env hostname -s)
-  prefix_str="$USER@$short_hostname"
-  time_str="$(date -u +'%H:%M:%S')"
-  dash_line=''
-  dash_line_padding=2 # spaces before and after the dash line
-  let dash_line_width=$COLUMNS-${#prefix_str}-${#time_str}-$dash_line_padding
-  while [[ $dash_line_width -gt 0 ]]
-  do
-      dash_line="-${dash_line}"
-      let dash_line_width=${dash_line_width}-1
-  done
-
-  # indicator treatment
-  if [[ "$PWD" == "$HOME" ]]; then
-    local indicator="${BASE0}>${COFF} "
-  else
-    local indicator=" ${BASE0}~>${COFF} "
-  fi
-
-  pwd="${BASE0}\w${COFF}"
-
-  git rev-parse --git-dir &> /dev/null
-  local git_status
-  git_status="$(git status 2> /dev/null)"
-
-  local branch_pattern="On branch ([^${IFS}]*)"
-  local remote_pattern="Your branch is (.*) of"
-  local diverge_pattern="Your branch and (.*) have diverged"
-
-  if [[ ! ${git_status} = *'nothing'* ]]; then
-    local git_state="${BORANGE}*${COFF}"
-  else
-    unset git_state
-  fi
-
-  if [[ ${git_status} =~ ${remote_pattern} ]]; then
-    if [[ ${BASH_REMATCH[1]} == "ahead" ]]; then
-      local git_remote="${YELLOW}↑${COFF}"
+    # show last command execution result intuitively
+    if [[ $? == 0 ]]; then
+        if [[ $OSTYPE == darwin* ]]; then
+            local last_state="😃  "
+        else
+            local last_state="${BGREEN}:)${COFF} "
+        fi
     else
-      local git_remote="${YELLOW}↓${COFF}"
+        if [[ $OSTYPE == darwin* ]]; then
+            local last_state="😡  "
+        else
+            local last_state="${BRED}:(${COFF} "
+        fi
     fi
-  fi
 
-  if [[ ${git_status} =~ ${diverge_pattern} ]]; then
-    local git_remote="${BRED}↕${COFF}"
-  else
-    unset git_remote
-  fi
+    # create a dash line which has a length of the current terminal columns minus
+    # user@hostname, time string and padding spaces
+    short_hostname=$(/usr/bin/env hostname -s)
+    prefix_str="$USER@$short_hostname"
+    time_str="$(date -u +'%H:%M:%S')"
+    dash_line=''
+    dash_line_padding=2 # spaces before and after the dash line
 
-  if [[ ${git_status} =~ ${branch_pattern} ]]; then
-    local git_branch="${BYELLOW}@${COFF}${CYAN}${BASH_REMATCH[1]}${COFF}"
-    local git_string="${git_branch}${git_remote}${git_state}"
-  fi
+    let dash_line_width=$COLUMNS-${#prefix_str}-${#time_str}-$dash_line_padding
 
-  old_ps1="${last_state}${pwd}${git_string}${indicator}"
-  status_line="$BASE00$prefix_str $dash_line $time_str$COFF"
-  PS1="$status_line\n$old_ps1"
-  # Temporarily comment out the trap DEBUG line due to a Linux specific bug
-  # Wait until it get fixed
-  # Related forum post: http://gnu-bash.2382.n7.nabble.com/Latest-fix-for-DEBUG-causes-pipes-to-fail-when-used-with-trap-and-an-interactive-shell-td13044.html
-  # if [[ $OSTYPE == linux* ]]; then
-  #     trap 'echo -ne "\e[0m"' DEBUG # this one is invoked every time before a command is executed
-  # fi
+    while [[ $dash_line_width -gt 0 ]]
+    do
+        dash_line="-${dash_line}"
+        let dash_line_width=${dash_line_width}-1
+    done
+
+    # indicator treatment
+    if [[ "$PWD" == "$HOME" ]]; then
+        local indicator="${BASE0}>${COFF} "
+    else
+        local indicator=" ${BASE0}~>${COFF} "
+    fi
+
+    pwd_str="${BASE0}\w${COFF}"
+    git_str="$(git_prompt)"
+
+    status_line="$BASE00$prefix_str $dash_line $time_str$COFF"
+    old_ps1="${last_state}${pwd_str}${git_str}${indicator}"
+
+    PS1="$status_line\n$old_ps1"
+
+    # Temporarily comment out the trap DEBUG line due to a Linux specific bug
+    # Wait until it get fixed
+    # Related forum post: http://gnu-bash.2382.n7.nabble.com/Latest-fix-for-DEBUG-causes-pipes-to-fail-when-used-with-trap-and-an-interactive-shell-td13044.html
+    # if [[ $OSTYPE == linux* ]]; then
+    #     trap 'echo -ne "\e[0m"' DEBUG # this one is invoked every time before a command is executed
+    # fi
 }
 
 PROMPT_COMMAND="prettify_prompt; $PROMPT_COMMAND"
