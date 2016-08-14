@@ -25,7 +25,8 @@ export HISTSIZE=999
 export HISTFILESIZE=999
 export HISTCONTROL=ignoredups:erasedups
 shopt -s histappend
-export PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
+# NOTE: to avoid duplication on reload, reset PROMP_COMMAND here
+export PROMPT_COMMAND='history -a'
 
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
@@ -101,11 +102,18 @@ export PATH="$HOME/.rbenv/plugins/ruby-build/bin:$PATH"
 
 # nodejs
 export PATH=$HOME/.npm/bin:$PATH
-export NODE_PATH=$NODE_PATH:$HOME/.npm-packages/lib/node_modules
+export NODE_PATH=$HOME/.npm-packages/lib/node_modules:$NODE_PATH
 export PATH="$HOME/.npm-packages/bin:$PATH"
 
 # user bin
 export PATH="$HOME/.local/bin:$PATH"
+
+# go bin
+export PATH=/usr/local/opt/go/libexec/bin:$PATH
+
+# TODO: Move path settings to .bash_profile
+# remove duplicates from $PATH
+PATH=$(echo -n "$PATH" | awk -v RS=: -v ORS=: '!x[$0]++' | sed "s/\(.*\).\{1\}/\1/")
 
 # just for fun
 case $((RANDOM%3)) in
@@ -125,4 +133,3 @@ complete -W "$(grep --text '^ssh ' "$HOME"/.bash_history | sort -u | sed 's/^ssh
 # viiiiiiiiiiiiiiii ftw
 set -o history
 set -o vi
-export PATH=$PATH:/usr/local/opt/go/libexec/bin
