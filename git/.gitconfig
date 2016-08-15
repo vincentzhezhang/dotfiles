@@ -1,10 +1,12 @@
 [alias]
-  ci = commit
+  ci = commit -v
   co = checkout
-  st = status
-  br = branch
+  st = status -sb
+  br = branch -vv
   lg = log --graph --pretty=format:'%C(yellow)%h%Creset%C(yellow)%d%Creset %s %C(green)(%cd)%Creset %C(bold cyan)<%aE>%Creset' --abbrev-commit --date=short
+  last = log -1 HEAD
   sn = !bash -c 'git checkout -b snapshot_$(/usr/bin/env date "+%y%m%d_%H%M%S")'
+  unstage = reset HEAD --
   summary = !/usr/bin/env bash -c '\
     git log --pretty=oneline \
     --abbrev-commit \
@@ -13,7 +15,7 @@
     --reverse \
     --since=$(date -u +"%Y-%m-%dT00:00:00") \
     --use-mailmap \
-    '
+  '
 [user]
   name = Vincent Zhang
   email = v.zh@msn.com
@@ -23,7 +25,7 @@
   editor = gedit
   historybrowser = gitk
 [core]
-  editor = vim
+  editor = nvim
 [color]
   ui = auto
 [color "branch"]
