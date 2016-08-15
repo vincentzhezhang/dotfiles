@@ -1,18 +1,19 @@
 #! /usr/bin/env bash
-##################################################
-#       some very useful bash constants          #
-##################################################
 
 # Colour Off
 # shellcheck disable=SC2034
 COFF="\[\033[0m\]"
 
+#
 # Solarized Colour theme in convenient naming
-color_names=(BASE03 BASE02 BASE01 BASE00 BASE0 BASE1 BASE2 BASE3 YELLOW ORANGE RED MAGENTA VIOLET BLUE CYAN GREEN)
+#
 color_codes=(234 235 240 241 244 245 254 230 136 166 160 125 61 33 37 64)
+color_names=(BASE03 BASE02 BASE01 BASE00 BASE0 BASE1 BASE2 BASE3 YELLOW ORANGE RED MAGENTA VIOLET BLUE CYAN GREEN)
 for i in "${!color_names[@]}"; do
-  declare  "${color_names[$i]}=\[\e[00;38;5;${color_codes[$i]}m\]"  # Normal
-  declare "B${color_names[$i]}=\[\e[01;38;5;${color_codes[$i]}m\]"  # Bold
-  declare "U${color_names[$i]}=\[\e[04;38;5;${color_codes[$i]}m\]"  # Underlined
-  declare "I${color_names[$i]}=\[\e[04;38;5;${color_codes[$i]}m\]"  # Inverse
+  declare  "${color_names[$i]}=\[\033[00;38;5;${color_codes[$i]}m\]"  # Normal
+  declare "B${color_names[$i]}=\[\033[01;38;5;${color_codes[$i]}m\]"  # Bold
+  declare "U${color_names[$i]}=\[\033[04;38;5;${color_codes[$i]}m\]"  # Underlined
+  declare "I${color_names[$i]}=\[\033[04;38;5;${color_codes[$i]}m\]"  # Inverse
 done
+unset color_codes
+unset color_names
