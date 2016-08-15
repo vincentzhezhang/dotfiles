@@ -165,6 +165,16 @@ bullshit()
 }
 
 #
+# Some useful tips. TODO: add more tips for other frequently used apps
+#
+bulltruth()
+{
+    cowstates=(b d g p s t w t y)
+    cowstate=${cowstates[$RANDOM % ${#cowstates[@]}]}
+    git-tip | fold -s -w 60 | cowthink -"${cowstate}" -n | toilet -F gay -f term
+}
+
+#
 # git prompt snippet, use plumbing commands for reliable states parsing
 #
 git_prompt()

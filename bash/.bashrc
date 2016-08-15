@@ -116,14 +116,17 @@ export PATH=/usr/local/opt/go/libexec/bin:$PATH
 PATH=$(echo -n "$PATH" | awk -v RS=: -v ORS=: '!x[$0]++' | sed "s/\(.*\).\{1\}/\1/")
 
 # just for fun
-case $((RANDOM%3)) in
+case $((RANDOM%4)) in
     0)
         bullshit
         ;;
     1)
-        retrogame invaders
+        bulltruth
         ;;
     2)
+        retrogame invaders
+        ;;
+    3)
         retrogame pacman
         ;;
 esac
