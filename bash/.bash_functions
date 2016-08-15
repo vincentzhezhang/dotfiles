@@ -177,24 +177,50 @@ git_prompt()
         if [[ -z $current_status ]]; then
             unset dirty_state
         else
-            local dirty_state="${ORANGE}*(${COFF}"
-            new_files_count=$(echo "$current_status" | grep -e '^A  ' --count)
-            modified_files_count=$(echo "$current_status" | grep -e '^ M ' --count)
-            deleted_files_count=$(echo "$current_status" | grep -e '^ D ' --count)
-            untracked_files_count=$(echo "$current_status" | grep -e '^?? ' --count)
-            if [[ $new_files_count -gt 0 ]]; then
-                dirty_state+="${GREEN}N${new_files_count}${COFF}"
+            local dirty_state=''
+            #
+            # NOTE: for matching patterns, please refer to git status manual
+            #
+            # stats for files not staged
+            local unstaged_state=''
+            modified_count=$(echo "$current_status" | grep -E '^( M|MM) ' --count)
+            deleted_count=$(echo "$current_status" | grep -E '^( D|DD) ' --count)
+            untracked_files_count=$(echo "$current_status" | grep -E '^\?\? ' --count)
+
+            if [[ $modified_count -gt 0 ]]; then
+                unstaged_state+="${BLUE}m${modified_count}${COFF}"
             fi
-            if [[ $modified_files_count -gt 0 ]]; then
-                dirty_state+="${BLUE}M${modified_files_count}${COFF}"
-            fi
-            if [[ $deleted_files_count -gt 0 ]]; then
-                dirty_state+="${RED}D${deleted_files_count}${COFF}"
+            if [[ $deleted_count -gt 0 ]]; then
+                unstaged_state+="${RED}d${deleted_count}${COFF}"
             fi
             if [[ $untracked_files_count -gt 0 ]]; then
-                dirty_state+="${VIOLET}U${untracked_files_count}${COFF}"
+                unstaged_state+="${VIOLET}u${untracked_files_count}${COFF}"
             fi
-            dirty_state+="${ORANGE})${COFF}"
+
+            if [[ -n "$unstaged_state" ]]; then
+                dirty_state+="${unstaged_state}${ORANGE}|${COFF}"
+            fi
+
+            # stats for staged files
+            local staged_state=''
+            staged_new_count=$(echo "$current_status" | grep -E '^A  ' --count)
+            staged_modified_count=$(echo "$current_status" | grep -E '^(M |MM) ' --count)
+            staged_deleted_count=$(echo "$current_status" | grep -E '^(D |DD) ' --count)
+            if [[ $staged_new_count -gt 0 ]]; then
+                staged_state+="${GREEN}A${staged_new_count}${COFF}"
+            fi
+            if [[ $staged_modified_count -gt 0 ]]; then
+                staged_state+="${BLUE}M${staged_modified_count}${COFF}"
+            fi
+            if [[ $staged_deleted_count -gt 0 ]]; then
+                staged_state+="${RED}D${staged_deleted_count}${COFF}"
+            fi
+
+            if [[ -n "$staged_state" ]]; then
+                dirty_state+="$staged_state"
+            fi
+
+            dirty_state="${ORANGE}*(${COFF}${dirty_state}${ORANGE})${COFF}"
         fi
 
         # only check status against tracking upstream when it exists
