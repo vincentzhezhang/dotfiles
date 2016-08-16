@@ -207,10 +207,6 @@ git_prompt()
                 unstaged_state+="${VIOLET}u${untracked_files_count}${COFF}"
             fi
 
-            if [[ -n "$unstaged_state" ]]; then
-                dirty_state+="${unstaged_state}${ORANGE}|${COFF}"
-            fi
-
             # stats for staged files
             local staged_state=''
             staged_new_count=$(echo "$current_status" | grep -E '^A  ' --count)
@@ -224,6 +220,14 @@ git_prompt()
             fi
             if [[ $staged_deleted_count -gt 0 ]]; then
                 staged_state+="${RED}D${staged_deleted_count}${COFF}"
+            fi
+
+            if [[ -n "$unstaged_state" ]]; then
+                dirty_state+="$unstaged_state"
+            fi
+
+            if [[ -n "$unstaged_state" && -n "$staged_state" ]]; then
+                dirty_state+="${ORANGE}|${COFF}"
             fi
 
             if [[ -n "$staged_state" ]]; then
