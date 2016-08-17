@@ -3,10 +3,19 @@
   co = checkout
   st = status -sb
   br = branch -vv
-  lg = log --graph --pretty=format:'%C(yellow)%h%Creset%C(yellow)%d%Creset %s %C(green)(%cd)%Creset %C(bold cyan)<%aE>%Creset' --abbrev-commit --date=short
   last = log -1 HEAD
   sn = !bash -c 'git checkout -b snapshot_$(/usr/bin/env date "+%y%m%d_%H%M%S")'
   unstage = reset HEAD --
+  lg = log --graph -12 \
+--date=format:'%a %b %d, %H:%M' \
+--pretty=format:'\
+%C(yellow)%h%Creset\
+%C(yellow)%<(72,trunc)%d%Creset \
+%C(green)(%cd)%Creset \
+%C(bold cyan)<%cN>%Creset \
+%n\
+%w(80)%s\
+%n'
   summary = !/usr/bin/env bash -c '\
     git log --pretty=oneline \
     --abbrev-commit \
