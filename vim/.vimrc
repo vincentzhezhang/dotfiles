@@ -59,6 +59,7 @@ Plug 'Valloric/YouCompleteMe', { 'do': function('BuildYCM') }
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'vim-ruby/vim-ruby', { 'do': function('InstallRubySupport') }
+Plug 'wakatime/vim-wakatime'
 Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'zenbro/mirror.vim'
 call plug#end()
@@ -259,6 +260,7 @@ nnoremap <leader>j i<return><esc>
 " NERDTree
 map <C-\> :NERDTreeFind<CR>
 let g:NERDTreeWinSize=30
+" TODO: find better icons, current looks too bulky and not consistent
 let g:NERDTreeIndicatorMapCustom = {
     \ 'Modified'  : '✹',
     \ 'Staged'    : '✚',
