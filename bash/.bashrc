@@ -101,9 +101,7 @@ eval "$(rbenv init -)"
 export PATH="$HOME/.rbenv/plugins/ruby-build/bin:$PATH"
 
 # nodejs
-export PATH=$HOME/.npm/bin:$PATH
-export NODE_PATH=$HOME/.npm-packages/lib/node_modules:$NODE_PATH
-export PATH="$HOME/.npm-packages/bin:$PATH"
+export PATH="$HOME/.node_modules_global/bin:$PATH"
 
 # user bin
 export PATH="$HOME/.local/bin:$PATH"
