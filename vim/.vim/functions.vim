@@ -9,21 +9,23 @@
 " - name:   name of the plugin
 " - status: 'installed', 'updated', or 'unchanged'
 " - force:  set on PlugInstall! or PlugUpdate!
-function! BuildYCM(info)
-  if a:info.status ==? 'installed' || a:info.status ==? 'updated' || a:info.force
+function! BuildYCM(...)
+  if a:0 < 1 || a:info.status ==? 'installed' || a:info.status ==? 'updated' || a:info.force
     !./install.py --clang-completer --tern-completer
   endif
 endfunction
 
-function! InstallRubySupport(info)
-  if a:info.status ==? 'installed' || a:info.force
+function! InstallRubySupport(...)
+  if a:0 < 1 || a:info.status ==? 'installed' || a:info.force
     !gem install neovim
   endif
 endfunction
 
-function! InstallPythonSupport(info)
-  if a:info.status ==? 'installed' || a:info.force
-    !pip install neovim
+function! InstallPythonSupport(...)
+  if a:0 < 1 || a:info.status ==? 'installed' || a:info.force
+    !pip  install --upgrade --user neovim
+    !pip2 install --upgrade --user neovim
+    !pip3 install --upgrade --user neovim
   endif
 endfunction
 

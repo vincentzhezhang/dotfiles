@@ -5,7 +5,6 @@ source ~/.vim/variables.vim
 " load helper functions
 source ~/.vim/functions.vim
 set termguicolors
-filetype off
 
 if (empty($TMUX))
   if (has('termguicolors'))
@@ -13,7 +12,21 @@ if (empty($TMUX))
   endif
 endif
 
-call plug#begin('~/.vim/bundle')
+if has('nvim')
+  if empty(glob('~/.config/nvim/autoload/plug.vim'))
+    silent !curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs
+      \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+    autocmd VimEnter * PlugInstall | source $MYVIMRC
+  endif
+else
+  if empty(glob('~/.vim/autoload/plug.vim'))
+    silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+      \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+    autocmd VimEnter * PlugInstall | source $MYVIMRC
+  endif
+endif
+
+call plug#begin('~/.vim/plugged')
 Plug 'L9'
 Plug 'airblade/vim-gitgutter'
 Plug 'AndrewRadev/splitjoin.vim'
@@ -89,10 +102,6 @@ set cursorline
 set list
 set listchars=nbsp:¬,tab:»·,trail:·
 syntax enable         " Enable syntax highlight
-filetype on           " Enable filetype detection
-filetype indent on    " Enable filetype-specific indenting
-filetype plugin on    " Enable filetype-specific plugins
-" enable per-project .vimrc files
 set exrc
 " Only execute safe per-project vimrc commands
 set secure
