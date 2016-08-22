@@ -132,8 +132,10 @@ esac
 complete -W "$(grep --text '^ssh ' "$HOME"/.bash_history | sort -u | sed 's/^ssh //')" ssh
 
 # viiiiiiiiiiiiiiii ftw
-set -o history
 set -o vi
 
 # reset term output status, execute before each command is executed
 trap 'tput sgr0' DEBUG
+
+# turn on history
+set -o history
