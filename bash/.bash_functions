@@ -181,8 +181,18 @@ git_prompt()
 {
     # check if current working directory is a git tracked directory
     if (git rev-parse --git-dir &> /dev/null); then
+        git_dir="$(git rev-parse --git-dir)"
         current_branch="$(git symbolic-ref --short HEAD 2> /dev/null)"
         current_status="$(git status --porcelain 2> /dev/null)"
+
+        # detect rebase in progress
+        rb_merge_dir="${git_dir}/rebase-merge"
+        rb_apply_dir="${git_dir}/rebase-apply"
+
+        if [[ -d $rb_merge_dir || -d $rb_apply_dir ]]; then
+            echo "${BRED}[R]${COFF}"
+            return
+        fi
 
         if [[ -z $current_status ]]; then
             unset dirty_state
