@@ -3,6 +3,16 @@
   co = checkout
   st = status -sb
   br = branch -vv
+  brr = !/usr/bin/env bash -c '\
+    git for-each-ref \
+    --sort=\"-committerdate\" refs/heads/ \
+    --format=\"%(HEAD) %(color:red)%(objectname:short)%(color:reset)|\
+    %(color:yellow)%(refname:short)%(color:reset)|\
+    (%(color:green)%(committerdate:relative)%(color:reset))|\
+    %(authorname)|\
+    %(contents:subject)\"\
+    | column -t -s \"|\"\
+  '
   last = log -1 HEAD
   sn = !bash -c 'git checkout -b snapshot_$(/usr/bin/env date "+%y%m%d_%H%M%S")'
   unstage = reset HEAD --
