@@ -21,12 +21,14 @@ export VISUAL="vim"
 shopt -s checkwinsize
 
 # history related settings
-export HISTSIZE=999
-export HISTFILESIZE=999
-export HISTCONTROL=ignoredups:erasedups
 shopt -s histappend
+shopt -s cmdhist
+HISTSIZE=2048
+HISTFILESIZE=2048
+HISTCONTROL=ignoreboth:erasedups
+HISTIGNORE='ls:bg:fg:history'
 # NOTE: to avoid duplication on reload, reset PROMP_COMMAND here
-export PROMPT_COMMAND='history -a'
+PROMPT_COMMAND='history -a'
 
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
