@@ -17,15 +17,13 @@
   sn = !bash -c 'git checkout -b snapshot_$(/usr/bin/env date "+%y%m%d_%H%M%S")'
   unstage = reset HEAD --
   lg = log --graph -12 \
---date=format:'%a %b %d, %H:%M' \
+--date=format:'%m-%d %H:%M' \
 --pretty=format:'\
 %C(yellow)%h%Creset \
-%C(green)[%cd]%Creset \
-%C(magenta)<%cN>%Creset\
-%C(cyan)%<(72,trunc)%d%Creset \
-%n\
-        %w(80)%s\
-%n'
+%C(green)[%ad]%Creset \
+%C(magenta)<%aN>%Creset\
+%C(cyan)%w(50)%d%Creset%n \
+%w(80)%s%n'
   summary = !/usr/bin/env bash -c '\
     git log --pretty=oneline \
     --abbrev-commit \
