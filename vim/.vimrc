@@ -181,7 +181,6 @@ let g:syntastic_check_on_wq = 0
 let g:syntastic_ruby_checkers = ['mri', 'rubocop']
 let g:syntastic_vim_checkers = ['vint']
 set synmaxcol=1024  " limit syntax color for long lines
-set lazyredraw      " to avoid scrolling problems
 set scrolloff=3     " Have some context around the current line always on screen
 set hlsearch        " Highlight search results
 highlight Search ctermfg=202 ctermbg=NONE cterm=bold,underline
