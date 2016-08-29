@@ -191,8 +191,10 @@ augroup ruby_rails
   au BufEnter *.rb syn match error contained "\<debugger\>"
 augroup END
 
-" language specific indentation settings
+" language specific format settings
 augroup indentations
+  autocmd!
+  autocmd FileType text setlocal wrap
   autocmd FileType c      setlocal tabstop=4 softtabstop=4 shiftwidth=4
   autocmd FileType cpp    setlocal tabstop=4 softtabstop=4 shiftwidth=4
   autocmd FileType python setlocal tabstop=4 softtabstop=4 shiftwidth=4
