@@ -53,6 +53,7 @@ Plug 'mbbill/undotree'
 Plug 'mhinz/vim-startify'
 Plug 'mtscout6/vim-cjsx'
 Plug 'mxw/vim-jsx'
+Plug 'neomake/neomake'
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'othree/javascript-libraries-syntax.vim'
 Plug 'pangloss/vim-javascript'
@@ -61,7 +62,6 @@ Plug 'Raimondi/delimitMate'
 Plug 'rking/ag.vim'
 Plug 'scrooloose/nerdcommenter'
 Plug 'scrooloose/nerdtree'
-Plug 'scrooloose/syntastic'
 Plug 'slim-template/vim-slim'
 Plug 'terryma/vim-multiple-cursors'
 Plug 'thoughtbot/vim-rspec'
@@ -130,13 +130,21 @@ map Q <Nop>
 " turn off Recording mode
 map q <Nop>
 
-let loaded_matchparen = 1
+let g:loaded_matchparen = 1
 " strip trailing whitespace before save
 "
 augroup cleanup
   autocmd!
   autocmd BufWritePre * StripWhitespace
 augroup END
+
+" run Neomake on every write
+augroup neomake_hooks
+  autocmd!
+  autocmd BufWinEnter * Neomake
+  autocmd BufWritePost * Neomake
+augroup END
+
 
 " TODO: migrate from function keys to other combination as I am going to use
 " smaller keyboard layout
@@ -146,7 +154,7 @@ set pastetoggle=<F2>
 noremap <silent> <F12> :set number!<CR>
 
 " Base16 colorscheme plugin settings
-let base16colorspace=256  " Access colors present in 256 colorspace
+let g:base16colorspace=256  " Access colors present in 256 colorspace
 " some OS detection and customization here, should bind some dark/light theme
 " switcher hotkey
 let s:uname = system('uname -s')
@@ -178,12 +186,6 @@ endif
 set statusline+=%#warningmsg#
 set statusline+=%{SyntasticStatuslineFlag()}
 set statusline+=%*
-let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 1
-let g:syntastic_check_on_open = 1
-let g:syntastic_check_on_wq = 0
-let g:syntastic_ruby_checkers = ['mri', 'rubocop']
-let g:syntastic_vim_checkers = ['vint']
 set synmaxcol=1024  " limit syntax color for long lines
 set scrolloff=3     " Have some context around the current line always on screen
 set hlsearch        " Highlight search results
@@ -206,7 +208,7 @@ augroup indentations
 augroup END
 
 " change leader key
-let mapleader=' '
+let g:mapleader=' '
 
 " some key remappings to resolve conflict brought by vim-multiple-cursors
 let g:multi_cursor_use_default_mapping = 0
