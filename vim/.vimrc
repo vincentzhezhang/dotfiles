@@ -4,7 +4,11 @@
 source ~/.vim/variables.vim
 " load helper functions
 source ~/.vim/functions.vim
+
 set termguicolors
+" TODO: The environment variable is a temporary measure; finer-grained control
+" may be supported in the future
+let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
 
 if (empty($TMUX))
   if (has('termguicolors'))
