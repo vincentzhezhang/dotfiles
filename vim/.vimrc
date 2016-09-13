@@ -5,30 +5,7 @@ source ~/.vim/variables.vim
 " load helper functions
 source ~/.vim/functions.vim
 
-set termguicolors
-" TODO: The environment variable is a temporary measure; finer-grained control
-" may be supported in the future
-let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
-
-if (empty($TMUX))
-  if (has('termguicolors'))
-    set termguicolors
-  endif
-endif
-
-if has('nvim')
-  if empty(glob('~/.config/nvim/autoload/plug.vim'))
-    silent !curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs
-      \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-    autocmd VimEnter * PlugInstall | source $MYVIMRC
-  endif
-else
-  if empty(glob('~/.vim/autoload/plug.vim'))
-    silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
-      \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-    autocmd VimEnter * PlugInstall | source $MYVIMRC
-  endif
-endif
+call SetupVimPlug()
 
 call plug#begin('~/.vim/plugged')
 Plug 'L9'
@@ -81,45 +58,45 @@ Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'zenbro/mirror.vim'
 call plug#end()
 
+" Backwards compatibility for Vim, most of them are set by default in NeoVim
+if !has('nvim')
+  set autoindent
+  set autoread        " Autoreload buffers
+  set encoding=utf-8  " Use UTF-8 encoding
+  set hlsearch        " Highlight search results
+  set laststatus=2    " Always display the statusline in all windows
+  set nocompatible    " be advanced
+  set smarttab
+  set ttyfast
+end
+
 " General formatting config
-set encoding=utf-8              " Use UTF-8 encoding
-set fileencodings=utf-8
 scriptencoding utf-8
-set autoindent
-set autoread                    " Autoreload buffers
 set autowrite                   " Save changes before switching buffers
 set backspace=indent,eol,start  " Make backspace behave more normally
+set cursorline
 set expandtab                   " Expand tabs to spaces
-set nobackup                    " Don't backup
-set noswapfile                  " Don't use swap files (.swp)
-set nowrap                      " Don't wrap lines
+set exrc
+set fileencodings=utf-8
+set list
+set listchars=nbsp:¬,tab:»·,trail:·
+set nobackup
+set noswapfile
+set nowrap
 set nowritebackup               " Write file in place
-set number                      " Show line numbers
+set number
+set secure                      " Only execute safe per-project vimrc commands
 set shiftwidth=2
 set smartindent
-set smarttab
 set softtabstop=0
 set tabstop=2
 
 " needs cleanup
-set cursorline
-set list
-set listchars=nbsp:¬,tab:»·,trail:·
-syntax enable         " Enable syntax highlight
-set exrc
-" Only execute safe per-project vimrc commands
-set secure
 " Recommended settings from powerline
-set laststatus=2        " Always display the statusline in all windows
 set showtabline=2       " Always display the tabline, even if there is only one tab
 set noshowmode          " Hide the default mode text
 let g:airline_powerline_fonts=1
 let g:airline#extensions#tabline#enabled = 1
-
-" settings for gui
-if has('gui_running')
-  set guifont=Input\ Mono:h16
-endif
 
 " case-insensitive for some common commands
 command! Q q
@@ -130,28 +107,37 @@ map Q <Nop>
 " turn off Recording mode
 map q <Nop>
 
-let g:loaded_matchparen = 1
 " strip trailing whitespace before save
-"
 augroup cleanup
   autocmd!
   autocmd BufWritePre * StripWhitespace
 augroup END
 
-" run Neomake on every write
+" trigger Neomake automatically
 augroup neomake_hooks
   autocmd!
   autocmd BufWinEnter * Neomake
   autocmd BufWritePost * Neomake
 augroup END
 
-
 " TODO: migrate from function keys to other combination as I am going to use
 " smaller keyboard layout
 " bind paste mode for ease of use
+" TODO: seems NeoVim set bracketed-paste-mode by default, which solve the
+" indentation problem on paste, need double check on:
+" https://cirw.in/blog/bracketed-paste
 set pastetoggle=<F2>
+
 " Quick switch between numbers ruler
 noremap <silent> <F12> :set number!<CR>
+
+" TODO: The environment variable is a temporary measure; finer-grained control
+" may be supported in the future
+let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
+
+if exists('+termguicolors')
+  set termguicolors
+endif
 
 " Base16 colorscheme plugin settings
 let g:base16colorspace=256  " Access colors present in 256 colorspace
@@ -186,9 +172,9 @@ endif
 set statusline+=%#warningmsg#
 set statusline+=%{SyntasticStatuslineFlag()}
 set statusline+=%*
+
 set synmaxcol=1024  " limit syntax color for long lines
 set scrolloff=3     " Have some context around the current line always on screen
-set hlsearch        " Highlight search results
 highlight Search ctermfg=202 ctermbg=NONE cterm=bold,underline
 
 augroup ruby_rails
@@ -304,3 +290,5 @@ augroup on_startup
               \ |   wincmd w
               \ | endif
 augroup END
+
+syntax enable         " Enable syntax highlight
