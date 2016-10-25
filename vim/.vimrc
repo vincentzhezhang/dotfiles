@@ -95,6 +95,7 @@ set tabstop=2
 " Recommended settings from powerline
 set showtabline=2       " Always display the tabline, even if there is only one tab
 set noshowmode          " Hide the default mode text
+let &showbreak='↪ '     " Make soft wrap more visible
 let g:airline_powerline_fonts=1
 let g:airline#extensions#tabline#enabled = 1
 
@@ -147,8 +148,8 @@ let s:uname = system('uname -s')
 let s:hostname = system('uname -n')
 let s:sys_hour = system("date '+%k'")
 " TODO: dynamic day/night range from system or external API
-let s:sunrise = 6
-let s:sunset = 18
+let s:sunrise = 7
+let s:sunset = 16
 
 " Adaptive colorscheme switching
 if s:sys_hour >= s:sunrise && s:sys_hour <= s:sunset
