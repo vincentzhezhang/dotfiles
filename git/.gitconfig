@@ -2,7 +2,7 @@
   ci = commit -v
   co = checkout
   st = status -sb
-  br = branch -vv
+  br = branch -vv --sort='-committerdate'
   brr = !/usr/bin/env bash -c '\
     git for-each-ref \
     --sort=\"-committerdate\" refs/heads/ \
@@ -22,19 +22,19 @@
 %C(yellow)%h%Creset \
 %C(green)[%ad]%Creset \
 %C(magenta)<%aN>%Creset\
-%C(cyan)%w(50)%d%Creset%n \
+%C(cyan)%d%Creset%n \
 %w(80)%s%n'
   summary = !/usr/bin/env bash -c '\
     git log --pretty=oneline \
     --abbrev-commit \
-    --committer=$(git config user.email) \
+    --author=$(git config user.email) \
     --no-merges \
     --reverse \
     --since=$(date -u +"%Y-%m-%dT00:00:00") \
     --use-mailmap \
   '
 [user]
-  name = Vincent Zhang
+	name = Vincent Zhang
   email = v.zh@msn.com
 [github]
   user = vincentzhezhang
@@ -70,10 +70,11 @@
   default = simple
 [cola]
   fontdiff = Input Mono,14,-1,5,50,0,0,0,0,0
-  fontdiff = Input,12,-1,5,50,0,0,0,0,0
-  tabwidth = 2
+	tabwidth = 2
   textwidth = 80
-  boldheaders = true
+	boldheaders = true
+	savewindowsettings = true
+	blameviewer = git gui blame
 [filter "lfs"]
   clean = git-lfs clean %f
   smudge = git-lfs smudge %f
