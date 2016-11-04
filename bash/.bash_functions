@@ -203,8 +203,8 @@ git_prompt()
             #
             # stats for files not staged
             local unstaged_state=''
-            modified_count=$(echo "$current_status" | grep -E '^( M|MM) ' --count)
-            deleted_count=$(echo "$current_status" | grep -E '^( D|DD) ' --count)
+            modified_count=$(echo "$current_status" | grep -E '^.M' --count)
+            deleted_count=$(echo "$current_status" | grep -E '^.D' --count)
             untracked_files_count=$(echo "$current_status" | grep -E '^\?\? ' --count)
 
             if [[ $modified_count -gt 0 ]]; then
@@ -219,9 +219,9 @@ git_prompt()
 
             # stats for staged files
             local staged_state=''
-            staged_new_count=$(echo "$current_status" | grep -E '^A  ' --count)
-            staged_modified_count=$(echo "$current_status" | grep -E '^(M |MM) ' --count)
-            staged_deleted_count=$(echo "$current_status" | grep -E '^(D |DD) ' --count)
+            staged_new_count=$(echo "$current_status" | grep -E '^A' --count)
+            staged_modified_count=$(echo "$current_status" | grep -E '^M' --count)
+            staged_deleted_count=$(echo "$current_status" | grep -E '^D' --count)
             if [[ $staged_new_count -gt 0 ]]; then
                 staged_state+="${GREEN}A${staged_new_count}${COFF}"
             fi
