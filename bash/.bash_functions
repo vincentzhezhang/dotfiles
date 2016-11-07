@@ -189,8 +189,11 @@ git_prompt()
         rb_merge_dir="${git_dir}/rebase-merge"
         rb_apply_dir="${git_dir}/rebase-apply"
 
-        if [[ -d $rb_merge_dir || -d $rb_apply_dir ]]; then
-            echo "${BRED}[R]${COFF}"
+        if [[ -d $rb_apply_dir ]]; then
+            echo "${BRED}[-R-]${COFF}"
+            return
+        elif [[ -d $rb_merge_dir ]]; then
+            echo "${BRED}[-M-]${COFF}"
             return
         fi
 
