@@ -28,7 +28,6 @@ Plug 'Lokaltog/vim-easymotion'
 Plug 'lifepillar/vim-solarized8'
 Plug 'mbbill/undotree'
 Plug 'mhinz/vim-startify'
-Plug 'mtscout6/vim-cjsx'
 Plug 'mxw/vim-jsx'
 Plug 'neomake/neomake'
 Plug 'ntpeters/vim-better-whitespace'
@@ -161,7 +160,7 @@ end
 " display a recommended column width guide and gray out columns after maximum
 " width
 if exists('+colorcolumn')
-  let &colorcolumn='80,'.join(range(120,360),',')
+  let &colorcolumn='80'
   if s:sys_hour >= s:sunrise && s:sys_hour <= s:sunset
     highlight ColorColumn ctermbg=7
   else
@@ -263,15 +262,21 @@ nnoremap <leader>j i<return><esc>
 " NERDTree
 map <C-\> :NERDTreeFind<CR>
 let g:NERDTreeWinSize=30
-" TODO: find better icons, current looks too bulky and not consistent
+let g:NERDTreeDirArrowExpandable = '▸'
+let g:NERDTreeDirArrowCollapsible = '▾'
+
+
+" NerdTree git plugin
+" TODO: find better icons, the previous one looks too bulky and not
+" consistent, thus replaced by ascii characters
 let g:NERDTreeIndicatorMapCustom = {
-    \ 'Modified'  : '✹',
-    \ 'Staged'    : '✚',
-    \ 'Untracked' : '✭',
-    \ 'Renamed'   : '➜',
-    \ 'Unmerged'  : '╖',
-    \ 'Dirty'     : '✗',
-    \ 'Clean'     : '✔︎',
+    \ 'Modified'  : '*',
+    \ 'Staged'    : '+',
+    \ 'Untracked' : 'u',
+    \ 'Renamed'   : '»',
+    \ 'Unmerged'  : '≠',
+    \ 'Dirty'     : '*',
+    \ 'Clean'     : '✓',
     \ 'Unknown'   : '?'
     \ }
 
