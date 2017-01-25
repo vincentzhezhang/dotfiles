@@ -9,6 +9,11 @@ case $- in
     *) return;;
 esac
 
+# Handy prerequisites injection
+if [ -f ~/.bashrc.before ]; then
+    . ~/.bashrc.before
+fi
+
 # Load essential constants
 if [ -f "$HOME/.bash_constants" ]; then
     . "$HOME/.bash_constants"
@@ -99,8 +104,10 @@ esac
 
 # rbenv
 export PATH="$HOME/.rbenv/bin:$PATH"
-eval "$(rbenv init -)"
 export PATH="$HOME/.rbenv/plugins/ruby-build/bin:$PATH"
+if [ -x rbenv ]; then
+    eval "$(rbenv init -)"
+fi
 
 # nodejs
 export PATH="$HOME/.node_modules_global/bin:$PATH"
@@ -139,5 +146,12 @@ set -o vi
 # reset term output status, execute before each command is executed
 # trap 'tput sgr0' DEBUG
 
+# Handy overwrites injection
+if [ -f ~/.bashrc.after ]; then
+    . ~/.bashrc.after
+fi
+
 # turn on history
 set -o history
+
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash

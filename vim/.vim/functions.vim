@@ -33,7 +33,7 @@ endfunction
 " quick switch between color schemes
 "
 function LightSide()
-  colorscheme solarized8_light
+  colorscheme solarized8_light_high
   let g:airline_theme='solarized'
   set background=light
 endfunction
@@ -41,7 +41,7 @@ endfunction
 function DarkSide()
   colorscheme gruvbox
   let g:airline_theme='zenburn'
-  let g:gruvbox_contrast_dark='soft'
+  let g:gruvbox_contrast_dark='hard'
   let g:gruvbox_contrast_light='hard'
   set background=dark
 endfunction

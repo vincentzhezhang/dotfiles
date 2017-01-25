@@ -2,7 +2,7 @@
   ci = commit -v
   co = checkout
   st = status -sb
-  br = branch -vv --sort='-committerdate'
+  br = branch -vv
   brr = !/usr/bin/env bash -c '\
     git for-each-ref \
     --sort=\"-committerdate\" refs/heads/ \
@@ -16,8 +16,8 @@
   last = log -1 HEAD
   sn = !bash -c 'git checkout -b snapshot_$(/usr/bin/env date "+%y%m%d_%H%M%S")'
   unstage = reset HEAD --
-  lg = log --graph -12 \
---date=format:'%m-%d %H:%M' \
+  lg = log --graph -30 \
+--date=iso \
 --pretty=format:'\
 %C(yellow)%h%Creset \
 %C(green)[%ad]%Creset \
@@ -33,9 +33,10 @@
     --since=$(date -u +"%Y-%m-%dT00:00:00") \
     --use-mailmap \
   '
+  birth = log --diff-filter=A --
 [user]
 	name = Vincent Zhang
-  email = v.zh@msn.com
+  email = zhe.zhang@akunacapital.com
 [github]
   user = vincentzhezhang
 [gui]
@@ -43,6 +44,8 @@
   historybrowser = gitk
 [core]
   editor = nvim
+	autocrlf = input
+	excludesfile = /home/zhe.zhang/.gitignore_global
 [color]
   ui = auto
 [color "branch"]
@@ -69,7 +72,7 @@
 [push]
   default = simple
 [cola]
-  fontdiff = Input Mono,14,-1,5,50,0,0,0,0,0
+	fontdiff = Ubuntu Mono,12,-1,5,50,0,0,0,0,0
 	tabwidth = 2
   textwidth = 80
 	boldheaders = true
@@ -82,3 +85,5 @@
 [pager]
   diff = diff-so-fancy | less --tabs=4 -RFX
   show = diff-so-fancy | less --tabs=4 -RFX
+[http]
+	sslverify = false

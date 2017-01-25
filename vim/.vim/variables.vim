@@ -1,3 +1,6 @@
+"
+" General ignore patterns to make my life easier
+"
 " Disable output and VCS files
 set wildignore+=*.o,*.out,*.obj,.git,*.rbc,*.rbo,*.class,.svn,*.gem
 
@@ -20,7 +23,10 @@ set wildignore+=*/tmp/cache/assets/*/sprockets/*,*/tmp/cache/assets/*/sass/*
 set wildignore+=*/resources/*
 
 " Ignore node modules
-set wildignore+=node_modules/*
+set wildignore+=*/node_modules/*
+
+" Ignore static folder
+set wildignore+=*/static/*
 
 " Disable temp and backup files
 set wildignore+=*.swp,*~,._*

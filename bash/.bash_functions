@@ -160,7 +160,7 @@ bullshit()
     if [[ $OSTYPE == darwin* ]]; then
         cowsay -f "$(find "$(brew --cellar cowsay)" -name '*.cow' | gshuf -n1)" "$(fortune)" | toilet -F gay -f term
     else
-        cowsay -f "$(find /usr/share/cowsay/cows/ -name '*.cow' | shuf -n1)" "$(fortune)" | toilet -F gay -f term
+        cowsay -f "$(find $(cowsay -l | head -1 | awk '{ print substr($NF, 1, length($NF)-1) }') -name '*.cow' | shuf -n1)" "$(fortune)" | toilet -F gay -f term
     fi
 }
 

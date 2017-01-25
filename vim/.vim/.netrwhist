@@ -1,0 +1,6 @@
+let g:netrw_dirhistmax  =10
+let g:netrw_dirhist_cnt =4
+let g:netrw_dirhist_1='/sandbox/zhe.zhang/workspace/webapp/.git'
+let g:netrw_dirhist_2='/sandbox/zhe.zhang/workspace/webapp'
+let g:netrw_dirhist_3='/sandbox/zhe.zhang/workspace/python'
+let g:netrw_dirhist_4='/sandbox/zhe.zhang/workspace/t/training'

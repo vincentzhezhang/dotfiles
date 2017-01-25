@@ -20,7 +20,7 @@ prettify_prompt() {
     # user@hostname, time string and padding spaces
     short_hostname=$(/usr/bin/env hostname -s)
     prefix_str="$USER@$short_hostname"
-    time_str="$(date -u +'%H:%M:%S')"
+    time_str="$(date +'%H:%M:%S')"
     dash_line=''
     dash_line_padding=2 # spaces before and after the dash line
 

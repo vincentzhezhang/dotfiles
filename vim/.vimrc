@@ -1,33 +1,41 @@
-" TODO: try fzf, vim-easy-align
+" TODO: TRY VIM-EASY-ALIGN, AG.VIM IS DEPRECATED
+"
 " TODO: extract variables into .vim/variables.vim
-" set useful variables
+"   set useful variables
+" TODO: add optional loading of .before/.after resource file to
+"   allow per box customization
 source ~/.vim/variables.vim
 " load helper functions
 source ~/.vim/functions.vim
 
+let g:python_host_prog = '/sandbox/zhe.zhang/.miniconda2/bin/python2'
+let g:python3_host_prog = '/sandbox/zhe.zhang/.miniconda2/envs/dev/bin/python3'
+
 call SetupVimPlug()
 
+" Temporary workaround within restricted env
+let g:plug_url_format = 'https://github.com/%s.git'
 call plug#begin('~/.vim/plugged')
-Plug 'L9'
+
 Plug 'airblade/vim-gitgutter'
 Plug 'AndrewRadev/splitjoin.vim'
 Plug 'ap/vim-css-color'
 Plug 'bling/vim-bufferline'
-Plug 'chriskempson/base16-vim'
-Plug 'ctrlpvim/ctrlp.vim'
 Plug 'digitaltoad/vim-pug'
-Plug 'edkolev/tmuxline.vim'
+" Plug 'edkolev/tmuxline.vim'
+Plug 'editorconfig/editorconfig-vim'
 Plug 'elzr/vim-json'
-Plug 'flazz/vim-colorschemes'
 Plug 'godlygeek/tabular'
 Plug 'gregsexton/gitv'
 Plug 'hail2u/vim-css3-syntax'
-Plug 'kchmck/vim-coffee-script'
+" Plug 'kchmck/vim-coffee-script'
+Plug 'junegunn/fzf', { 'dir': '~/.config/fzf', 'do': './install --all' }
 Plug 'klen/python-mode'
 Plug 'Lokaltog/vim-easymotion'
 Plug 'lifepillar/vim-solarized8'
 Plug 'mbbill/undotree'
 Plug 'mhinz/vim-startify'
+Plug 'morhetz/gruvbox'
 Plug 'mxw/vim-jsx'
 Plug 'neomake/neomake'
 Plug 'ntpeters/vim-better-whitespace'
@@ -38,23 +46,22 @@ Plug 'Raimondi/delimitMate'
 Plug 'rking/ag.vim'
 Plug 'scrooloose/nerdcommenter'
 Plug 'scrooloose/nerdtree'
-Plug 'slim-template/vim-slim'
+" Plug 'slim-template/vim-slim'
 Plug 'terryma/vim-multiple-cursors'
-Plug 'thoughtbot/vim-rspec'
-Plug 'tpope/vim-cucumber'
+" Plug 'thoughtbot/vim-rspec'
+" Plug 'tpope/vim-cucumber'
 Plug 'tpope/vim-endwise'
 Plug 'tpope/vim-fugitive'
-Plug 'tpope/vim-haml'
-Plug 'tpope/vim-rails'
+" Plug 'tpope/vim-haml'
+" Plug 'tpope/vim-rails'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-surround'
 Plug 'Valloric/YouCompleteMe', { 'do': function('BuildYCM') }
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-Plug 'vim-ruby/vim-ruby', { 'do': function('InstallRubySupport') }
-Plug 'wakatime/vim-wakatime'
+" Plug 'vim-ruby/vim-ruby', { 'do': function('InstallRubySupport') }
+" Plug 'wakatime/vim-wakatime'
 Plug 'Xuyuanp/nerdtree-git-plugin'
-Plug 'zenbro/mirror.vim'
 call plug#end()
 
 " Backwards compatibility for Vim, most of them are set by default in NeoVim
@@ -90,6 +97,10 @@ set smartindent
 set softtabstop=0
 set tabstop=2
 
+" General behavioral config
+set splitbelow
+set splitright
+
 " needs cleanup
 " Recommended settings from powerline
 set showtabline=2       " Always display the tabline, even if there is only one tab
@@ -113,6 +124,8 @@ augroup cleanup
   autocmd BufWritePre * StripWhitespace
 augroup END
 
+let g:neomake_javascript_enabled_makers = ['eslint_d']
+let g:neomake_jsx_enabled_makers = ['eslint_d']
 " trigger Neomake automatically
 augroup neomake_hooks
   autocmd!
@@ -133,10 +146,14 @@ noremap <silent> <F12> :set number!<CR>
 
 " TODO: The environment variable is a temporary measure; finer-grained control
 " may be supported in the future
-let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
+" FIXME: NOT COMPATIBLE WITH TERMINATOR
+" let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
 
-if exists('+termguicolors')
-  set termguicolors
+" should add proper 24bit color support detection
+if empty($TERMINATOR_UUID)
+  if exists('+termguicolors')
+    set termguicolors
+  endif
 endif
 
 " Base16 colorscheme plugin settings
@@ -145,10 +162,11 @@ let g:base16colorspace=256  " Access colors present in 256 colorspace
 " switcher hotkey
 let s:uname = system('uname -s')
 let s:hostname = system('uname -n')
-let s:sys_hour = system("date '+%k'")
+let s:sys_hour = str2nr(system("date '+%k'"))
 " TODO: dynamic day/night range from system or external API
-let s:sunrise = 7
-let s:sunset = 16
+" NOTE: as the office has constant lighting environment, keep it dark
+let s:sunrise = 18
+let s:sunset = 8
 
 " Adaptive colorscheme switching
 if s:sys_hour >= s:sunrise && s:sys_hour <= s:sunset
@@ -159,14 +177,14 @@ end
 
 " display a recommended column width guide and gray out columns after maximum
 " width
-if exists('+colorcolumn')
-  let &colorcolumn='80'
-  if s:sys_hour >= s:sunrise && s:sys_hour <= s:sunset
-    highlight ColorColumn ctermbg=7
-  else
-    highlight ColorColumn ctermbg=237
-  end
-endif
+" if exists('+colorcolumn')
+"   let &colorcolumn='80'
+"   if s:sys_hour >= s:sunrise && s:sys_hour <= s:sunset
+"     highlight ColorColumn ctermbg=7
+"   else
+"     highlight ColorColumn ctermbg=237
+"   end
+" endif
 
 " Syntastic recommended settings
 set statusline+=%#warningmsg#
@@ -186,11 +204,13 @@ augroup END
 " language specific format settings
 augroup indentations
   autocmd!
-  autocmd FileType text setlocal wrap
-  autocmd FileType c      setlocal tabstop=4 softtabstop=4 shiftwidth=4
-  autocmd FileType cpp    setlocal tabstop=4 softtabstop=4 shiftwidth=4
-  autocmd FileType python setlocal tabstop=4 softtabstop=4 shiftwidth=4
-  autocmd FileType sh     setlocal tabstop=4 softtabstop=4 shiftwidth=4
+  autocmd FileType text         setlocal wrap
+  autocmd FileType markdown     setlocal wrap
+  autocmd FileType c            setlocal tabstop=4 softtabstop=4 shiftwidth=4
+  autocmd FileType cpp          setlocal tabstop=4 softtabstop=4 shiftwidth=4
+  autocmd FileType python       setlocal tabstop=4 softtabstop=4 shiftwidth=4
+  autocmd FileType sh           setlocal tabstop=4 softtabstop=4 shiftwidth=4
+  autocmd FileType javascript   setlocal tabstop=4 softtabstop=4 shiftwidth=4
 augroup END
 
 " change leader key
@@ -198,20 +218,10 @@ let g:mapleader=' '
 
 " some key remappings to resolve conflict brought by vim-multiple-cursors
 let g:multi_cursor_use_default_mapping = 0
-let g:multi_cursor_next_key            = '<S-n>'
-let g:multi_cursor_prev_key            = '<S-p>'
-let g:multi_cursor_skip_key            = '<S-x>'
+let g:multi_cursor_next_key            = '<C-n>'
+let g:multi_cursor_prev_key            = '<C-p>'
+let g:multi_cursor_skip_key            = '<C-x>'
 let g:multi_cursor_quit_key            = '<Esc>'
-" JavaScript settings
-let g:javascript_conceal_function   = 'ƒ'
-let g:javascript_conceal_null       = 'ø'
-let g:javascript_conceal_this       = '@'
-let g:javascript_conceal_return     = '⇚'
-let g:javascript_conceal_undefined  = '¿'
-let g:javascript_conceal_NaN        = 'ℕ'
-let g:javascript_conceal_prototype  = '¶'
-let g:javascript_conceal_static     = '•'
-let g:javascript_conceal_super      = 'Ω'
 " setup javascript-libraries-syntax
 let g:used_javascript_libs = 'underscore,backbone'
 
@@ -287,6 +297,17 @@ let g:NERDSpaceDelims = 1
 let g:NERDCommentEmptyLines = 1
 " Enable trimming of trailing whitespace when uncommenting
 let g:NERDTrimTrailingWhitespace = 1
+
+" Disable vim-json double quotes concealing as it's a bit awkward for me
+let g:vim_json_syntax_conceal = 0
+
+" Disable python-mode folding as it's quite annoying to me actually
+let g:pymode_folding = 0
+" Disable python-mode rope look up as it's painfully slow
+let g:pymode_rope = 0
+let g:pymode_rope_lookup_project = 0
+" Disable 80 columns as this will be enforced by linters
+let g:pymode_options_colorcolumn = 0
 
 augroup on_startup
   autocmd VimEnter *
