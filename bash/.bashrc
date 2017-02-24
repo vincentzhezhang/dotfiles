@@ -1,7 +1,5 @@
 #! /usr/bin/env bash
-# ~/.bashrc: executed by bash(1) for non-login shells.
-# see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
-# for examples
+# TODO move path to bashrc.before to decouple settings
 
 # If not running interactively, don't do anything
 case $- in
@@ -9,31 +7,36 @@ case $- in
     *) return;;
 esac
 
-# Handy prerequisites injection
-if [ -f ~/.bashrc.before ]; then
-    . ~/.bashrc.before
-fi
+# we don't want any of the lines here appear in the history
+set +o history
 
-# Load essential constants
-if [ -f "$HOME/.bash_constants" ]; then
-    . "$HOME/.bash_constants"
-fi
+# handy before injection
+[[ -f "$HOME/.bashrc.before" ]] && . "$HOME/.bashrc.before"
+
+# history settings
+HISTSIZE=4096
+HISTFILESIZE=4096
+HISTIGNORE='ls:bg:fg:history:type'
+HISTCONTROL=ignoreboth:erasedups
+shopt -s histappend
+shopt -s cmdhist  # force multi-line history in one line
+PROMPT_COMMAND="history -a"
+
+# load my scripts
+BASH_SCRIPTS=(constants ps1 aliases functions)
+
+for s in "${BASH_SCRIPTS[@]}"; do
+    [[ -f "$HOME/.bash_${s}" ]] && . "$HOME/.bash_${s}"
+done
 
 export TERM="xterm-256color"
 export EDITOR="vim"
 export VISUAL="vim"
 
-shopt -s checkwinsize
+# user bin
+export PATH="$HOME/.local/bin:$PATH"
 
-# history related settings
-shopt -s histappend
-shopt -s cmdhist
-HISTSIZE=2048
-HISTFILESIZE=2048
-HISTCONTROL=ignoreboth:erasedups
-HISTIGNORE='ls:bg:fg:history'
-# NOTE: to avoid duplication on reload, reset PROMP_COMMAND here
-PROMPT_COMMAND='history -a'
+shopt -s checkwinsize
 
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
@@ -43,7 +46,7 @@ if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
     debian_chroot=$(cat /etc/debian_chroot)
 fi
 
-#OSX specific configuration
+# OSX specific configuration
 if [[ $OSTYPE == darwin* ]]; then
     if [ -f "$(brew --prefix)"/etc/bash_completion ]; then
         . "$(brew --prefix)"/etc/bash_completion
@@ -84,13 +87,6 @@ if [ -x /usr/bin/dircolors ]; then
     alias egrep='egrep --color=auto'
 fi
 
-DECORATORS=(ps1 aliases functions)
-for decorator in "${DECORATORS[@]}"; do
-    if [ -f ~/.bash_"${decorator}" ]; then
-        . ~/.bash_"${decorator}"
-    fi
-done
-
 unset color_prompt force_color_prompt
 
 # If this is an xterm set the title to user@host:dir
@@ -102,23 +98,20 @@ case "$TERM" in
         ;;
 esac
 
-# rbenv
-export PATH="$HOME/.rbenv/bin:$PATH"
-export PATH="$HOME/.rbenv/plugins/ruby-build/bin:$PATH"
-if [ -x rbenv ]; then
-    eval "$(rbenv init -)"
+complete -W "$(grep --text '^ssh ' "$HOME"/.bash_history | sort -u | sed 's/^ssh //')" ssh
+
+
+# FIXME this seems problematic for some situation, needs verify
+# reset term output status, execute before each command is executed
+# trap 'tput sgr0' DEBUG
+
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+
+# handy after injection
+if [ -f "$HOME/.bashrc.after" ]; then
+    . "$HOME/.bashrc.after"
 fi
 
-# nodejs
-export PATH="$HOME/.node_modules_global/bin:$PATH"
-
-# user bin
-export PATH="$HOME/.local/bin:$PATH"
-
-# go bin
-export PATH=/usr/local/opt/go/libexec/bin:$PATH
-
-# TODO: Move path settings to .bash_profile
 # remove duplicates from $PATH
 PATH=$(echo -n "$PATH" | awk -v RS=: -v ORS=: '!x[$0]++' | sed "s/\(.*\).\{1\}/\1/")
 
@@ -138,20 +131,8 @@ case $((RANDOM%4)) in
         ;;
 esac
 
-complete -W "$(grep --text '^ssh ' "$HOME"/.bash_history | sort -u | sed 's/^ssh //')" ssh
-
 # viiiiiiiiiiiiiiii ftw
 set -o vi
 
-# reset term output status, execute before each command is executed
-# trap 'tput sgr0' DEBUG
-
-# Handy overwrites injection
-if [ -f ~/.bashrc.after ]; then
-    . ~/.bashrc.after
-fi
-
-# turn on history
+# turn history back on again
 set -o history
-
-[ -f ~/.fzf.bash ] && source ~/.fzf.bash

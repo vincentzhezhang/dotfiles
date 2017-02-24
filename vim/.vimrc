@@ -1,36 +1,35 @@
-" TODO: TRY VIM-EASY-ALIGN, AG.VIM IS DEPRECATED
-"
+" TODO: try vim-easy-align
 " TODO: extract variables into .vim/variables.vim
-"   set useful variables
-" TODO: add optional loading of .before/.after resource file to
-"   allow per box customization
+" TODO: check if file detection could work for the file/directory before load the plugins
+" TODO: set up Python Environment management
+"
+if !empty(glob('~/.vimrc.before'))
+  source ~/.vimrc.before
+end
+
 source ~/.vim/variables.vim
 " load helper functions
 source ~/.vim/functions.vim
 
-let g:python_host_prog = '/sandbox/zhe.zhang/.miniconda2/bin/python2'
-let g:python3_host_prog = '/sandbox/zhe.zhang/.miniconda2/envs/dev/bin/python3'
-
 call SetupVimPlug()
 
-" Temporary workaround within restricted env
-let g:plug_url_format = 'https://github.com/%s.git'
 call plug#begin('~/.vim/plugged')
-
 Plug 'airblade/vim-gitgutter'
 Plug 'AndrewRadev/splitjoin.vim'
 Plug 'ap/vim-css-color'
 Plug 'bling/vim-bufferline'
+Plug 'chriskempson/base16-vim'
 Plug 'digitaltoad/vim-pug'
 " Plug 'edkolev/tmuxline.vim'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'elzr/vim-json'
+Plug 'flazz/vim-colorschemes'
 Plug 'godlygeek/tabular'
 Plug 'gregsexton/gitv'
 Plug 'hail2u/vim-css3-syntax'
-" Plug 'kchmck/vim-coffee-script'
 Plug 'junegunn/fzf', { 'dir': '~/.config/fzf', 'do': './install --all' }
-Plug 'klen/python-mode'
+" Plug 'klen/python-mode'
+Plug 'klen/pylama'
 Plug 'Lokaltog/vim-easymotion'
 Plug 'lifepillar/vim-solarized8'
 Plug 'mbbill/undotree'
@@ -43,7 +42,6 @@ Plug 'othree/javascript-libraries-syntax.vim'
 Plug 'pangloss/vim-javascript'
 Plug 'plasticboy/vim-markdown'
 Plug 'Raimondi/delimitMate'
-Plug 'rking/ag.vim'
 Plug 'scrooloose/nerdcommenter'
 Plug 'scrooloose/nerdtree'
 " Plug 'slim-template/vim-slim'
@@ -64,8 +62,13 @@ Plug 'vim-airline/vim-airline-themes'
 Plug 'Xuyuanp/nerdtree-git-plugin'
 call plug#end()
 
-" Backwards compatibility for Vim, most of them are set by default in NeoVim
-if !has('nvim')
+if has('nvim')
+  " Window related settings
+  " mitigate ctrl-h mess within some terminal
+  nmap <BS> <C-W>h
+else
+  " Backwards compatibility for Vim, most of them are set by default in NeoVim
+  " vint: -ProhibitSetNoCompatible
   set autoindent
   set autoread        " Autoreload buffers
   set encoding=utf-8  " Use UTF-8 encoding
@@ -74,10 +77,16 @@ if !has('nvim')
   set nocompatible    " be advanced
   set smarttab
   set ttyfast
+  syntax enable       " Enable syntax highlight
+  " bind paste mode for ease of use
+  " TODO: migrate from function keys to other combination as I am going to use
+  " smaller keyboard layout
+  set pastetoggle=<F2>
 end
 
-" General formatting config
 scriptencoding utf-8
+
+" General formatting config
 set autowrite                   " Save changes before switching buffers
 set backspace=indent,eol,start  " Make backspace behave more normally
 set cursorline
@@ -106,8 +115,18 @@ set splitright
 set showtabline=2       " Always display the tabline, even if there is only one tab
 set noshowmode          " Hide the default mode text
 let &showbreak='↪ '     " Make soft wrap more visible
+
+" airline tweaks
 let g:airline_powerline_fonts=1
+let g:airline_detect_spell=0
+let g:airline_left_sep=''
+let g:airline_right_sep=''
+" this shall be handled by vim-better-whitespaces
 let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#whitespace#enabled = 0
+let g:airline#extensions#bufferline#enabled = 1
+let g:airline#extensions#bufferline#overwrite_variables = 1
+let g:airline#extensions#branch#enabled = 0
 
 " case-insensitive for some common commands
 command! Q q
@@ -124,8 +143,6 @@ augroup cleanup
   autocmd BufWritePre * StripWhitespace
 augroup END
 
-let g:neomake_javascript_enabled_makers = ['eslint_d']
-let g:neomake_jsx_enabled_makers = ['eslint_d']
 " trigger Neomake automatically
 augroup neomake_hooks
   autocmd!
@@ -133,31 +150,16 @@ augroup neomake_hooks
   autocmd BufWritePost * Neomake
 augroup END
 
-" TODO: migrate from function keys to other combination as I am going to use
-" smaller keyboard layout
-" bind paste mode for ease of use
-" TODO: seems NeoVim set bracketed-paste-mode by default, which solve the
-" indentation problem on paste, need double check on:
-" https://cirw.in/blog/bracketed-paste
-set pastetoggle=<F2>
-
 " Quick switch between numbers ruler
 noremap <silent> <F12> :set number!<CR>
 
-" TODO: The environment variable is a temporary measure; finer-grained control
-" may be supported in the future
-" FIXME: NOT COMPATIBLE WITH TERMINATOR
-" let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
-
-" should add proper 24bit color support detection
-if empty($TERMINATOR_UUID)
+" should add proper ability detection
+if empty($TERMINATOR_UUID) && empty($SSH_CONNECTION)
   if exists('+termguicolors')
     set termguicolors
   endif
 endif
 
-" Base16 colorscheme plugin settings
-let g:base16colorspace=256  " Access colors present in 256 colorspace
 " some OS detection and customization here, should bind some dark/light theme
 " switcher hotkey
 let s:uname = system('uname -s')
@@ -187,21 +189,31 @@ end
 " endif
 
 " Syntastic recommended settings
+" TODO: check if this is deprecated
 set statusline+=%#warningmsg#
 set statusline+=%{SyntasticStatuslineFlag()}
 set statusline+=%*
 
-set synmaxcol=1024  " limit syntax color for long lines
+set synmaxcol=256   " limit syntax color for long lines
 set scrolloff=3     " Have some context around the current line always on screen
 highlight Search ctermfg=202 ctermbg=NONE cterm=bold,underline
 
-augroup ruby_rails
+augroup ruby_rails_debug_statements
   " Make those debugger statements painfully obvious
   au BufEnter *.rb syn match error contained "\<binding.pry\>"
   au BufEnter *.rb syn match error contained "\<debugger\>"
 augroup END
 
+augroup javascript_debug_statements
+  " Make those debugger statements painfully obvious
+  au BufEnter *.js syn match error contained "\<console\>"
+  au BufEnter *.js syn match error contained "\<debugger\>"
+  au BufEnter *.jsx syn match error contained "\<console\>"
+  au BufEnter *.jsx syn match error contained "\<debugger\>"
+augroup END
+
 " language specific format settings
+" TODO: try to see if iteration can be used here
 augroup indentations
   autocmd!
   autocmd FileType text         setlocal wrap
@@ -244,25 +256,21 @@ inoremap jk <Esc>
 " spell checking, en_us for better collaboration
 set spell spelllang=en_us
 
-" Window related settings
-" mitigate ctrl-h mess within some terminal
-if has('nvim')
-  nmap <BS> <C-W>h
-endif
 " quick switch between spit panes
-map <C-j> <C-W>j
-map <C-k> <C-W>k
-map <C-h> <C-W>h
-map <C-l> <C-W>l
+nnoremap <C-j> <C-W>j
+nnoremap <C-k> <C-W>k
+nnoremap <C-h> <C-W>h
+nnoremap <C-l> <C-W>l
 
-" Run current script!
+" Run the current script according to shebang!
 nnoremap <F8> :!%:p<Enter>
 
-" Clean highlight when esc is pressed
+" Clean search highlight when enter is pressed
 nnoremap <silent> <CR> :nohlsearch<CR><CR>
 
 " quick jump between recent two files
 nnoremap <leader>b :b#<cr>
+
 " quick edit .vimrc
 nnoremap <leader>V :e $MYVIMRC<cr>
 
@@ -309,6 +317,10 @@ let g:pymode_rope_lookup_project = 0
 " Disable 80 columns as this will be enforced by linters
 let g:pymode_options_colorcolumn = 0
 
+if !empty(glob('~/.vimrc.after'))
+  source ~/.vimrc.after
+end
+
 augroup on_startup
   autocmd VimEnter *
               \   if !argc()
@@ -317,5 +329,3 @@ augroup on_startup
               \ |   wincmd w
               \ | endif
 augroup END
-
-syntax enable         " Enable syntax highlight

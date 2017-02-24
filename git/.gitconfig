@@ -6,8 +6,8 @@
   brr = !/usr/bin/env bash -c '\
     git for-each-ref \
     --sort=\"-committerdate\" refs/heads/ \
-    --format=\"%(HEAD) %(color:red)%(objectname:short)%(color:reset)|\
-    %(color:yellow)%(refname:short)%(color:reset)|\
+    --format=\"%(HEAD) %(color:yellow)%(refname:short)%(color:reset)|\
+    %(color:red)%(objectname:short)%(color:reset)|\
     (%(color:green)%(committerdate:relative)%(color:reset))|\
     %(authorname)|\
     %(contents:subject)\"\
@@ -16,7 +16,7 @@
   last = log -1 HEAD
   sn = !bash -c 'git checkout -b snapshot_$(/usr/bin/env date "+%y%m%d_%H%M%S")'
   unstage = reset HEAD --
-  lg = log --graph -30 \
+  lg = log --graph -18 \
 --date=iso \
 --pretty=format:'\
 %C(yellow)%h%Creset \
@@ -35,17 +35,18 @@
   '
   birth = log --diff-filter=A --
 [user]
-	name = Vincent Zhang
+  name = Vincent Zhang
   email = zhe.zhang@akunacapital.com
 [github]
   user = vincentzhezhang
 [gui]
   editor = gedit
   historybrowser = gitk
+  diffcontext = 6
 [core]
   editor = nvim
-	autocrlf = input
-	excludesfile = /home/zhe.zhang/.gitignore_global
+  autocrlf = input
+  excludesfile = ~/.gitignore_global
 [color]
   ui = auto
 [color "branch"]
@@ -72,12 +73,12 @@
 [push]
   default = simple
 [cola]
-	fontdiff = Ubuntu Mono,12,-1,5,50,0,0,0,0,0
-	tabwidth = 2
+  fontdiff = Ubuntu Mono,12,-1,5,50,0,0,0,0,0
+  tabwidth = 2
   textwidth = 80
-	boldheaders = true
-	savewindowsettings = true
-	blameviewer = git gui blame
+  boldheaders = true
+  savewindowsettings = true
+  blameviewer = git gui blame
 [filter "lfs"]
   clean = git-lfs clean %f
   smudge = git-lfs smudge %f
@@ -86,4 +87,4 @@
   diff = diff-so-fancy | less --tabs=4 -RFX
   show = diff-so-fancy | less --tabs=4 -RFX
 [http]
-	sslverify = false
+  sslverify = false

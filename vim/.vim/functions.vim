@@ -21,6 +21,7 @@ function! InstallRubySupport(...)
   endif
 endfunction
 
+" TODO: might need to check conda related python env management
 function! InstallPythonSupport(...)
   if a:0 < 1 || a:1.status ==? 'installed' || a:1.force
     !pip  install --upgrade --user neovim
@@ -33,17 +34,23 @@ endfunction
 " quick switch between color schemes
 "
 function LightSide()
-  colorscheme solarized8_light_high
   let g:airline_theme='solarized'
   set background=light
+  colorscheme solarized8_light_high
 endfunction
 
 function DarkSide()
-  colorscheme gruvbox
+  let g:gruvbox_italic=1
   let g:airline_theme='zenburn'
   let g:gruvbox_contrast_dark='hard'
   let g:gruvbox_contrast_light='hard'
   set background=dark
+  colorscheme gruvbox
+endfunction
+
+function ToxicSide()
+  set background=dark
+  colorscheme chlordane
 endfunction
 
 function SwitchSide()
@@ -59,6 +66,15 @@ endfunction
 
 map <F5> :call SwitchSide()<CR>
 
+function! CycleTheme()
+  let themes = ['LightSide', 'DarkSide', 'ToxicSide']
+  let g:theme_index = get(g:, 'theme_index', -1)
+  let g:theme_index = (g:theme_index+1)%len(themes)
+  let t = themes[g:theme_index]
+  call {t}()
+endfun
+nmap <silent> <F3> :call CycleTheme() <CR>
+
 "
 " Other handy helpers
 "
@@ -72,6 +88,7 @@ endfunction
 nmap <silent> <C-F12> :call ToggleSyntax()<CR>
 
 " Install plug for Vim/NeoVim if not exist
+" FIXME: could extract the common part
 function SetupVimPlug()
   if has('nvim') && empty(glob('~/.config/nvim/autoload/plug.vim'))
     silent !curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs
@@ -82,4 +99,9 @@ function SetupVimPlug()
           \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
     autocmd VimEnter * PlugInstall | source $MYVIMRC
   endif
+endfunction
+
+" TODO: try to iterate through g:plug_orders and auto load options for vim
+function Z(...)
+  Plug(a:000)
 endfunction

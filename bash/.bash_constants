@@ -1,5 +1,7 @@
 #! /usr/bin/env bash
 
+# TODO this kinda pollutes the environment variables, needs a better solution
+
 # Colour Off
 # shellcheck disable=SC2034
 COFF="\[\033[0m\]"

@@ -61,6 +61,7 @@ else
   alias orphand='sudo deborphan | xargs sudo apt-get -y remove --purge'
   alias cleanup='sudo apt-get autoclean && sudo apt-get autoremove && sudo apt-get clean && sudo apt-get remove && orphand'
   alias updatedb='sudo updatedb'
+  alias u='sudo apt update; sudo apt full-upgrade -y'
 
   # apt-get
   alias si='sudo apt-get install'
@@ -69,3 +70,4 @@ else
   # just fuck it
   alias fuck='sudo "$BASH" -c "$(history -p !!)"'
 fi
+alias pycharm=/sandbox/zhe.zhang/tools/pycharm-2016.3.2/bin/pycharm.sh

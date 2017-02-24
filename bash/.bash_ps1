@@ -3,33 +3,29 @@
 prettify_prompt() {
     # show last command execution result intuitively
     if [[ $? == 0 ]]; then
-        if [[ $OSTYPE == darwin* ]]; then
-            local last_state="😃  "
-        else
-            local last_state="${BGREEN}:)${COFF} "
-        fi
+        last_state=$([[ $OSTYPE == darwin* ]] && echo '😃 ' || echo "${BGREEN}:) ${COFF}")
     else
-        if [[ $OSTYPE == darwin* ]]; then
-            local last_state="😡  "
-        else
-            local last_state="${BRED}:(${COFF} "
-        fi
+        last_state=$([[ $OSTYPE == darwin* ]] && echo '😡 ' || echo "${BRED}:( ${COFF}")
     fi
 
     # create a dash line which has a length of the current terminal columns minus
     # user@hostname, time string and padding spaces
-    short_hostname=$(/usr/bin/env hostname -s)
-    prefix_str="$USER@$short_hostname"
-    time_str="$(date +'%H:%M:%S')"
-    dash_line=''
-    dash_line_padding=2 # spaces before and after the dash line
+    local short_hostname=''
+    local time_str=''
+    local dash_line=''
+    local dash_line_padding=2 # spaces before and after the dash line
+    local dash_line_width=0
 
-    let dash_line_width=$COLUMNS-${#prefix_str}-${#time_str}-$dash_line_padding
+    short_hostname=$(/usr/bin/env hostname -s)
+    local prefix_str="$USER@$short_hostname"
+
+    time_str="$(date +'%H:%M:%S')"
+    dash_line_width=$((COLUMNS - ${#prefix_str} - ${#time_str} - dash_line_padding))
 
     while [[ $dash_line_width -gt 0 ]]
     do
         dash_line="-${dash_line}"
-        let dash_line_width=${dash_line_width}-1
+        let dash_line_width-=1
     done
 
     # indicator treatment
@@ -42,7 +38,7 @@ prettify_prompt() {
     pwd_str="${BASE0}\w${COFF}"
     git_str="$(git_prompt)"
 
-    status_line="$BASE00$prefix_str $dash_line $time_str$COFF"
+    status_line="${BASE00}${prefix_str} ${dash_line} ${time_str}${COFF}"
     old_ps1="${last_state}${pwd_str}${git_str}${indicator}"
 
     PS1="$status_line\n$old_ps1"
