@@ -251,7 +251,7 @@ git_prompt()
         fi
 
         # only check status against tracking upstream when it exists
-        if (git branch -r | grep -q "$current_branch"); then
+        if (git branch -r | grep -q "/$current_branch$"); then
             local_rev=$(git rev-parse @)
             remote_rev=$(git rev-parse '@{u}')
             base_rev=$(git merge-base @ '@{u}')
