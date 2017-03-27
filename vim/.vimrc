@@ -20,7 +20,6 @@ Plug 'ap/vim-css-color'
 Plug 'bling/vim-bufferline'
 Plug 'chriskempson/base16-vim'
 Plug 'digitaltoad/vim-pug'
-" Plug 'edkolev/tmuxline.vim'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'elzr/vim-json'
 Plug 'flazz/vim-colorschemes'
@@ -28,7 +27,6 @@ Plug 'godlygeek/tabular'
 Plug 'gregsexton/gitv'
 Plug 'hail2u/vim-css3-syntax'
 Plug 'junegunn/fzf', { 'dir': '~/.config/fzf', 'do': './install --all' }
-" Plug 'klen/python-mode'
 Plug 'klen/pylama'
 Plug 'Lokaltog/vim-easymotion'
 Plug 'lifepillar/vim-solarized8'
@@ -36,6 +34,7 @@ Plug 'mbbill/undotree'
 Plug 'mhinz/vim-startify'
 Plug 'morhetz/gruvbox'
 Plug 'mxw/vim-jsx'
+Plug 'mileszs/ack.vim'
 Plug 'neomake/neomake'
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'othree/javascript-libraries-syntax.vim'
@@ -44,21 +43,15 @@ Plug 'plasticboy/vim-markdown'
 Plug 'Raimondi/delimitMate'
 Plug 'scrooloose/nerdcommenter'
 Plug 'scrooloose/nerdtree'
-" Plug 'slim-template/vim-slim'
 Plug 'terryma/vim-multiple-cursors'
-" Plug 'thoughtbot/vim-rspec'
-" Plug 'tpope/vim-cucumber'
 Plug 'tpope/vim-endwise'
 Plug 'tpope/vim-fugitive'
-" Plug 'tpope/vim-haml'
-" Plug 'tpope/vim-rails'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-surround'
 Plug 'Valloric/YouCompleteMe', { 'do': function('BuildYCM') }
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-" Plug 'vim-ruby/vim-ruby', { 'do': function('InstallRubySupport') }
-" Plug 'wakatime/vim-wakatime'
+Plug 'wakatime/vim-wakatime'
 Plug 'Xuyuanp/nerdtree-git-plugin'
 call plug#end()
 
@@ -316,6 +309,10 @@ let g:pymode_rope = 0
 let g:pymode_rope_lookup_project = 0
 " Disable 80 columns as this will be enforced by linters
 let g:pymode_options_colorcolumn = 0
+
+if executable('ag')
+  let g:ackprg = 'ag --vimgrep'
+endif
 
 if !empty(glob('~/.vimrc.after'))
   source ~/.vimrc.after

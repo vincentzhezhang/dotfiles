@@ -1,42 +1,45 @@
 #! /usr/bin/env bash
-# TODO move path to bashrc.before to decouple settings
+# TODO try .inputrc
 
 # If not running interactively, don't do anything
-case $- in
-    *i*) ;;
-    *) return;;
-esac
+[[ $- != *i* ]] && return
+BASH_START=$(date +%s%3N)
 
-# we don't want any of the lines here appear in the history
+# we don't want any of the lines below appear in the history
 set +o history
+# Record each line as it gets issued
+# PROMPT_COMMAND='history -a'
 
-# handy before injection
-[[ -f "$HOME/.bashrc.before" ]] && . "$HOME/.bashrc.before"
+# Prevent file overwrite on stdout redirection
+# Use `>|` to force redirection to an existing file
+set -o noclobber
 
-# history settings
-HISTSIZE=4096
-HISTFILESIZE=4096
-HISTIGNORE='ls:bg:fg:history:type'
-HISTCONTROL=ignoreboth:erasedups
-shopt -s histappend
-shopt -s cmdhist  # force multi-line history in one line
-PROMPT_COMMAND="history -a"
-
-# load my scripts
-BASH_SCRIPTS=(constants ps1 aliases functions)
-
-for s in "${BASH_SCRIPTS[@]}"; do
-    [[ -f "$HOME/.bash_${s}" ]] && . "$HOME/.bash_${s}"
-done
+#
+# handy injection before load the main script
+#
+BASH_PREV=$(date +%s%3N)
+[ -f ~/.bashrc.before ] && . ~/.bashrc.before
+NOW=$(date +%s%3N)
+echo "loaded .bashrc.before in $((NOW - BASH_PREV))ms"
 
 export TERM="xterm-256color"
 export EDITOR="vim"
 export VISUAL="vim"
 
-# user bin
-export PATH="$HOME/.local/bin:$PATH"
+# Automatically trim long paths in the prompt
+export PROMPT_DIRTRIM=3
 
-shopt -s checkwinsize
+# load bash related script modules
+BASH_SCRIPTS=(constants ps1 aliases functions)
+
+for s in "${BASH_SCRIPTS[@]}"; do
+    BASH_PREV=$(date +%s%3N)
+    [ -f ~/.bash_${s} ] && . ~/.bash_${s}
+    NOW=$(date +%s%3N)
+    echo "loaded .bash_${s} in $((NOW - BASH_PREV))ms"
+done
+
+shopt -s checkwinsize # update window size after every command
 
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
@@ -46,93 +49,71 @@ if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
     debian_chroot=$(cat /etc/debian_chroot)
 fi
 
-# OSX specific configuration
+# Use bash-completion, if available
 if [[ $OSTYPE == darwin* ]]; then
-    if [ -f "$(brew --prefix)"/etc/bash_completion ]; then
-        . "$(brew --prefix)"/etc/bash_completion
-    fi
-
-    export CLICOLOR=1
-    export LSCOLORS=gxBxhxDxfxhxhxhxhxcxcx
-    alias ls='ls -Gp'
+    BCMP_PATH="$(brew --prefix)/etc/bash_completion"
 else
-    # enable programmable completion features (you don't need to enable
-    # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
-    # sources /etc/bash.bashrc).
-    if ! shopt -oq posix; then
-        if [ -f /usr/share/bash-completion/bash_completion ]; then
-            . /usr/share/bash-completion/bash_completion
-        elif [ -f /etc/bash_completion ]; then
-            . /etc/bash_completion
-        fi
-    fi
+    BCMP_PATH=/usr/share/bash-completion/bash_completion
+fi
+BASH_PREV=$(date +%s%3N)
+[ -f $BCMP_PATH ] && . $BCMP_PATH
+NOW=$(date +%s%3N)
+echo "loaded bash-autocomplete in $((NOW - BASH_PREV))ms"
 
-    if [[ -f ~/.dircolors ]]
-    then
+
+# enable color support
+if [ -x /usr/bin/dircolors ]; then
+    if [[ -f ~/.dircolors ]]; then
         eval "$(dircolors -b ~/.dircolors)"
     else
         eval "$(dircolors -b)"
     fi
-    alias ls='ls --color=auto'
 fi
-
-if [ -f ~/.git-completion.bash ]; then
-    . ~/.git-completion.bash
-fi
-
-# enable color support of ls and also add handy aliases
-if [ -x /usr/bin/dircolors ]; then
-    alias grep='grep --color=auto'
-    alias fgrep='fgrep --color=auto'
-    alias egrep='egrep --color=auto'
-fi
-
 unset color_prompt force_color_prompt
 
-# If this is an xterm set the title to user@host:dir
-case "$TERM" in
-    xterm*|rxvt*)
-        PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
-        ;;
-    *)
-        ;;
-esac
+BASH_PREV=$(date +%s%3N)
+[ -f ~/.git-completion.bash ] && . ~/.git-completion.bash
+NOW=$(date +%s%3N)
+echo "loaded git-autocomplete in $((NOW - BASH_PREV))ms"
 
-complete -W "$(grep --text '^ssh ' "$HOME"/.bash_history | sort -u | sed 's/^ssh //')" ssh
+# SSH auto completion
+complete -W "$(grep --text '^ssh ' ~/.bash_history | sort -u | sed 's/^ssh //')" ssh
 
-
-# FIXME this seems problematic for some situation, needs verify
-# reset term output status, execute before each command is executed
-# trap 'tput sgr0' DEBUG
-
-[ -f ~/.fzf.bash ] && source ~/.fzf.bash
-
-# handy after injection
-if [ -f "$HOME/.bashrc.after" ]; then
-    . "$HOME/.bashrc.after"
-fi
+#
+# handy injection after load the main script
+#
+BASH_PREV=$(date +%s%3N)
+[ -f ~/.bashrc.after ] && . ~/.bashrc.after
+NOW=$(date +%s%3N)
+echo "loaded bashrc.after in $((NOW - BASH_PREV))ms"
 
 # remove duplicates from $PATH
 PATH=$(echo -n "$PATH" | awk -v RS=: -v ORS=: '!x[$0]++' | sed "s/\(.*\).\{1\}/\1/")
 
-# just for fun
-case $((RANDOM%4)) in
-    0)
-        bullshit
-        ;;
-    1)
-        bulltruth
-        ;;
-    2)
-        retrogame invaders
-        ;;
-    3)
-        retrogame pacman
-        ;;
-esac
-
-# viiiiiiiiiiiiiiii ftw
+# setup the amazing fzf fuzzy finder for bash
+# NOTE: set -o vi has to be placed before fzf.bash in order to correctly setup key bindings
+#   see: https://github.com/junegunn/fzf#key-bindings-for-command-line
+BASH_PREV=$(date +%s%3N)
 set -o vi
+[ -f ~/.fzf.bash ] && . ~/.fzf.bash
+NOW=$(date +%s%3N)
+echo "loaded fzf.bash in $((NOW - BASH_PREV))ms"
 
+# history settings
+shopt -s histappend # append instead of overwrite
+shopt -s cmdhist    # force multi-line histories format in a single line
+export HISTSIZE=1024
+export HISTFILESIZE=1024
+export HISTIGNORE='cd:ls:bg:fg:echo:exit:clear:vi:history:type'
+export HISTCONTROL="ignoreboth:erasedups"
+
+# just for fun
+BASH_PREV=$(date +%s%3N)
+random_splash
+NOW=$(date +%s%3N)
+echo "emit some bullshit in $((NOW - BASH_PREV))ms"
+
+BASH_END=$(date +%s%3N)
+echo "bash fully loaded in $((BASH_END - BASH_START))ms!"
 # turn history back on again
-set -o history
+time set -o history

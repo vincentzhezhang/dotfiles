@@ -1,1 +1,1 @@
-/home/zhe.zhang/.vimrc
+../.vimrc

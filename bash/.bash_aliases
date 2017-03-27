@@ -1,10 +1,16 @@
 #! /usr/bin/env bash
-# some more ls aliases
-alias l='ls -CF'
+# handy ls aliases
+alias ls='ls -CF --color=auto'
+alias l='ls'
 alias la='ls -A'
+alias ll='ls -alh'
+alias lt='ls -ltur'
 alias lg='ll -A | grep -i'
-alias ll='ls -alFh'
-alias lt='ll -t'
+
+# handy grep aliases
+alias grep='grep --color=auto'
+alias fgrep='fgrep --color=auto'
+alias egrep='egrep --color=auto'
 
 ## Keeping things organized
 alias biggest='BLOCKSIZE=1048576; du -x | sort -nr | head -10'
@@ -45,6 +51,16 @@ alias cap='bundle exec cap'
 alias rake='bundle exec rake'
 alias pyserver='python -m SimpleHTTPServer'
 
+# TODO
+# 1. batch search and replace
+# 2. should add two versions, one is search recursively within current diretory
+# 2. and the other search and replace, might including case options
+# ag -l $1 | xargs sed -ri.bak -e "s/$1/$2/g"
+
+# TODO
+# fzf based command line app launcher
+alias x='IFS=":"; for p in $PATH; do ls "$p" 2>/dev/null; done | fzf'
+
 # NeoVim for the win
 alias vi='nvim'
 alias vim='nvim'
@@ -70,4 +86,3 @@ else
   # just fuck it
   alias fuck='sudo "$BASH" -c "$(history -p !!)"'
 fi
-alias pycharm=/sandbox/zhe.zhang/tools/pycharm-2016.3.2/bin/pycharm.sh

@@ -175,6 +175,31 @@ bulltruth()
 }
 
 #
+# Show something randomly
+# TODO add meme section
+#
+random_splash()
+{
+    case $((RANDOM%4)) in
+        0)
+            bullshit
+            ;;
+        1)
+            bulltruth
+            ;;
+        2)
+            retrogame invaders
+            ;;
+        3)
+            retrogame pacman
+            ;;
+    esac
+}
+
+dusage() {
+    du -hs --threshold=$1 * | sort -hr
+}
+#
 # git prompt snippet, use plumbing commands for reliable states parsing
 #
 git_prompt()

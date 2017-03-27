@@ -36,7 +36,7 @@
   birth = log --diff-filter=A --
 [user]
   name = Vincent Zhang
-  email = zhe.zhang@akunacapital.com
+  email = vincent.zhang@akunacapital.com
 [github]
   user = vincentzhezhang
 [gui]
@@ -67,7 +67,7 @@
 [diff]
   tool = meld
 [merge]
-  tool = meld
+	tool = vimdiff
   confictstyle = diff3
   conflictstyle = diff3
 [push]
@@ -88,3 +88,6 @@
   show = diff-so-fancy | less --tabs=4 -RFX
 [http]
   sslverify = false
+	proxy = ch1prdprx01.akunacapital.local:8888
+[merge "tool"]
+	path = nvim
