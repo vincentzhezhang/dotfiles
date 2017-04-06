@@ -106,6 +106,7 @@ export HISTSIZE=1024
 export HISTFILESIZE=1024
 export HISTIGNORE='cd:ls:bg:fg:echo:exit:clear:vi:history:type'
 export HISTCONTROL="ignoreboth:erasedups"
+unset HISTTIMEFORMAT
 
 # just for fun
 BASH_PREV=$(date +%s%3N)
@@ -115,5 +116,11 @@ echo "emit some bullshit in $((NOW - BASH_PREV))ms"
 
 BASH_END=$(date +%s%3N)
 echo "bash fully loaded in $((BASH_END - BASH_START))ms!"
+
+# TMUX
+if [ -x "$(command -v tmux)" ] && [ -z "$TMUX" ]; then
+    tmux new -A -s $HOSTNAME
+fi
+
 # turn history back on again
 time set -o history

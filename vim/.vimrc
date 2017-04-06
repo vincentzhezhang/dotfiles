@@ -16,9 +16,9 @@ call SetupVimPlug()
 call plug#begin('~/.vim/plugged')
 Plug 'airblade/vim-gitgutter'
 Plug 'AndrewRadev/splitjoin.vim'
-Plug 'ap/vim-css-color'
 Plug 'bling/vim-bufferline'
 Plug 'chriskempson/base16-vim'
+Plug 'christoomey/vim-tmux-navigator'
 Plug 'digitaltoad/vim-pug'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'elzr/vim-json'
@@ -32,6 +32,7 @@ Plug 'Lokaltog/vim-easymotion'
 Plug 'lifepillar/vim-solarized8'
 Plug 'mbbill/undotree'
 Plug 'mhinz/vim-startify'
+Plug 'moll/vim-node'
 Plug 'morhetz/gruvbox'
 Plug 'mxw/vim-jsx'
 Plug 'mileszs/ack.vim'
@@ -73,7 +74,7 @@ else
   syntax enable       " Enable syntax highlight
   " bind paste mode for ease of use
   " TODO: migrate from function keys to other combination as I am going to use
-  " smaller keyboard layout
+  "   smaller keyboard layout
   set pastetoggle=<F2>
 end
 
@@ -99,7 +100,7 @@ set smartindent
 set softtabstop=0
 set tabstop=2
 
-" General behavioral config
+" more intuitive split
 set splitbelow
 set splitright
 
@@ -117,9 +118,9 @@ let g:airline_right_sep=''
 " this shall be handled by vim-better-whitespaces
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#whitespace#enabled = 0
-let g:airline#extensions#bufferline#enabled = 1
+let g:airline#extensions#bufferline#enabled = 0
 let g:airline#extensions#bufferline#overwrite_variables = 1
-let g:airline#extensions#branch#enabled = 0
+let g:airline#extensions#branch#enabled = 1
 
 " case-insensitive for some common commands
 command! Q q
@@ -136,6 +137,13 @@ augroup cleanup
   autocmd BufWritePre * StripWhitespace
 augroup END
 
+" TODO setup neomake makers:
+" - vint
+" - shellcheck
+" - eslint
+" - pylama
+" ...
+" refer to: https://github.com/neomake/neomake/wiki/Makers
 " trigger Neomake automatically
 augroup neomake_hooks
   autocmd!
@@ -158,28 +166,20 @@ endif
 let s:uname = system('uname -s')
 let s:hostname = system('uname -n')
 let s:sys_hour = str2nr(system("date '+%k'"))
-" TODO: dynamic day/night range from system or external API
-" NOTE: as the office has constant lighting environment, keep it dark
-let s:sunrise = 18
-let s:sunset = 8
 
 " Adaptive colorscheme switching
-if s:sys_hour >= s:sunrise && s:sys_hour <= s:sunset
-  call LightSide()
-else
-  call DarkSide()
-end
+" TODO: dynamic day/night range from system or external API
+let s:wakeup = 8
+let s:midday = 12
+let s:late = 22
 
-" display a recommended column width guide and gray out columns after maximum
-" width
-" if exists('+colorcolumn')
-"   let &colorcolumn='80'
-"   if s:sys_hour >= s:sunrise && s:sys_hour <= s:sunset
-"     highlight ColorColumn ctermbg=7
-"   else
-"     highlight ColorColumn ctermbg=237
-"   end
-" endif
+if s:sys_hour <= s:wakeup || s:sys_hour >= s:late
+  call LateNight()
+elseif s:sys_hour > s:wakeup && s:sys_hour <= s:midday
+  call SunnyDays()
+else
+  call InDoor()
+end
 
 " Syntastic recommended settings
 " TODO: check if this is deprecated
@@ -228,7 +228,7 @@ let g:multi_cursor_prev_key            = '<C-p>'
 let g:multi_cursor_skip_key            = '<C-x>'
 let g:multi_cursor_quit_key            = '<Esc>'
 " setup javascript-libraries-syntax
-let g:used_javascript_libs = 'underscore,backbone'
+let g:used_javascript_libs = 'underscore,backbone,lodash'
 
 " TypeScript settings
 if !exists('g:ycm_semantic_triggers')
@@ -245,15 +245,15 @@ nnoremap <space>gs :Gstatus<CR>
 
 " experimental key mapping for escape to normal mode
 inoremap jk <Esc>
+inoremap kj <Esc>
 
 " spell checking, en_us for better collaboration
 set spell spelllang=en_us
+" TODO needs a better solution
+noremap <space>c ea<C-x><C-s>
 
-" quick switch between spit panes
-nnoremap <C-j> <C-W>j
-nnoremap <C-k> <C-W>k
-nnoremap <C-h> <C-W>h
-nnoremap <C-l> <C-W>l
+" use mouse even within tmux
+set mouse=a
 
 " Run the current script according to shebang!
 nnoremap <F8> :!%:p<Enter>
@@ -307,8 +307,18 @@ let g:pymode_folding = 0
 " Disable python-mode rope look up as it's painfully slow
 let g:pymode_rope = 0
 let g:pymode_rope_lookup_project = 0
-" Disable 80 columns as this will be enforced by linters
+" Disable 80 columns as this will be enforced by Linters
 let g:pymode_options_colorcolumn = 0
+
+" vim-tmux navigation settings
+let g:tmux_navigator_no_mappings = 1
+
+" only allow switch in normal mode to avoid surprises
+nnoremap <silent> <A-h> :TmuxNavigateLeft<cr>
+nnoremap <silent> <A-j> :TmuxNavigateDown<cr>
+nnoremap <silent> <A-k> :TmuxNavigateUp<cr>
+nnoremap <silent> <A-l> :TmuxNavigateRight<cr>
+nnoremap <silent> <A-,> :TmuxNavigatePrevious<cr>
 
 if executable('ag')
   let g:ackprg = 'ag --vimgrep'

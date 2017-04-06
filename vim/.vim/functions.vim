@@ -33,47 +33,35 @@ endfunction
 "
 " quick switch between color schemes
 "
-function LightSide()
-  let g:airline_theme='solarized'
-  set background=light
+function SunnyDays()
   colorscheme solarized8_light_high
+  set background=light
 endfunction
 
-function DarkSide()
-  let g:gruvbox_italic=1
-  let g:airline_theme='zenburn'
-  let g:gruvbox_contrast_dark='hard'
-  let g:gruvbox_contrast_light='hard'
-  set background=dark
-  colorscheme gruvbox
-endfunction
-
-function ToxicSide()
-  set background=dark
-  colorscheme chlordane
-endfunction
-
-function SwitchSide()
-  let l:bg = &background
-  if l:bg ==? 'dark'
-    call LightSide()
-  elseif l:bg ==? 'light'
-    call DarkSide()
-  else
-    " ignored
+function InDoor()
+  if !exists('g:gruvbox_italic')
+    " let g:gruvbox_italic=1
+    " let g:gruvbox_contrast_dark='hard'
+    " let g:gruvbox_contrast_light='hard'
   end
+
+  colorscheme gruvbox
+  set background=dark
 endfunction
 
-map <F5> :call SwitchSide()<CR>
+function LateNight()
+  colorscheme chlordane
+  set background=dark
+endfunction
 
 function! CycleTheme()
-  let themes = ['LightSide', 'DarkSide', 'ToxicSide']
-  let g:theme_index = get(g:, 'theme_index', -1)
-  let g:theme_index = (g:theme_index+1)%len(themes)
-  let t = themes[g:theme_index]
-  call {t}()
-endfun
-nmap <silent> <F3> :call CycleTheme() <CR>
+  let l:themes = ['InDoor', 'LateNight', 'SunnyDays']
+  let g:theme_index = get(g:, 'theme_index', 0)
+  let g:theme_index = (g:theme_index+1)%len(l:themes)
+  let l:t = l:themes[g:theme_index]
+  call {l:t}()
+endfunction
+nmap <silent> <F5> :call CycleTheme() <CR>
 
 "
 " Other handy helpers

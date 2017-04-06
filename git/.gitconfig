@@ -36,7 +36,7 @@
   birth = log --diff-filter=A --
 [user]
   name = Vincent Zhang
-  email = vincent.zhang@akunacapital.com
+  email = v.zh@msn.com
 [github]
   user = vincentzhezhang
 [gui]
@@ -67,7 +67,7 @@
 [diff]
   tool = meld
 [merge]
-	tool = vimdiff
+  tool = vimdiff
   confictstyle = diff3
   conflictstyle = diff3
 [push]
@@ -87,4 +87,6 @@
   diff = diff-so-fancy | less --tabs=4 -RFX
   show = diff-so-fancy | less --tabs=4 -RFX
 [merge "tool"]
-	path = nvim
+  path = nvim
+[log]
+  mailmap = true
