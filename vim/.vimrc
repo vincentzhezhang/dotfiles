@@ -165,21 +165,6 @@ endif
 " switcher hotkey
 let s:uname = system('uname -s')
 let s:hostname = system('uname -n')
-let s:sys_hour = str2nr(system("date '+%k'"))
-
-" Adaptive colorscheme switching
-" TODO: dynamic day/night range from system or external API
-let s:wakeup = 8
-let s:midday = 12
-let s:late = 22
-
-if s:sys_hour <= s:wakeup || s:sys_hour >= s:late
-  call LateNight()
-elseif s:sys_hour > s:wakeup && s:sys_hour <= s:midday
-  call SunnyDays()
-else
-  call InDoor()
-end
 
 " Syntastic recommended settings
 " TODO: check if this is deprecated
@@ -323,6 +308,9 @@ nnoremap <silent> <A-,> :TmuxNavigatePrevious<cr>
 if executable('ag')
   let g:ackprg = 'ag --vimgrep'
 endif
+
+" deprecate adaptive theme, just use InDoor instead with switching by F5
+call InDoor()
 
 if !empty(glob('~/.vimrc.after'))
   source ~/.vimrc.after
