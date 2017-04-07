@@ -40,9 +40,9 @@ endfunction
 
 function InDoor()
   if !exists('g:gruvbox_italic')
-    " let g:gruvbox_italic=1
-    " let g:gruvbox_contrast_dark='hard'
-    " let g:gruvbox_contrast_light='hard'
+    let g:gruvbox_italic=1
+    let g:gruvbox_contrast_dark='hard'
+    let g:gruvbox_contrast_light='hard'
   end
 
   colorscheme gruvbox

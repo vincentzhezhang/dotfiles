@@ -27,6 +27,7 @@ Plug 'godlygeek/tabular'
 Plug 'gregsexton/gitv'
 Plug 'hail2u/vim-css3-syntax'
 Plug 'junegunn/fzf', { 'dir': '~/.config/fzf', 'do': './install --all' }
+Plug 'junegunn/vim-easy-align'
 Plug 'klen/pylama'
 Plug 'Lokaltog/vim-easymotion'
 Plug 'lifepillar/vim-solarized8'
