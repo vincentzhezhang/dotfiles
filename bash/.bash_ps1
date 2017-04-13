@@ -10,17 +10,15 @@ prettify_prompt() {
 
     # create a dash line which has a length of the current terminal columns minus
     # user@hostname, time string and padding spaces
-    local short_hostname=''
     local time_str=''
     local dash_line=''
     local dash_line_padding=2 # spaces before and after the dash line
     local dash_line_width=0
 
-    short_hostname=$(/usr/bin/env hostname -s)
-    local prefix_str="$USER@$short_hostname"
-
+    pwd_str=$(readlink -f "$PWD")
     time_str="$(date +'%H:%M:%S')"
-    dash_line_width=$((COLUMNS - ${#prefix_str} - ${#time_str} - dash_line_padding))
+
+    dash_line_width=$((COLUMNS - ${#pwd_str} - ${#time_str} - dash_line_padding))
 
     while [[ $dash_line_width -gt 0 ]]
     do
@@ -28,18 +26,12 @@ prettify_prompt() {
         let dash_line_width-=1
     done
 
-    # indicator treatment
-    if [[ "$PWD" == "$HOME" ]]; then
-        local indicator="${BASE0}>${COFF} "
-    else
-        local indicator=" ${BASE0}~>${COFF} "
-    fi
+    local indicator="${BASE0}~>${COFF} "
 
-    pwd_str="${BASE0}\w${COFF}"
     git_str="$(git_prompt)"
 
-    status_line="${BASE00}${prefix_str} ${dash_line} ${time_str}${COFF}"
-    old_ps1="${last_state}${pwd_str}${git_str}${indicator}"
+    status_line="${BASE00}${pwd_str} ${dash_line} ${time_str}${COFF}"
+    old_ps1="${last_state}${git_str}${indicator}"
 
     PS1="$status_line\n$old_ps1"
 }

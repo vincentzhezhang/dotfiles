@@ -91,6 +91,6 @@
 [log]
   mailmap = true
 [http]
-  sslverify = false
-  proxy = ch1prdprx01.akunacapital.local:8888
+  # sslverify = false
+  # proxy = ch1prdprx01.akunacapital.local:8888
 
