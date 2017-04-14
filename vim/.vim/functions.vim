@@ -1,6 +1,34 @@
 "
 " Here contains all the helper functions for vim
 "
+"
+
+"
+" Open help in new tabs with less like quit, courtesy junegunn
+"
+function! s:helptab()
+  if &buftype ==# 'help'
+    wincmd T
+    nnoremap <buffer> q :q<cr>
+  endif
+endfunction
+
+augroup vimrc
+  autocmd BufEnter *.txt call s:helptab()
+augroup END
+
+" Use local node binaries if possible, with fallback to global binaries
+" Currently just for eslint, will add other stuff
+function! PreferLocalNodeBinaries()
+  let l:local_eslint = $PWD .'/node_modules/.bin/eslint'
+  let l:global_eslint = system('which eslint')
+
+  if executable(l:local_eslint)
+    let g:neomake_javascript_eslint_exe = l:local_eslint
+  elseif executable(l:global_eslint)
+    let g:neomake_javascript_eslint_exe = l:global_eslint
+  endif
+endfunction
 
 "
 " Vim Plug callback functions

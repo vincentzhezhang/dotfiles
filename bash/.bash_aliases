@@ -13,12 +13,14 @@ alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
 
 # ag for better code search
-alias ag='ag --color-match="1;31"'
+alias ag='ag --color-match="1;31" --path-to-ignore ~/.agignore'
 # TODO
 # 1. batch search and replace
 # 2. should add two versions, one is search recursively within current diretory
 # 2. and the other search and replace, might including case options
 # ag -l $1 | xargs sed -ri.bak -e "s/$1/$2/g"
+
+alias mux="tmuxinator"
 
 ## Keeping things organized
 alias biggest='BLOCKSIZE=1048576; du -x | sort -nr | head -10'
