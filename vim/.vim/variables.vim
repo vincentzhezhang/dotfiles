@@ -1,5 +1,7 @@
 "
-" General ignore patterns to make my life easier
+" General ignore patterns to reduce the noise
+" TODO: double check see if some of the patterns here should really be handled
+" by vcs ignore list
 "
 " Disable output and VCS files
 set wildignore+=*.o,*.out,*.obj,.git,*.rbc,*.rbo,*.class,.svn,*.gem
@@ -19,14 +21,8 @@ set wildignore+=*/vendor/gems/*,*/vendor/cache/*,*/.bundle/*,*/.sass-cache/*
 " Ignore rails temporary asset caches
 set wildignore+=*/tmp/cache/assets/*/sprockets/*,*/tmp/cache/assets/*/sass/*
 
-" Ignore custom folders
-set wildignore+=*/resources/*
-
 " Ignore node modules
 set wildignore+=*/node_modules/*
-
-" Ignore static folder
-set wildignore+=*/static/*
 
 " Disable temp and backup files
 set wildignore+=*.swp,*~,._*

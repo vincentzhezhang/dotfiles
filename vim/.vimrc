@@ -1,6 +1,10 @@
 " TODO: extract variables into .vim/variables.vim
 " TODO: add contional loading for pluggins
 " TODO: try https://github.com/Chiel92/vim-autoformat
+
+" Make use of bash utilities in vim
+let $BASH_ENV = '~/.bash_utilities'
+
 if !empty(glob('~/.vimrc.before'))
   source ~/.vimrc.before
 end
@@ -24,7 +28,7 @@ Plug 'digitaltoad/vim-pug'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'elzr/vim-json'
 " TODO file a pull request to fix loading for nvim, instead of hook
-Plug 'ericpruitt/tmux.vim', { 'do': 'ln -sf vim/* .' }
+Plug 'ericpruitt/tmux.vim', { 'rtp': 'vim' }
 Plug 'flazz/vim-colorschemes'
 Plug 'godlygeek/tabular'
 Plug 'hail2u/vim-css3-syntax'
@@ -33,8 +37,9 @@ Plug 'junegunn/fzf', { 'dir': '~/.config/fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'junegunn/vim-easy-align'
 Plug 'klen/pylama'
+Plug 'kewah/vim-stylefmt'
 Plug 'Lokaltog/vim-easymotion'
-Plug 'lifepillar/vim-solarized8'
+Plug 'majutsushi/tagbar'
 Plug 'mbbill/undotree'
 Plug 'mhinz/vim-startify'
 Plug 'moll/vim-node'
@@ -75,7 +80,6 @@ else
   set hlsearch                   " Highlight search results
   set laststatus=2               " Always display the statusline in all windows
   set nocompatible               " be advanced
-  set pastetoggle=<F2>           " bind paste mode for ease of use
   set smarttab
   set softtabstop=0              " moved up from below
   set ttyfast
@@ -97,6 +101,7 @@ set noswapfile                      " Get rid of the annoying .swp file
 set nowrap                          " Don't wrap on long lines
 set nowritebackup                   " Write file in place
 set number                          " Display line numbers on the left
+set pastetoggle=<F2>                " bind paste mode for ease of use
 set scrolloff=3                     " Have some context around the current line always on screen
 set shiftwidth=2                    " Number of spaces to use for each step of (auto)indent
 set showtabline=2                   " Always display the tabline, even if there is only one tab
@@ -107,24 +112,33 @@ set splitbelow                      " Intuitively split to below when doing hori
 set splitright                      " Split to right when doing vertical split
 set synmaxcol=256                   " Limit syntax color for long lines to improve rendering speed
 set tabstop=2                       " Number of spaces that a <Tab> in the file counts for
+set tags=./.tags,.tags;             " Use hidden tags files
 set undodir=~/.vim/undo/            " Persistent undo directory
 set undofile                        " Persistent undo
 set updatetime=3000                 " Make update related events slightly faster
 
 let &showbreak='↪ '     " Make soft wrap visually appealing
 
+" TODO verify airline symbol display with Fantastique Sans Mono on different
+" screen/font-size/dpi combinations, see left/right_sep below
 " airline tweaks
-let g:airline#extensions#branch#enabled = 0
-let g:airline#extensions#bufferline#enabled = 0
+let g:airline#extensions#branch#enabled                 = 0
+let g:airline#extensions#bufferline#enabled             = 0
 let g:airline#extensions#bufferline#overwrite_variables = 1
-let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#whitespace#enabled = 0
-let g:airline_detect_spell    = 0
-let g:airline_left_sep        = ''
-let g:airline_powerline_fonts = 1
-let g:airline_right_sep       = ''
+let g:airline#extensions#tabline#enabled                = 1
+let g:airline#extensions#whitespace#enabled             = 0
+let g:airline_detect_spell                              = 0
+let g:airline_inactive_collapse                         = 1
+let g:airline_left_alt_sep                              = '│'
+let g:airline_left_sep                                  = ''
+let g:airline_powerline_fonts                           = 1
+let g:airline_right_alt_sep                             = '│'
+let g:airline_right_sep                                 = ''
+let g:airline_section_x                                 = ''
+let g:airline#parts#ffenc#skip_expected_string          = 'utf-8[unix]'
 
-" case-insensitive for some common commands
+
+" make some commands case-insensitive
 command! Q q
 command! W w
 
@@ -133,7 +147,9 @@ map Q <Nop>
 " turn off Recording mode
 map q <Nop>
 
-" enhancements that make your life easier
+"
+" auto commands that make your life easier
+"
 augroup general_enhancements
   autocmd!
   autocmd BufEnter * checktime % " make autoread behave intuitively
@@ -153,16 +169,17 @@ augroup general_enhancements
   " autocmd CursorHold * Neomake
   endif
 
-  autocmd VimResized * wincmd = " resize splits whenever vim is resized
+  " make panes responsive
+  autocmd VimResized * wincmd =
 
   autocmd InsertLeave,WinEnter * set cursorline
   autocmd InsertEnter,WinLeave * set nocursorline
+
+  autocmd FocusLost * silent! syntax off
+  autocmd FocusGained * silent! syntax on
 augroup END
 
 call PreferLocalNodeBinaries()
-
-" Quick switch between numbers ruler
-noremap <silent> <F12> :set number!<CR>
 
 " should add proper ability detection
 if empty($TERMINATOR_UUID) && empty($SESSION_TYPE)
@@ -218,7 +235,6 @@ inoremap kj <Esc>
 " 1. Faster check
 " 2. Dropdown with length limit
 " 3. Use online service
-"
 noremap <space>c ea<C-x><C-s>
 
 " Run the current script according to shebang!
@@ -229,14 +245,11 @@ nnoremap <silent> <CR> :nohlsearch<CR><CR>
 " quick jump between recent two files
 nnoremap <leader>b :b#<CR>
 
-" copy reference of current line to system clipboard
-function! CopyReference()
-  let l:reference = join([expand('%'), line('.')], ':')
-  call system('echo ' . l:reference . ' | xclip -sel clip')
-  echo 'copied ' . l:reference . ' to system clipboard!'
-endfunction
+" Quick switch between numbers ruler
+nnoremap <silent> <F12> :set number!<CR>
 
-nnoremap <leader>r :call CopyReference()<CR>
+" Tagbar Toggle
+nnoremap <silent> <C-t> :TagbarToggle<CR>
 
 " quick edit .mimic
 nnoremap <leader>V :e $MYVIMRC<CR>
@@ -245,7 +258,7 @@ nnoremap <leader>V :e $MYVIMRC<CR>
 nnoremap <leader>j i<return><esc>
 
 " NERDTree
-map <C-\> :NERDTreeFind<CR>
+map <C-\> :NERDTreeFind<CR> | wincmd p
 let g:NERDTreeWinSize=30
 
 " Nerd Commenter
@@ -302,6 +315,8 @@ augroup neomake_signs_customization
         \ hi NeomakeInfoSign    guifg=#666666 guibg=#3a3a3a |
 augroup END
 
+let g:neomake_javascript_enabled_makers = ['eslint']
+
 " handy selection of symbols
 " suits of poker: ♠ ♥ ♣ ♦
 " •
@@ -329,8 +344,15 @@ let g:neomake_info_sign = {
    \   'texthl': 'NeomakeInfoSign',
    \ }
 
-" deprecate adaptive theme, just use InDoor instead with fast switching by F5
-call InDoor()
+" adaptive theme with extra fine tuning, also fast switching by F5
+let g:luminance=system('get_luminance')
+if g:luminance ==? 'high'
+  call SunnyDays()
+elseif g:luminance ==? 'low'
+  call LateNight()
+else
+  call InDoor()
+endif
 
 if !empty(glob('~/.vimrc.after'))
   source ~/.vimrc.after

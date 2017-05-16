@@ -1,4 +1,9 @@
 #! /usr/bin/env bash
+shopt -s expand_aliases
+
+# you can never been too lazy
+alias c='clear'
+
 # handy ls aliases
 alias ls='ls -CF --color=auto'
 alias l='ls'
@@ -22,6 +27,8 @@ alias ag='ag --color-match="1;31" --path-to-ignore ~/.agignore'
 
 alias mux="tmuxinator"
 
+alias vtop='vtop -t dark'
+
 ## Keeping things organized
 alias biggest='BLOCKSIZE=1048576; du -x | sort -nr | head -10'
 alias cp='cp -i'
@@ -43,8 +50,13 @@ alias ......="cd ../../../../.."
 ## Dir shortcuts
 alias localhost='cd /var/www'
 
+
+# NeoVim for the win
+alias vi='nvim'
+alias vim='nvim'
+
 ## App-specific
-alias nano='nano -W -m'
+alias nano='nvim'
 alias ftp='ncftp Personal'
 alias wget='wget -c'
 alias scrot='scrot -c -d 7'
@@ -63,11 +75,7 @@ alias pyserver='python -m SimpleHTTPServer'
 
 # TODO
 # fzf based command line app launcher
-alias x='IFS=":"; for p in $PATH; do ls "$p" 2>/dev/null; done | fzf'
-
-# NeoVim for the win
-alias vi='nvim'
-alias vim='nvim'
+alias x='IFS=":"; for p in $PATH; do command ls -1 "$p" 2>/dev/null; done | fzf --height=36%'
 
 # use most recent version of git-cola
 alias cola='git-cola'

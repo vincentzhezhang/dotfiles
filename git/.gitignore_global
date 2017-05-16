@@ -39,3 +39,7 @@ Thumbs.db<Paste>
 # Special folders
 .ropeproject/
 .idea/
+
+# tag files
+tags
+.tags

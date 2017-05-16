@@ -3,6 +3,14 @@
 "
 "
 
+" copy reference of current line to system clipboard
+function! CopyReference()
+  let l:reference = join([expand('%'), line('.')], ':')
+  call system('echo ' . l:reference . ' | xclip -sel clip')
+  echo 'copied ' . l:reference . ' to system clipboard!'
+endfunction
+nnoremap <leader>r :call CopyReference()<CR>
+
 "
 " Open help in new tabs with less like quit, courtesy junegunn
 "
@@ -20,7 +28,7 @@ augroup END
 " Use local node binaries if possible, with fallback to global binaries
 " Currently just for eslint, will add other stuff
 function! PreferLocalNodeBinaries()
-  let l:local_eslint = $PWD .'/node_modules/.bin/eslint'
+  let l:local_eslint = $PWD . '/node_modules/.bin/eslint'
   let l:global_eslint = system('which eslint')
 
   if executable(l:local_eslint)
@@ -61,18 +69,16 @@ endfunction
 "
 " quick switch between color schemes
 "
+let g:gruvbox_italic=1
+let g:gruvbox_contrast_light='soft'
+let g:gruvbox_contrast_dark='normal'
+
 function SunnyDays()
-  colorscheme solarized8_light_high
+  colorscheme gruvbox
   set background=light
 endfunction
 
 function InDoor()
-  if !exists('g:gruvbox_italic')
-    let g:gruvbox_italic=1
-    let g:gruvbox_contrast_dark='hard'
-    let g:gruvbox_contrast_light='hard'
-  end
-
   colorscheme gruvbox
   set background=dark
 endfunction

@@ -1,5 +1,6 @@
 #! /usr/bin/env bash
 
+# FIXME length calculation of full-width character is broken
 prettify_prompt() {
     # show last command execution result intuitively
     if [[ $? == 0 ]]; then

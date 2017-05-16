@@ -17,7 +17,7 @@
   sn = !bash -c 'git checkout -b snapshot_$(/usr/bin/env date "+%y%m%d_%H%M%S")'
   unstage = reset HEAD --
   un = reset HEAD --
-  lg = log --graph -18 \
+  lg = log --graph \
 --date=iso \
 --pretty=format:'\
 %C(yellow)%h%Creset \
@@ -26,7 +26,9 @@
 %C(cyan)%d%Creset%n \
 %w(80)%s%n'
   summary = "!f(){ \
-    git log --pretty=oneline \
+    git log \
+    --oneline \
+    --decorate='' \
     --abbrev-commit \
     --author=$(git config user.email) \
     --no-merges \
@@ -34,11 +36,12 @@
     --since=$(date -u +\"%Y-%m-%dT00:00:00\") \
     --use-mailmap; \
   }; f"
-  birth = log --diff-filter=A --
+  birth-info = log --diff-filter=A --
   review = "!f(){ git branch \"review/$1\" \"origin/$1\" && git checkout -f \"review/$1\"; }; f"
-  finish-review = !bash -c 'git branch --no-color | cut -c 3- | grep review/ | xargs git branch -D'
+  finish-review = !bash -c 'git checkout -f master && git branch --no-color | cut -c 3- | grep "^review/" | xargs -r git branch -D'
+  detailed-log = log --graph --all --decorate --stat --date=iso
 [user]
-	name = Vincent Zhang
+  name = Vincent Zhang
   email = v.zh@msn.com
 [github]
   user = vincentzhezhang
@@ -78,13 +81,13 @@
 [push]
   default = simple
 [cola]
-	fontdiff = Ubuntu Mono,11,-1,5,50,0,0,0,0,0
+  fontdiff = Ubuntu Mono,11,-1,5,50,0,0,0,0,0
   tabwidth = 2
   textwidth = 80
   boldheaders = true
   savewindowsettings = true
   blameviewer = git gui blame
-	spellcheck = false
+  spellcheck = false
 [filter "lfs"]
   clean = git-lfs clean %f
   smudge = git-lfs smudge %f
@@ -96,7 +99,3 @@
   path = nvim
 [log]
   mailmap = true
-[http]
-  sslverify = false
-  proxy = ch1prdprx01.akunacapital.local:8888
-
