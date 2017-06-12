@@ -1,0 +1,43 @@
+#! /usr/bin/env bash
+
+#
+# Share contrast across applications
+#
+# TODO use new system wide contrast settings to deprecate cli app detections
+# 0. Terminal color schemes
+#   - adaptive color scheme for gnome-terminal
+#
+# 1. Vim specific settings
+#   - vim adaptive color scheme DONE
+#   - airline adaptive color scheme
+#   - vim gutter related adaptive color scheme
+#   - fzf adaptive color scheme
+#
+# 2. Tmux
+#   - tmux adaptive color scheme for status line
+get_luminance() {
+  local day=530
+  local night=1630
+  local owl=2100
+  local timestr; timestr="$(date +%H%M)"
+
+  if [[ -n $LUMINANCE ]]; then
+    echo -n "$LUMINANCE"
+  else
+    case $timestr in
+      [$((day))-$((night - 1))]*) echo -n 'high';;
+      [$((night_start))-$((owl - 1))]*) echo -n 'normal';;
+      *) echo -n 'low'
+    esac
+  fi
+}
+
+
+#
+# Greeting message
+#
+greeting () {
+  day="$(date +%u)"
+  local prefix; prefix=$([[ $day -ge 5 ]] && echo 'happy' || echo 'good')
+  echo "Have a ${prefix} $(date +%A), $(whoami)!"
+}
