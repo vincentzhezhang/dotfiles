@@ -1,6 +1,7 @@
-" TODO: extract variables into .vim/variables.vim
+" TODO: extract more variables into .vim/variables.vim
 " TODO: add contional loading for pluggins
 " TODO: try https://github.com/Chiel92/vim-autoformat
+" TODO: fix cursorline caused slowness, in fast scroll and gblame
 
 " Make use of bash utilities in vim
 let $BASH_ENV = '~/.bash_utilities'
@@ -12,13 +13,11 @@ end
 source ~/.vim/variables.vim
 source ~/.vim/functions.vim
 
-" in case vim-plug is missing
-call SetupVimPlug()
-
 " temporary workaround for editorconfig-vim slowness
 let g:EditorConfig_core_mode = 'external_command'
 
 " TODO try to make a vim plugin to add descriptions for pluggins
+call SetupVimPlug() " in case vim-plug is missing
 call plug#begin('~/.vim/plugged')
 Plug 'airblade/vim-gitgutter'
 Plug 'AndrewRadev/splitjoin.vim'
@@ -26,13 +25,12 @@ Plug 'chriskempson/base16-vim'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'digitaltoad/vim-pug'
 Plug 'editorconfig/editorconfig-vim'
-Plug 'elzr/vim-json'
-" TODO file a pull request to fix loading for nvim, instead of hook
+Plug 'elzr/vim-json', { 'for': ['json'] }
 Plug 'ericpruitt/tmux.vim', { 'rtp': 'vim' }
 Plug 'flazz/vim-colorschemes'
 Plug 'godlygeek/tabular'
 Plug 'hail2u/vim-css3-syntax'
-Plug 'ap/vim-css-color'
+Plug 'ap/vim-css-color', { 'for': ['css', 'sass', 'scss'] }
 Plug 'junegunn/fzf', { 'dir': '~/.config/fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'junegunn/vim-easy-align'
@@ -44,12 +42,12 @@ Plug 'mbbill/undotree'
 Plug 'mhinz/vim-startify'
 Plug 'moll/vim-node'
 Plug 'morhetz/gruvbox'
-Plug 'mxw/vim-jsx'
+Plug 'mxw/vim-jsx', { 'for': ['javascript.jsx'] }
 Plug 'mileszs/ack.vim'
 Plug 'neomake/neomake'
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'othree/javascript-libraries-syntax.vim'
-Plug 'pangloss/vim-javascript'
+Plug 'pangloss/vim-javascript', { 'for': ['javascript', 'javascript.jsx'] }
 Plug 'plasticboy/vim-markdown'
 Plug 'Raimondi/delimitMate'
 Plug 'scrooloose/nerdcommenter'
@@ -71,6 +69,7 @@ if has('nvim')
   " mitigate ctrl-h mess within some terminal
   nmap <BS> <C-W>h
 else
+  " TODO check out VIM8 see if any default option values been changed
   " Backwards compatibility for Vim, most of them are set by default in NeoVim
   " vint: -ProhibitSetNoCompatible
   set autoindent
@@ -92,6 +91,7 @@ scriptencoding utf-8
 set autowrite                       " Save changes before switching buffers
 set cursorline                      " Highlight the screen line of the cursor
 set expandtab                       " Expand tabs to spaces
+set ignorecase                      " Make search case-insensitive
 set list                            " Enable whitespace characters' display
 set listchars=nbsp:¬,tab:»·,trail:· " Better whitespace symbols
 set mouse=a                         " Grab mouse event within tmux
@@ -105,6 +105,7 @@ set pastetoggle=<F2>                " bind paste mode for ease of use
 set scrolloff=3                     " Have some context around the current line always on screen
 set shiftwidth=2                    " Number of spaces to use for each step of (auto)indent
 set showtabline=2                   " Always display the tabline, even if there is only one tab
+set smartcase                       " Make search case-insensitive smart!
 set smartindent                     " Do smart auto indenting when starting a new line
 set spell                           " Enable spell check
 set spelllang=en_us                 " Use en_us for better collaboration
@@ -122,37 +123,33 @@ let &showbreak='↪ '     " Make soft wrap visually appealing
 " TODO verify airline symbol display with Fantastique Sans Mono on different
 " screen/font-size/dpi combinations, see left/right_sep below
 " airline tweaks
-let g:airline#extensions#branch#enabled                 = 0
-let g:airline#extensions#bufferline#enabled             = 0
-let g:airline#extensions#bufferline#overwrite_variables = 1
-let g:airline#extensions#tabline#enabled                = 1
-let g:airline#extensions#whitespace#enabled             = 0
-let g:airline_detect_spell                              = 0
-let g:airline_inactive_collapse                         = 1
-let g:airline_left_alt_sep                              = '│'
-let g:airline_left_sep                                  = ''
-let g:airline_powerline_fonts                           = 1
-let g:airline_right_alt_sep                             = '│'
-let g:airline_right_sep                                 = ''
-let g:airline_section_x                                 = ''
-let g:airline#parts#ffenc#skip_expected_string          = 'utf-8[unix]'
+let g:airline#extensions#branch#enabled        = 0
+let g:airline#extensions#tabline#enabled       = 1
+let g:airline#extensions#whitespace#enabled    = 0
+let g:airline_detect_spell                     = 0
+let g:airline_inactive_collapse                = 1
+let g:airline_left_alt_sep                     = '│'
+let g:airline_left_sep                         = ''
+let g:airline_powerline_fonts                  = 1
+let g:airline_right_alt_sep                    = '│'
+let g:airline_right_sep                        = ''
+let g:airline_section_x                        = ''
+let g:airline#parts#ffenc#skip_expected_string = 'utf-8[unix]'
+let g:airline#extensions#tabline#tab_nr_type   = 2 " splits and tab number
+
+
+call airline#parts#define_accent('file', 'yellow')
 
 
 " make some commands case-insensitive
 command! Q q
 command! W w
 
-" turn off Ex mode
-map Q <Nop>
-" turn off Recording mode
-map q <Nop>
-
 "
 " auto commands that make your life easier
 "
 augroup general_enhancements
   autocmd!
-  autocmd BufEnter * checktime % " make autoread behave intuitively
 
   if line('$') <= 999
     " temporary disabled during the refactoring period
@@ -172,11 +169,18 @@ augroup general_enhancements
   " make panes responsive
   autocmd VimResized * wincmd =
 
+  autocmd WinEnter * checktime % " make autoread behave intuitively
   autocmd InsertLeave,WinEnter * set cursorline
   autocmd InsertEnter,WinLeave * set nocursorline
 
   autocmd FocusLost * silent! syntax off
   autocmd FocusGained * silent! syntax on
+
+  autocmd FocusGained * silent! echom 'FocusGained'<CR>
+  autocmd FocusLost * silent! echom 'FocusLost'<CR>
+  autocmd BufRead * silent! echom 'BufRead'<CR>
+  autocmd BufEnter * silent! echom 'BufEnter'<CR>
+  autocmd BufLeave * silent! echom 'BufLeave'<CR>
 augroup END
 
 call PreferLocalNodeBinaries()
@@ -215,50 +219,13 @@ if !exists('g:ycm_semantic_triggers')
 endif
 let g:ycm_semantic_triggers['typescript'] = ['.']
 
+" TODO make NERDCommenter smarter, i.e.
+" - omni shortcut to toggle comment on/off
+" - detect mode automatically and apply corresponding style
+" - use comment line left align as default
+
 " jsx settings if want to have jsx in side js
 let g:jsx_ext_required = 0
-
-" Git key mapping
-nnoremap <space>gb :Gblame<CR>
-nnoremap <space>gs :Gstatus<CR>
-
-" vim-easy-align
-nmap ga <Plug>(EasyAlign)
-xmap ga <Plug>(EasyAlign)
-
-" experimental key mapping for escape to normal mode
-inoremap jk <Esc>
-inoremap kj <Esc>
-
-" simple spell correction
-" TODO needs a better solution, including but not limited to:
-" 1. Faster check
-" 2. Dropdown with length limit
-" 3. Use online service
-noremap <space>c ea<C-x><C-s>
-
-" Run the current script according to shebang!
-nnoremap <F8> :!%:p<Enter>
-
-nnoremap <silent> <CR> :nohlsearch<CR><CR>
-
-" quick jump between recent two files
-nnoremap <leader>b :b#<CR>
-
-" Quick switch between numbers ruler
-nnoremap <silent> <F12> :set number!<CR>
-
-" Tagbar Toggle
-nnoremap <silent> <C-t> :TagbarToggle<CR>
-
-" quick edit .mimic
-nnoremap <leader>V :e $MYVIMRC<CR>
-
-" Break line at cursor
-nnoremap <leader>j i<return><esc>
-
-" NERDTree
-map <C-\> :NERDTreeFind<CR> | wincmd p
 let g:NERDTreeWinSize=30
 
 " Nerd Commenter
@@ -280,6 +247,21 @@ let g:NERDTreeIndicatorMapCustom = {
     \ 'Unknown'   : '?'
     \ }
 
+" Customize fzf colors to match your color scheme
+let g:fzf_colors =
+\ { 'fg':      ['fg', 'Normal'],
+  \ 'bg':      ['bg', 'Normal'],
+  \ 'hl':      ['fg', 'Comment'],
+  \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
+  \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
+  \ 'hl+':     ['fg', 'Statement'],
+  \ 'info':    ['fg', 'PreProc'],
+  \ 'prompt':  ['fg', 'Conditional'],
+  \ 'pointer': ['fg', 'Exception'],
+  \ 'marker':  ['fg', 'Keyword'],
+  \ 'spinner': ['fg', 'Label'],
+  \ 'header':  ['fg', 'Comment'] }
+
 " Disable vim-json double quotes concealing as it's a bit awkward for me
 let g:vim_json_syntax_conceal = 0
 
@@ -288,33 +270,29 @@ let g:vim_markdown_folding_disabled = 1
 
 " seamless vim/tmux navigation
 let g:tmux_navigator_no_mappings = 1
-nnoremap <silent> <A-h> :TmuxNavigateLeft<CR>
-nnoremap <silent> <A-j> :TmuxNavigateDown<CR>
-nnoremap <silent> <A-k> :TmuxNavigateUp<CR>
-nnoremap <silent> <A-l> :TmuxNavigateRight<CR>
-nnoremap <silent> <A-,> :TmuxNavigatePrevious<CR>
 
 " use ag if possible, for better performance
 if executable('ag')
   let g:ackprg = 'ag --vimgrep'
 endif
 
-" prefer eslint_d for better speed, note current version is patched by me
-" let g:neomake_javascript_enabled_makers = ['eslint_d']
+" adaptive theme with extra fine tuning, also fast switching by F5
+" XXX this has to be put before NeoMakeSignBg in order to detect correct bg
+" color for the gutter
+let g:luminance=system('get_luminance')
+if g:luminance ==? 'high'
+  call SunnyDays()
+elseif g:luminance ==? 'low'
+  call LateNight()
+else
+  call InDoor()
+endif
 
 "
 " neomake tweaks, note that gui color settings should also be set because +termguicolors is set
-" TODO: should adapt color with different themes
 "
-augroup neomake_signs_customization
-  au!
-  autocmd ColorScheme *
-        \ hi NeomakeErrorSign   guifg=#ff3300 guibg=#3a3a3a |
-        \ hi NeomakeWarningSign guifg=#ff9900 guibg=#3a3a3a |
-        \ hi NeomakeMessageSign guifg=#0099aa guibg=#3a3a3a |
-        \ hi NeomakeInfoSign    guifg=#666666 guibg=#3a3a3a |
-augroup END
-
+" prefer eslint_d for better speed, note current version is patched by me
+" let g:neomake_javascript_enabled_makers = ['eslint_d']
 let g:neomake_javascript_enabled_makers = ['eslint']
 
 " handy selection of symbols
@@ -344,20 +322,89 @@ let g:neomake_info_sign = {
    \   'texthl': 'NeomakeInfoSign',
    \ }
 
-" adaptive theme with extra fine tuning, also fast switching by F5
-let g:luminance=system('get_luminance')
-if g:luminance ==? 'high'
-  call SunnyDays()
-elseif g:luminance ==? 'low'
-  call LateNight()
-else
-  call InDoor()
-endif
+function! NeoMakeSignBg()
+  " FIXME hack, make use of gitgutter function to get sign column bg
+  let [l:guibg, l:ctermbg] = gitgutter#highlight#get_background_colors('SignColumn')
+  execute 'hi NeomakeErrorSign   guifg=#ff3300 guibg=' . l:guibg
+  execute 'hi NeomakeWarningSign guifg=#ff9900 guibg=' . l:guibg
+  execute 'hi NeomakeMessageSign guifg=#0099aa guibg=' . l:guibg
+  execute 'hi NeomakeInfoSign    guifg=#666666 guibg=' . l:guibg
+endfunction
+
+" Adapt neomake sign color after color theme change
+augroup neomake_signs_customization
+  au!
+  autocmd ColorScheme * call NeoMakeSignBg()
+augroup END
+
+
+"
+" Key Mapping
+"
+
+" turn off Ex mode
+map Q <Nop>
+" turn off Recording mode
+map q <Nop>
+
+" Git Fugititve key mapping
+nnoremap <space>gb :Gblame<CR>
+nnoremap <space>gs :Gstatus<CR>
+
+" vim-easy-align
+nmap ga <Plug>(EasyAlign)
+xmap ga <Plug>(EasyAlign)
+
+" simple spell correction
+" TODO needs a better solution, including but not limited to:
+" 1. Faster check
+" 2. Dropdown with length limit
+" 3. Use online service
+noremap <space>c ea<C-x><C-s>
+
+" Run the current script according to shebang!
+nnoremap <F6> :!%:p<Enter>
+
+" Hide highlight for search results
+nnoremap <silent> <CR> :nohlsearch<CR><CR>
+
+" Quick jump between recent two buffers
+nnoremap <leader>b :b#<CR>
+
+" Quick switch between numbers ruler
+nnoremap <silent> <F12> :set number!<CR>
+
+" Tagbar Toggle
+nnoremap <silent> <C-t> :TagbarToggle<CR>
+
+" Quick edit .vimrc
+nnoremap <leader>V :e $MYVIMRC<CR>
+
+" Break line at cursor
+nnoremap <leader>j i<return><esc>
+
+" NERDTree
+map <C-\> :NERDTreeFind<CR> | wincmd p
+
+" Fzf bindings
+nnoremap <C-f> :GFiles<CR>
+nnoremap <C-A-f> :Files<CR>
+nnoremap <C-b> :Buffers<CR>
+
+" Tmux/Vim seamless navigation
+nnoremap <silent> <A-h> :TmuxNavigateLeft<CR>
+nnoremap <silent> <A-j> :TmuxNavigateDown<CR>
+nnoremap <silent> <A-k> :TmuxNavigateUp<CR>
+nnoremap <silent> <A-l> :TmuxNavigateRight<CR>
+nnoremap <silent> <A-,> :TmuxNavigatePrevious<CR>
 
 if !empty(glob('~/.vimrc.after'))
   source ~/.vimrc.after
 end
 
+"
+" Initialization
+"
 augroup on_startup
   autocmd VimEnter *
               \   if !argc()

@@ -18,7 +18,7 @@ alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
 
 # ag for better code search
-alias ag='ag --color-match="1;31" --path-to-ignore ~/.agignore'
+alias ag='ag --color-match="1;31"'
 # TODO
 # 1. batch search and replace
 # 2. should add two versions, one is search recursively within current diretory
@@ -75,7 +75,7 @@ alias pyserver='python -m SimpleHTTPServer'
 
 # TODO
 # fzf based command line app launcher
-alias x='IFS=":"; for p in $PATH; do command ls -1 "$p" 2>/dev/null; done | fzf --height=36%'
+alias x='$(IFS=":"; for p in $PATH; do command ls -1 "$p" 2>/dev/null; done | fzf --height=36%)'
 
 # use most recent version of git-cola
 alias cola='git-cola'

@@ -41,7 +41,7 @@
   finish-review = !bash -c 'git checkout -f master && git branch --no-color | cut -c 3- | grep "^review/" | xargs -r git branch -D'
   detailed-log = log --graph --all --decorate --stat --date=iso
 [user]
-  name = Vincent Zhang
+	name = Vincent Zhang
   email = v.zh@msn.com
 [github]
   user = vincentzhezhang
@@ -81,7 +81,7 @@
 [push]
   default = simple
 [cola]
-  fontdiff = Ubuntu Mono,11,-1,5,50,0,0,0,0,0
+	fontdiff = Ubuntu Mono,9,-1,5,50,0,0,0,0,0
   tabwidth = 2
   textwidth = 80
   boldheaders = true
