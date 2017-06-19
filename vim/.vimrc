@@ -20,6 +20,7 @@ let g:EditorConfig_core_mode = 'external_command'
 call SetupVimPlug() " in case vim-plug is missing
 call plug#begin('~/.vim/plugged')
 Plug 'airblade/vim-gitgutter'
+Plug 'airblade/vim-rooter'
 Plug 'AndrewRadev/splitjoin.vim'
 Plug 'chriskempson/base16-vim'
 Plug 'christoomey/vim-tmux-navigator'
@@ -89,7 +90,6 @@ end
 scriptencoding utf-8
 
 set autowrite                       " Save changes before switching buffers
-set cursorline                      " Highlight the screen line of the cursor
 set expandtab                       " Expand tabs to spaces
 set ignorecase                      " Make search case-insensitive
 set list                            " Enable whitespace characters' display
@@ -151,6 +151,9 @@ command! W w
 augroup general_enhancements
   autocmd!
 
+  autocmd BufReadPost,InsertLeave,WinEnter * if &modifiable | setlocal cursorline | else | setlocal nocursorline | endif
+  autocmd InsertEnter,WinLeave * setlocal nocursorline
+
   if line('$') <= 999
     " temporary disabled during the refactoring period
     " autocmd BufWritePre * StripWhitespace
@@ -161,26 +164,12 @@ augroup general_enhancements
   " TODO should replace with proper partial linting, seem in progress now
   " see https://github.com/neomake/neomake/pull/1167
   if line('$') <= 100
-  " this is kinda laggy for large files, will see if NeoMake support make on
-  " partial of file
-  " autocmd CursorHold * Neomake
+    autocmd CursorHold * Neomake
   endif
 
   " make panes responsive
   autocmd VimResized * wincmd =
-
   autocmd WinEnter * checktime % " make autoread behave intuitively
-  autocmd InsertLeave,WinEnter * set cursorline
-  autocmd InsertEnter,WinLeave * set nocursorline
-
-  autocmd FocusLost * silent! syntax off
-  autocmd FocusGained * silent! syntax on
-
-  autocmd FocusGained * silent! echom 'FocusGained'<CR>
-  autocmd FocusLost * silent! echom 'FocusLost'<CR>
-  autocmd BufRead * silent! echom 'BufRead'<CR>
-  autocmd BufEnter * silent! echom 'BufEnter'<CR>
-  autocmd BufLeave * silent! echom 'BufLeave'<CR>
 augroup END
 
 call PreferLocalNodeBinaries()
@@ -226,7 +215,7 @@ let g:ycm_semantic_triggers['typescript'] = ['.']
 
 " jsx settings if want to have jsx in side js
 let g:jsx_ext_required = 0
-let g:NERDTreeWinSize=30
+let g:NERDTreeWinSize = 30
 
 " Nerd Commenter
 let g:NERDSpaceDelims = 1
@@ -276,18 +265,6 @@ if executable('ag')
   let g:ackprg = 'ag --vimgrep'
 endif
 
-" adaptive theme with extra fine tuning, also fast switching by F5
-" XXX this has to be put before NeoMakeSignBg in order to detect correct bg
-" color for the gutter
-let g:luminance=system('get_luminance')
-if g:luminance ==? 'high'
-  call SunnyDays()
-elseif g:luminance ==? 'low'
-  call LateNight()
-else
-  call InDoor()
-endif
-
 "
 " neomake tweaks, note that gui color settings should also be set because +termguicolors is set
 "
@@ -331,12 +308,28 @@ function! NeoMakeSignBg()
   execute 'hi NeomakeInfoSign    guifg=#666666 guibg=' . l:guibg
 endfunction
 
+" let rooter change project directory silently
+let g:rooter_silent_chdir = 1
+let g:rooter_patterns = ['package.json', '.git', '.git/']
+let g:rooter_resolve_links = 1
+
 " Adapt neomake sign color after color theme change
 augroup neomake_signs_customization
   au!
   autocmd ColorScheme * call NeoMakeSignBg()
 augroup END
 
+" adaptive theme with extra fine tuning, also fast switching by F5
+" XXX this has to be put after NeoMakeSignBg in order to detect correct bg
+" color for the gutter
+let g:luminance=system('get_luminance')
+if g:luminance ==? 'high'
+  call SunnyDays()
+elseif g:luminance ==? 'low'
+  call LateNight()
+else
+  call InDoor()
+endif
 
 "
 " Key Mapping
@@ -390,6 +383,13 @@ map <C-\> :NERDTreeFind<CR> | wincmd p
 nnoremap <C-f> :GFiles<CR>
 nnoremap <C-A-f> :Files<CR>
 nnoremap <C-b> :Buffers<CR>
+
+function! FindUsageOfFile()
+  let l:basename = expand('%:t:r')
+  echo 'Searching reference for ' . l:basename . ' ...'
+  call fzf#vim#ag(expand('%:t:r'))
+endfunction
+nnoremap <C-u> :call FindUsageOfFile()<CR>
 
 " Tmux/Vim seamless navigation
 nnoremap <silent> <A-h> :TmuxNavigateLeft<CR>
