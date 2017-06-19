@@ -2,6 +2,7 @@
 # SMARTER TAB-COMPLETION (Readline bindings)
 #
 TAB: menu-complete
+set colored-stats on
 set completion-ignore-case on
 set completion-map-case on
 set mark-symlinked-directories on
