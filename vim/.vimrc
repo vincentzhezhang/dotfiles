@@ -148,14 +148,26 @@ let g:airline#extensions#default#layout = [
 command! Q q
 command! W w
 
+function! Bbq()
+  if &buftype ==? ''
+    echo 'setting cursorline'
+    setlocal cursorline
+  else
+    echo 'setting nocursorline'
+    setlocal nocursorline
+  endif
+endfunction
+
 "
 " auto commands that make your life easier
 "
 augroup general_enhancements
   autocmd!
 
-  autocmd BufReadPost,InsertLeave,WinEnter * if &modifiable | setlocal cursorline | else | setlocal nocursorline | endif
-  autocmd InsertEnter,WinLeave * setlocal nocursorline
+  autocmd BufReadPost,WinEnter * call Bbq()
+  autocmd InsertLeave * setlocal cursorline
+  autocmd WinLeave * setlocal nocursorline
+  autocmd InsertEnter * setlocal nocursorline
 
   if line('$') <= 999
     " temporary disabled during the refactoring period
