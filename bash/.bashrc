@@ -1,22 +1,18 @@
 #! /usr/bin/env bash
 # TODO try .inputrc
 
-# load bash related script modules
-BASH_SCRIPTS=(
-  constants
-  utilities
-  functions
-  aliases
-  ps1
-)
+# If not running interactively, don't do anything
+[ -z "$PS1" ] && return
 
-for s in "${BASH_SCRIPTS[@]}"; do
-  [ -f ~/.bash_"${s}" ] && . ~/.bash_"${s}"
-done
+# common non-interactive shells including:
+# - vi visual mode for long commands in shell
+# - other app started shell
 
 export TERM="xterm-256color"
 
-if [[ -x "$(command -v nvim)" ]]; then
+# CAVEAT anything executed before interative shell checking MUST has
+# backwards compatibility with sh, otherwise the login shell will fail
+if [ -x "$(command -v nvim)" ]; then
   export EDITOR="nvim"
   export VISUAL="nvim"
 else
@@ -24,24 +20,29 @@ else
   export VISUAL="vim"
 fi
 
-# If not running interactively, don't do anything
-# common non-interactive shells including:
-# - vi visual mode for long commands in shell
-# - other app started shell
-[[ $- != *i* ]] && return
+# update window size after every command
+shopt -s checkwinsize
 
 # we don't want any of the lines below appear in the history
 set +o history
-
-# handy injection before load the main script
-[ -f ~/.bashrc.before ] && . ~/.bashrc.before
 
 # Prevent file overwrite on stdout redirection
 # Use `>|` to force redirection to an existing file
 set -o noclobber
 
-# update window size after every command
-shopt -s checkwinsize
+# NOTE: set -o vi has to be placed before fzf.bash in order to correctly setup key bindings
+#   see: https://github.com/junegunn/fzf#key-bindings-for-command-line
+set -o vi
+
+# load bash related script modules
+BASH_SCRIPTS=(constants utilities functions aliases ps1)
+
+for s in "${BASH_SCRIPTS[@]}"; do
+  [ -f ~/.bash_"${s}" ] && . ~/.bash_"${s}"
+done
+
+# handy injection before load the main script
+[ -f ~/.bashrc.before ] && . ~/.bashrc.before
 
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
@@ -61,7 +62,7 @@ fi
 
 # enable color support
 if [ -x /usr/bin/dircolors ]; then
-  if [[ -f ~/.dircolors ]]; then
+  if [ -f ~/.dircolors ]; then
     eval "$(dircolors -b ~/.dircolors)"
   else
     eval "$(dircolors -b)"
@@ -75,9 +76,6 @@ unset color_prompt force_color_prompt
 [ -f ~/.bashrc.after ] && . ~/.bashrc.after
 
 # setup the amazing fzf fuzzy finder for bash
-# NOTE: set -o vi has to be placed before fzf.bash in order to correctly setup key bindings
-#   see: https://github.com/junegunn/fzf#key-bindings-for-command-line
-set -o vi
 [ -f ~/.fzf.bash ] && . ~/.fzf.bash
 
 # SSH detection, courtesy https://unix.stackexchange.com/a/9607
@@ -123,5 +121,6 @@ export HISTFILESIZE=9999
 export HISTIGNORE=cd:mv:cp:ls:bg:fg:echo:exit:clear:vi:vim:nvim:history:type:man:rm:wget
 export HISTCONTROL=ignoreboth:erasedups
 unset HISTTIMEFORMAT
+
 # turn history back on again
 set -o history
