@@ -88,7 +88,7 @@ dirsize ()
 # cleanof - clean files older than specific days
 cleanof ()
 {
-  find . -mtime +"$1" -print0 | xargs /bin/rm -Rf
+  find . -mtime +"$1" -print0 | xargs -0 /bin/rm -Rf
 }
 
 #
@@ -304,12 +304,12 @@ git_prompt()
         repo_state="${GREEN}[✓]${COFF}"
       elif [ "$local_rev" = "$base_rev" ]; then
 
-        repo_state="${YELLOW}↓$(git rev-list "$base_rev".."$remote_rev" --count)${COFF}"
+        repo_state="${YELLOW}↓$(git rev-list "$base_rev..$remote_rev" --count)${COFF}"
       elif [ "$remote_rev" = "$base_rev" ]; then
-        repo_state="${YELLOW}↑$(git rev-list "$base_rev".."$local_rev" --count)${COFF}"
+        repo_state="${YELLOW}↑$(git rev-list "$base_rev..$local_rev" --count)${COFF}"
       else
-        repo_state="${BRED}↑$(git rev-list "$base_rev".."$local_rev" --count)${COFF}"
-        repo_state+="${BRED}↓$(git rev-list "$base_rev".."$remote_rev" --count)${COFF}"
+        repo_state="${BRED}↑$(git rev-list "$base_rev..$local_rev" --count)${COFF}"
+        repo_state+="${BRED}↓$(git rev-list "$base_rev..$remote_rev" --count)${COFF}"
       fi
     else
       repo_state="${BLUE}[?]${COFF}"
@@ -364,11 +364,11 @@ if type complete &>/dev/null; then
 elif type compdef &>/dev/null; then
   _npm_completion() {
     local si=$IFS
-    compadd -- $(COMP_CWORD=$((CURRENT-1)) \
+    compadd -- "$(COMP_CWORD=$((CURRENT-1)) \
                  COMP_LINE=$BUFFER \
                  COMP_POINT=0 \
                  npm completion -- "${words[@]}" \
-                 2>/dev/null)
+                 2>/dev/null)"
     IFS=$si
   }
   compdef _npm_completion npm
