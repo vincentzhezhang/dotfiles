@@ -7,9 +7,6 @@
 # $ echo "source ~/.tigrc.vim" >> ~/.tigrc
 #
 
-set refresh-mode = periodic
-set refresh-interval = 5
-
 bind generic h scroll-left
 bind generic j move-down
 bind generic k move-up

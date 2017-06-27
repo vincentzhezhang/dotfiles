@@ -54,6 +54,7 @@ Plug 'Raimondi/delimitMate'
 Plug 'scrooloose/nerdcommenter'
 Plug 'scrooloose/nerdtree'
 Plug 'terryma/vim-multiple-cursors'
+Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 Plug 'tpope/vim-endwise'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
@@ -63,6 +64,7 @@ Plug 'vim-airline/vim-airline-themes'
 Plug 'wakatime/vim-wakatime'
 Plug 'wavded/vim-stylus'
 Plug 'Xuyuanp/nerdtree-git-plugin'
+Plug 'ryanoasis/vim-devicons' " This has to be put after all supported plugins
 call plug#end()
 
 if has('nvim')
@@ -136,7 +138,7 @@ let g:airline_right_alt_sep                    = '│'
 let g:airline_right_sep                        = ''
 let g:airline_section_b                        = ''
 let g:airline_section_x                        = ''
-let g:airline_section_z                        = '%l/%L'
+let g:airline_section_z                        = '%v:%l/%L'
 let g:airline#parts#ffenc#skip_expected_string = 'utf-8[unix]'
 let g:airline#extensions#tabline#tab_nr_type   = 2
 let g:airline#extensions#default#layout = [
@@ -169,16 +171,15 @@ augroup general_enhancements
   autocmd WinLeave * setlocal nocursorline
   autocmd InsertEnter * setlocal nocursorline
 
-  if line('$') <= 999
+  if line('$') <= 999 && &buftype ==? ''
     " temporary disabled during the refactoring period
     " autocmd BufWritePre * StripWhitespace
-    autocmd BufReadPost * Neomake
     autocmd BufWritePost * Neomake
   endif
 
   " TODO should replace with proper partial linting, seem in progress now
   " see https://github.com/neomake/neomake/pull/1167
-  if line('$') <= 100
+  if line('$') <= 100 && &buftype ==? ''
     autocmd CursorHold * Neomake
   endif
 
@@ -250,6 +251,9 @@ let g:NERDTreeIndicatorMapCustom = {
     \ 'Clean'     : '✓',
     \ 'Unknown'   : '?'
     \ }
+
+" the amount of space to use after the glyph character (default ' ')
+let g:WebDevIconsNerdTreeAfterGlyphPadding = ' '
 
 " Customize fzf colors to match your color scheme
 let g:fzf_colors =
