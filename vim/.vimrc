@@ -138,7 +138,7 @@ let g:airline_right_alt_sep                    = '│'
 let g:airline_right_sep                        = ''
 let g:airline_section_b                        = ''
 let g:airline_section_x                        = ''
-let g:airline_section_z                        = '%v:%l/%L'
+let g:airline_section_z                        = '%v : %l/%L'
 let g:airline#parts#ffenc#skip_expected_string = 'utf-8[unix]'
 let g:airline#extensions#tabline#tab_nr_type   = 2
 let g:airline#extensions#default#layout = [
@@ -152,10 +152,10 @@ command! W w
 
 function! Bbq()
   if &buftype ==? ''
-    echo 'setting cursorline'
+    " echo 'setting cursorline'
     setlocal cursorline
   else
-    echo 'setting nocursorline'
+    " echo 'setting nocursorline'
     setlocal nocursorline
   endif
 endfunction
@@ -232,6 +232,9 @@ let g:ycm_semantic_triggers['typescript'] = ['.']
 " jsx settings if want to have jsx in side js
 let g:jsx_ext_required = 0
 let g:NERDTreeWinSize = 30
+
+" color filename as well by file type in NERDTree
+" let g:NERDTreeFileExtensionHighlightFullName = 1
 
 " Nerd Commenter
 let g:NERDSpaceDelims = 1
@@ -318,6 +321,9 @@ let g:neomake_info_sign = {
    \   'texthl': 'NeomakeInfoSign',
    \ }
 
+" always display the sign column to avoid content flickering
+let g:gitgutter_sign_column_always = 1
+
 function! NeoMakeSignBg()
   " FIXME hack, make use of gitgutter function to get sign column bg
   let [l:guibg, l:ctermbg] = gitgutter#highlight#get_background_colors('SignColumn')
@@ -327,9 +333,14 @@ function! NeoMakeSignBg()
   execute 'hi NeomakeInfoSign    guifg=#666666 guibg=' . l:guibg
 endfunction
 
-" let rooter change project directory silently
+" smarter project root by vim-rooter
 let g:rooter_silent_chdir = 1
-let g:rooter_patterns = ['package.json', '.git', '.git/']
+let g:rooter_patterns = [
+  \ 'package.json',
+  \ 'conda.yaml',
+  \ '.git',
+  \ '.git/'
+  \ ]
 let g:rooter_resolve_links = 1
 
 " Adapt neomake sign color after color theme change
@@ -398,8 +409,14 @@ nnoremap <leader>j i<return><esc>
 " NERDTree
 map <C-\> :NERDTreeFind<CR> | wincmd p
 
+" FIXME git ls-files --exclude-standard seems not horning global ignore file
+function! FindFilesInCurrentProject()
+  let l:project_root = FindRootDirectory()
+  call fzf#run(fzf#wrap({'source': 'git ls-files ' . l:project_root . ' --exclude-standard'}))
+endfunction
+
 " Fzf bindings
-nnoremap <C-f> :GFiles<CR>
+nnoremap <C-f> :call FindFilesInCurrentProject()<CR>
 nnoremap <C-A-f> :Files<CR>
 nnoremap <C-b> :Buffers<CR>
 
