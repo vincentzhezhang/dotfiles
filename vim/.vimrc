@@ -93,6 +93,7 @@ scriptencoding utf-8
 
 set autowrite                       " Save changes before switching buffers
 set expandtab                       " Expand tabs to spaces
+set fillchars+=vert:\│              " Make vertical split bar prettier
 set ignorecase                      " Make search case-insensitive
 set list                            " Enable whitespace characters' display
 set listchars=nbsp:¬,tab:»·,trail:· " Better whitespace symbols
@@ -152,10 +153,8 @@ command! W w
 
 function! Bbq()
   if &buftype ==? ''
-    " echo 'setting cursorline'
     setlocal cursorline
   else
-    " echo 'setting nocursorline'
     setlocal nocursorline
   endif
 endfunction
@@ -324,13 +323,16 @@ let g:neomake_info_sign = {
 " always display the sign column to avoid content flickering
 let g:gitgutter_sign_column_always = 1
 
-function! NeoMakeSignBg()
+function! ColorSchemeTweaks()
   " FIXME hack, make use of gitgutter function to get sign column bg
   let [l:guibg, l:ctermbg] = gitgutter#highlight#get_background_colors('SignColumn')
-  execute 'hi NeomakeErrorSign   guifg=#ff3300 guibg=' . l:guibg
-  execute 'hi NeomakeWarningSign guifg=#ff9900 guibg=' . l:guibg
-  execute 'hi NeomakeMessageSign guifg=#0099aa guibg=' . l:guibg
-  execute 'hi NeomakeInfoSign    guifg=#666666 guibg=' . l:guibg
+  execute 'highlight NeomakeErrorSign   guifg=#ff3300 guibg=' . l:guibg
+  execute 'highlight NeomakeWarningSign guifg=#ff9900 guibg=' . l:guibg
+  execute 'highlight NeomakeMessageSign guifg=#0099aa guibg=' . l:guibg
+  execute 'highlight NeomakeInfoSign    guifg=#666666 guibg=' . l:guibg
+
+  " HACK for vertical split sign
+  highlight VertSplit gui=NONE guifg=#666666 guibg=NONE
 endfunction
 
 " smarter project root by vim-rooter
@@ -344,13 +346,13 @@ let g:rooter_patterns = [
 let g:rooter_resolve_links = 1
 
 " Adapt neomake sign color after color theme change
-augroup neomake_signs_customization
+augroup colorscheme_tweaks
   au!
-  autocmd ColorScheme * call NeoMakeSignBg()
+  autocmd ColorScheme * call ColorSchemeTweaks()
 augroup END
 
 " adaptive theme with extra fine tuning, also fast switching by F5
-" XXX this has to be put after NeoMakeSignBg in order to detect correct bg
+" XXX this has to be put after ColorSchemeTweaks in order to detect correct bg
 " color for the gutter
 let g:luminance=system('get_luminance')
 if g:luminance ==? 'high'
