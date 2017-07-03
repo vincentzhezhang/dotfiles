@@ -8,7 +8,7 @@
 # - vi visual mode for long commands in shell
 # - other app started shell
 
-export TERM="xterm-256color"
+export TERM="tmux-256color"
 
 # CAVEAT anything executed before interative shell checking MUST has
 # backwards compatibility with sh, otherwise the login shell will fail
