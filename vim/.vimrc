@@ -93,7 +93,8 @@ scriptencoding utf-8
 
 set autowrite                       " Save changes before switching buffers
 set expandtab                       " Expand tabs to spaces
-set fillchars+=vert:\│              " Make vertical split bar prettier
+set fillchars+=vert:\               " Make vertical split bar prettier
+" set fillchars+=vert:\│              " Make vertical split bar prettier
 set ignorecase                      " Make search case-insensitive
 set list                            " Enable whitespace characters' display
 set listchars=nbsp:¬,tab:»·,trail:· " Better whitespace symbols
@@ -105,21 +106,21 @@ set nowrap                          " Don't wrap on long lines
 set nowritebackup                   " Write file in place
 set number                          " Display line numbers on the left
 set pastetoggle=<F2>                " bind paste mode for ease of use
-set scrolloff=3                     " Have some context around the current line always on screen
+set scrolloff=6                     " Have some context around the current line always on screen
 set shiftwidth=2                    " Number of spaces to use for each step of (auto)indent
 set showtabline=2                   " Always display the tabline, even if there is only one tab
 set smartcase                       " Make search case-insensitive smart!
 set smartindent                     " Do smart auto indenting when starting a new line
 set spell                           " Enable spell check
-set spelllang=en_us                 " Use en_us for better collaboration
+set spelllang=en_us                 " Use en_us for better collaboration, sorry en_gb
 set splitbelow                      " Intuitively split to below when doing horizontal split
 set splitright                      " Split to right when doing vertical split
-set synmaxcol=256                   " Limit syntax color for long lines to improve rendering speed
+set synmaxcol=128                   " Limit syntax color for long lines to improve rendering speed
 set tabstop=2                       " Number of spaces that a <Tab> in the file counts for
 set tags=./.tags,.tags;             " Use hidden tags files
 set undodir=~/.vim/undo/            " Persistent undo directory
 set undofile                        " Persistent undo
-set updatetime=3000                 " Make update related events slightly faster
+set updatetime=1000                 " Make update related events slightly faster
 
 let &showbreak='↪ '     " Make soft wrap visually appealing
 
@@ -151,11 +152,9 @@ let g:airline#extensions#default#layout = [
 command! Q q
 command! W w
 
-function! Bbq()
-  if &buftype ==? ''
-    setlocal cursorline
-  else
-    setlocal nocursorline
+function! LintFile(threshold, modified)
+  if line('$') <= a:threshold && &buftype ==? '' && &modified == a:modified
+    Neomake
   endif
 endfunction
 
@@ -165,25 +164,18 @@ endfunction
 augroup general_enhancements
   autocmd!
 
-  autocmd BufReadPost,WinEnter * call Bbq()
-  autocmd InsertLeave * setlocal cursorline
-  autocmd WinLeave * setlocal nocursorline
-  autocmd InsertEnter * setlocal nocursorline
+  autocmd BufEnter,InsertLeave * set cursorline
+  autocmd BufLeave,InsertEnter * set nocursorline
 
-  if line('$') <= 999 && &buftype ==? ''
-    " temporary disabled during the refactoring period
-    " autocmd BufWritePre * StripWhitespace
-    autocmd BufWritePost * Neomake
-  endif
+  " temporary disabled during the refactoring period
+  " autocmd BufWritePre * StripWhitespace " strip whitespaces on save
 
   " TODO should replace with proper partial linting, seem in progress now
   " see https://github.com/neomake/neomake/pull/1167
-  if line('$') <= 100 && &buftype ==? ''
-    autocmd CursorHold * Neomake
-  endif
+  autocmd BufWritePost * call LintFile(999, 0)
+  autocmd CursorHold * call LintFile(300, 1)
 
-  " make panes responsive
-  autocmd VimResized * wincmd =
+  autocmd VimResized * wincmd =  " make panes responsive
   autocmd WinEnter * checktime % " make autoread behave intuitively
 augroup END
 
@@ -201,9 +193,6 @@ endif
 let s:uname = system('uname -s')
 let s:hostname = system('uname -n')
 
-" make search highlight more obvious
-highlight Search ctermfg=202 ctermbg=NONE cterm=bold,underline
-
 " change leader key
 let g:mapleader=' '
 
@@ -216,12 +205,7 @@ let g:multi_cursor_quit_key            = '<Esc>'
 " setup javascript-libraries-syntax
 let g:used_javascript_libs = 'underscore,backbone,lodash,jquery'
 
-
-" TypeScript settings
-if !exists('g:ycm_semantic_triggers')
-  let g:ycm_semantic_triggers = {}
-endif
-let g:ycm_semantic_triggers['typescript'] = ['.']
+let g:ycm_min_num_of_chars_for_completion = 3
 
 " TODO make NERDCommenter smarter, i.e.
 " - omni shortcut to toggle comment on/off
@@ -233,7 +217,7 @@ let g:jsx_ext_required = 0
 let g:NERDTreeWinSize = 30
 
 " color filename as well by file type in NERDTree
-" let g:NERDTreeFileExtensionHighlightFullName = 1
+let g:NERDTreeFileExtensionHighlightFullName = 1
 
 " Nerd Commenter
 let g:NERDSpaceDelims = 1
@@ -332,7 +316,8 @@ function! ColorSchemeTweaks()
   execute 'highlight NeomakeInfoSign    guifg=#666666 guibg=' . l:guibg
 
   " HACK for vertical split sign
-  highlight VertSplit gui=NONE guifg=#666666 guibg=NONE
+  " highlight VertSplit gui=NONE guifg=#666666 guibg=NONE
+  highlight VertSplit gui=NONE guifg=NONE guibg=NONE
 endfunction
 
 " smarter project root by vim-rooter
@@ -347,7 +332,7 @@ let g:rooter_resolve_links = 1
 
 " Adapt neomake sign color after color theme change
 augroup colorscheme_tweaks
-  au!
+  autocmd!
   autocmd ColorScheme * call ColorSchemeTweaks()
 augroup END
 
@@ -390,11 +375,15 @@ noremap <space>c ea<C-x><C-s>
 " Run the current script according to shebang!
 nnoremap <F6> :!%:p<Enter>
 
-" Hide highlight for search results
+" Search related tweaks
+highlight Search ctermfg=202 ctermbg=NONE cterm=bold,underline
 nnoremap <silent> <CR> :nohlsearch<CR><CR>
+nnoremap <silent> * *zz
+nnoremap <silent> # #zz
+nnoremap <silent> n nzz
+nnoremap <silent> N Nzz
 
 " Quick jump between recent two buffers
-nnoremap <leader>b :b#<CR>
 
 " Quick switch between numbers ruler
 nnoremap <silent> <F12> :set number!<CR>
@@ -417,17 +406,25 @@ function! FindFilesInCurrentProject()
   call fzf#run(fzf#wrap({'source': 'git ls-files ' . l:project_root . ' --exclude-standard'}))
 endfunction
 
-" Fzf bindings
-nnoremap <C-f> :call FindFilesInCurrentProject()<CR>
-nnoremap <C-A-f> :Files<CR>
-nnoremap <C-b> :Buffers<CR>
-
-function! FindUsageOfFile()
-  let l:basename = expand('%:t:r')
-  echo 'Searching reference for ' . l:basename . ' ...'
+function! FindReferenceOfCurrentFile()
   call fzf#vim#ag(expand('%:t:r'))
 endfunction
-nnoremap <C-u> :call FindUsageOfFile()<CR>
+nnoremap <leader>rf :call FindReferenceOfCurrentFile()<CR>
+
+function! FindReferenceOfCurrentWordUnderCursor()
+  call fzf#vim#ag(expand('<cword>'))
+endfunction
+nnoremap <leader>rw :call FindReferenceOfCurrentWordUnderCursor()<CR>
+
+" TODO need a neat implementation
+function! FindReferenceOfCurrentSelection()
+  call fzf#vim#ag(expand('<cword'))
+endfunction
+nnoremap <leader>rv :call FindReferenceOfCurrentSelection()<CR>
+
+" Fzf bindings
+nnoremap <silent> <leader>f :call FindFilesInCurrentProject()<CR>
+nnoremap <silent> <leader>b :Buffers<CR>
 
 " Tmux/Vim seamless navigation
 nnoremap <silent> <A-h> :TmuxNavigateLeft<CR>
@@ -443,7 +440,7 @@ end
 "
 " Initialization
 "
-augroup on_startup
+augroup welcome
   autocmd VimEnter *
               \   if !argc()
               \ |   Startify
