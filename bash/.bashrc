@@ -1,5 +1,9 @@
 #! /usr/bin/env bash
 # TODO try .inputrc
+# TODO extra platform specific settings to a separate script
+
+[[ $- == *i* ]] && echo 'Interactive' || echo 'Not interactive'
+shopt -q login_shell && echo 'Login shell' || echo 'Not login shell'
 
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
@@ -9,6 +13,15 @@
 # - other app started shell
 
 export TERM="xterm-256color"
+
+# history settings
+shopt -s histappend # append to HISTFILE Instead of overwrite
+shopt -s cmdhist    # force multi-line histories format in a single line
+unset HISTTIMEFORMAT
+HISTSIZE=9999       # maximum entries allowed in current history
+HISTFILESIZE=9999   # maximum lines allowed in history file
+HISTIGNORE=cd:mv:cp:ls:bg:fg:echo:exit:clear:vi:vim:nvim:history:type:man:rm:wget
+HISTCONTROL=ignoreboth:erasedups
 
 # CAVEAT anything executed before interative shell checking MUST has
 # backwards compatibility with sh, otherwise the login shell will fail
@@ -20,11 +33,13 @@ else
   export VISUAL="vim"
 fi
 
+# better consistent keyboard repeat behavior
+KB_DELAY=240
+KB_RATE=40
+xset r rate $KB_DELAY $KB_RATE
+
 # update window size after every command
 shopt -s checkwinsize
-
-# we don't want any of the lines below appear in the history
-set +o history
 
 # Prevent file overwrite on stdout redirection
 # Use `>|` to force redirection to an existing file
@@ -35,7 +50,13 @@ set -o noclobber
 set -o vi
 
 # load bash related script modules
-BASH_SCRIPTS=(constants utilities functions aliases ps1)
+BASH_SCRIPTS=(\
+  constants\
+  utilities\
+  functions\
+  aliases\
+  ps1\
+  )
 
 for s in "${BASH_SCRIPTS[@]}"; do
   [ -f ~/.bash_"${s}" ] && . ~/.bash_"${s}"
@@ -78,6 +99,12 @@ unset color_prompt force_color_prompt
 # setup the amazing fzf fuzzy finder for bash
 [ -f ~/.fzf.bash ] && . ~/.fzf.bash
 
+# remove duplicates from $PATH
+PATH=$(echo -n "$PATH" | awk -v RS=: -v ORS=: '!x[$0]++' | sed "s/\(.*\).\{1\}/\1/")
+
+# just for fun
+random_splash
+
 # SSH detection, courtesy https://unix.stackexchange.com/a/9607
 if [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ]; then
     export REMOTE_SESSION=remote/ssh
@@ -87,40 +114,17 @@ else
     esac
 fi
 
-# start Tmux unless current session is sshed in or already in tmux
+# Automatic TMUX
 if [ -z "$REMOTE_SESSION" ] && [ -z "$TMUX" ] && [ -x "$(command -v tmux)" ]; then
-  if [ -x "$(command -v tmuxinator)" ]; then
-    # Use tmuxinator if possible when there is no existing tmux session
-    if tmux ls > /dev/null 2>&1 ; then
-      tmux a
-    else
-      tmuxinator "$HOSTNAME"
-    fi
+  if tmux ls > /dev/null 2>&1 ; then
+    tmux a
   else
+    # Use tmuxinator if possible when there is no existing tmux session
+    if [ -x "$(command -v tmuxinator)" ]; then
+      tmuxinator "$HOSTNAME"
+    else
+      tmux new -A -s "$HOSTNAME"
+    fi
     # reuse the same session
-    tmux new -A -s "$HOSTNAME"
   fi
 fi
-
-# better consistent keyboard repeat behavior
-KB_DELAY=240
-KB_RATE=40
-xset r rate $KB_DELAY $KB_RATE
-
-# just for fun
-random_splash
-
-# remove duplicates from $PATH
-PATH=$(echo -n "$PATH" | awk -v RS=: -v ORS=: '!x[$0]++' | sed "s/\(.*\).\{1\}/\1/")
-
-# history settings
-shopt -s histappend # append instead of overwrite
-shopt -s cmdhist    # force multi-line histories format in a single line
-export HISTSIZE=9999
-export HISTFILESIZE=9999
-export HISTIGNORE=cd:mv:cp:ls:bg:fg:echo:exit:clear:vi:vim:nvim:history:type:man:rm:wget
-export HISTCONTROL=ignoreboth:erasedups
-unset HISTTIMEFORMAT
-
-# turn history back on again
-set -o history
