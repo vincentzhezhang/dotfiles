@@ -402,7 +402,7 @@ map <C-\> :NERDTreeFind<CR> | wincmd p
 " FIXME git ls-files --exclude-standard seems not horning global ignore file
 function! FindFilesInCurrentProject()
   let l:project_root = FindRootDirectory()
-  call fzf#run(fzf#wrap({'source': 'git -C ' . l:project_root . ' ls-files --cached --others --exclude-standard'}))
+  call fzf#run(fzf#wrap({'source': 'git ls-files --cached --others --exclude-standard ' . l:project_root}))
 endfunction
 
 function! FindReferenceOfCurrentFile()
