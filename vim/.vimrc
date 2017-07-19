@@ -320,14 +320,14 @@ function! ColorSchemeTweaks()
 endfunction
 
 " smarter project root by vim-rooter
-let g:rooter_silent_chdir = 1
 let g:rooter_patterns = [
   \ 'package.json',
-  \ 'conda.yaml',
+  \ 'setup.py',
   \ '.git',
-  \ '.git/'
+  \ '.git/',
   \ ]
 let g:rooter_resolve_links = 1
+let g:rooter_manual_only = 1
 
 " Adapt neomake sign color after color theme change
 augroup colorscheme_tweaks
@@ -402,7 +402,7 @@ map <C-\> :NERDTreeFind<CR> | wincmd p
 " FIXME git ls-files --exclude-standard seems not horning global ignore file
 function! FindFilesInCurrentProject()
   let l:project_root = FindRootDirectory()
-  call fzf#run(fzf#wrap({'source': 'git ls-files ' . l:project_root . ' --exclude-standard'}))
+  call fzf#run(fzf#wrap({'source': 'git -C ' . l:project_root . ' ls-files --cached --others --exclude-standard'}))
 endfunction
 
 function! FindReferenceOfCurrentFile()
