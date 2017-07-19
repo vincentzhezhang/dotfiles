@@ -180,8 +180,6 @@ augroup general_enhancements
   autocmd WinEnter * checktime % " make autoread behave intuitively
 augroup END
 
-call PreferLocalNodeBinaries()
-
 " should add proper ability detection
 if empty($TERMINATOR_UUID) && empty($SESSION_TYPE)
   if exists('+termguicolors')

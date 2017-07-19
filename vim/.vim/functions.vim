@@ -38,6 +38,9 @@ function! PreferLocalNodeBinaries()
   endif
 endfunction
 
+augroup node_path_hack
+  autocmd BufEnter *.js* call PreferLocalNodeBinaries()
+augroup END
 "
 " Vim Plug callback functions
 "
