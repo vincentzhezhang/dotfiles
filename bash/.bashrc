@@ -12,7 +12,7 @@ shopt -q login_shell && echo 'Login shell' || echo 'Not login shell'
 # - vi visual mode for long commands in shell
 # - other app started shell
 
-export TERM="xterm-256color"
+export TERM="tmux-256color"
 
 # history settings
 shopt -s histappend # append to HISTFILE Instead of overwrite
