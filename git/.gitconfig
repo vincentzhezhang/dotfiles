@@ -41,7 +41,7 @@
   finish-review = !bash -c 'git checkout -f master && git branch --no-color | cut -c 3- | grep "^review/" | xargs -r git branch -D'
   detailed-log = log --graph --decorate --stat --date=iso
 [user]
-	name = Vincent Zhang
+  name = Vincent Zhang
   email = v.zh@msn.com
 [github]
   user = vincentzhezhang
@@ -69,11 +69,11 @@
   changed = green
   untracked = cyan
 [credential]
-	helper = cache --timeout=604800
+  helper = cache --timeout=604800
 [diff]
   tool = meld
 [merge]
-  tool = vimdiff
+  tool = meld
   confictstyle = diff3
   conflictstyle = diff3
 [blame]
@@ -81,7 +81,7 @@
 [push]
   default = simple
 [cola]
-	fontdiff = Ubuntu Mono,9,-1,5,50,0,0,0,0,0
+  fontdiff = Ubuntu Mono,9,-1,5,50,0,0,0,0,0
   tabwidth = 2
   textwidth = 80
   boldheaders = true
