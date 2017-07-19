@@ -18,7 +18,7 @@
   unstage = reset HEAD --
   un = reset HEAD --
   lg = log --graph \
---date=iso \
+--date=iso-local \
 --pretty=format:'\
 %C(yellow)%h%Creset \
 %C(green)[%ad]%Creset \
