@@ -399,6 +399,7 @@ nnoremap <leader>j i<return><esc>
 " NERDTree
 map <C-\> :NERDTreeFind<CR> | wincmd p
 
+map <F10> :!ctags -R -f ./tags `python -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())"`<CR>
 " FIXME git ls-files --exclude-standard seems not horning global ignore file
 function! FindFilesInCurrentProject()
   let l:project_root = FindRootDirectory()
