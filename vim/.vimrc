@@ -202,7 +202,7 @@ let g:multi_cursor_prev_key            = '<C-p>'
 let g:multi_cursor_skip_key            = '<C-x>'
 let g:multi_cursor_quit_key            = '<Esc>'
 " setup javascript-libraries-syntax
-let g:used_javascript_libs = 'underscore,backbone,lodash,jquery'
+let g:used_javascript_libs = 'underscore,react'
 
 let g:ycm_min_num_of_chars_for_completion = 3
 
