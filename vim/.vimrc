@@ -118,7 +118,7 @@ set splitbelow                      " Intuitively split to below when doing hori
 set splitright                      " Split to right when doing vertical split
 set synmaxcol=128                   " Limit syntax color for long lines to improve rendering speed
 set tabstop=2                       " Number of spaces that a <Tab> in the file counts for
-set tags=./.tags,.tags;             " Use hidden tags files
+set tags=./.tags,./tags,.tags,tags; " Use hidden tags files
 set undodir=~/.vim/undo/            " Persistent undo directory
 set undofile                        " Persistent undo
 set updatetime=1000                 " Make update related events slightly faster
