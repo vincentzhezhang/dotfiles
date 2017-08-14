@@ -72,6 +72,7 @@ alias pg='ps aux | grep'
 alias cap='bundle exec cap'
 alias rake='bundle exec rake'
 alias pyserver='python -m SimpleHTTPServer'
+alias ipython='ipython --colors=linux'
 
 # TODO
 # fzf based command line app launcher
