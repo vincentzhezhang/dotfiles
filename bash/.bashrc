@@ -12,7 +12,22 @@ shopt -q login_shell && echo 'Login shell' || echo 'Not login shell'
 # - vi visual mode for long commands in shell
 # - other app started shell
 
-export TERM="tmux-256color"
+# SSH detection, courtesy https://unix.stackexchange.com/a/9607
+if [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ]; then
+    REMOTE_SESSION=remote/ssh
+else
+    case $(ps -o comm= -p $PPID) in
+        sshd|*/sshd) REMOTE_SESSION=remote/ssh;;
+    esac
+fi
+
+if [ -z "$REMOTE_SESSION" ]; then
+  TERM="tmux-256color"
+else
+  TERM="xterm-256color"
+fi
+# update window size after every command
+shopt -s checkwinsize
 
 # history settings
 shopt -s histappend # append to HISTFILE Instead of overwrite
@@ -33,17 +48,9 @@ else
   export VISUAL="vim"
 fi
 
-# better consistent keyboard repeat behavior
-KB_DELAY=240
-KB_RATE=40
-xset r rate $KB_DELAY $KB_RATE
-
-# update window size after every command
-shopt -s checkwinsize
-
 # Prevent file overwrite on stdout redirection
 # Use `>|` to force redirection to an existing file
-set -o noclobber
+# set -o noclobber
 
 # NOTE: set -o vi has to be placed before fzf.bash in order to correctly setup key bindings
 #   see: https://github.com/junegunn/fzf#key-bindings-for-command-line
@@ -105,21 +112,13 @@ PATH=$(echo -n "$PATH" | awk -v RS=: -v ORS=: '!x[$0]++' | sed "s/\(.*\).\{1\}/\
 # just for fun
 random_splash
 
-# SSH detection, courtesy https://unix.stackexchange.com/a/9607
-if [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ]; then
-    export REMOTE_SESSION=remote/ssh
-else
-    case $(ps -o comm= -p $PPID) in
-        sshd|*/sshd) export REMOTE_SESSION=remote/ssh;;
-    esac
-fi
-
 # Automatic TMUX
 if [ -z "$REMOTE_SESSION" ] && [ -z "$TMUX" ] && [ -x "$(command -v tmux)" ]; then
-  if tmux ls > /dev/null 2>&1 ; then
-    tmux a
+  # if a $HOSTNAME session exists, attach to it automatically
+  if tmux ls | grep -i "$HOSTNAME" > /dev/null 2>&1 ; then
+    tmux a -t "$HOSTNAME"
   else
-    # Use tmuxinator if possible when there is no existing tmux session
+    # Use tmuxinator if possible
     if [ -x "$(command -v tmuxinator)" ]; then
       tmuxinator "$HOSTNAME"
     else
