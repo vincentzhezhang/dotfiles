@@ -377,8 +377,14 @@ nnoremap <F6> :!%:p<Enter>
 nnoremap <silent> <CR> :nohlsearch<CR><CR>
 nnoremap <silent> * *zz
 nnoremap <silent> # #zz
-nnoremap <silent> n nzz
-nnoremap <silent> N Nzz
+nnoremap <silent> gg ggzz
+
+"
+" consistent next/prev result keymapping
+"
+nnoremap <expr> n (v:searchforward ? 'nzz' : 'Nzz')
+nnoremap <expr> N (v:searchforward ? 'Nzz' : 'nzz')
+
 
 " Quick jump between recent two buffers
 
