@@ -38,10 +38,17 @@ Thumbs.db<Paste>
 
 # Special folders
 .ropeproject/
-.idea/ 
+.idea/
 # tag files
 tags
 .tags
 
 # images
 *.png
+*.jpg
+*.jpeg
+*.gif
+
+# audio files
+*.mp3
+*.wav
