@@ -1,4 +1,3 @@
-" TODO: extract more variables into .vim/variables.vim
 " TODO: add contional loading for pluggins
 " TODO: try https://github.com/Chiel92/vim-autoformat
 " TODO: fix cursorline caused slowness, in fast scroll and gblame
@@ -95,7 +94,6 @@ scriptencoding utf-8
 set autowrite                       " Save changes before switching buffers
 set expandtab                       " Expand tabs to spaces
 set fillchars+=vert:\               " Make vertical split bar prettier
-" set fillchars+=vert:\│              " Make vertical split bar prettier
 set ignorecase                      " Make search case-insensitive
 set list                            " Enable whitespace characters' display
 set listchars=nbsp:¬,tab:»·,trail:· " Better whitespace symbols
@@ -240,6 +238,7 @@ let g:NERDTreeIndicatorMapCustom = {
 
 " the amount of space to use after the glyph character (default ' ')
 let g:WebDevIconsNerdTreeAfterGlyphPadding = ' '
+let g:WebDevIconsNerdTreeGitPluginForceVAlign = 0
 
 " Customize fzf colors to match your color scheme
 let g:fzf_colors =
@@ -278,8 +277,8 @@ endif
 let g:neomake_javascript_enabled_makers = ['eslint']
 
 " handy selection of symbols
-" suits of poker: ♠ ♥ ♣ ♦
-" •
+" poker suits:    ♠ ♥ ♣ ♦
+" common symbols: •
 " table maker:    ─━
 " block symbols:  ░▒▓
 " white space:    ] [(em)
@@ -312,12 +311,11 @@ function! ColorSchemeTweaks()
   execute 'highlight NeomakeMessageSign guifg=#0099aa guibg=' . l:guibg
   execute 'highlight NeomakeInfoSign    guifg=#666666 guibg=' . l:guibg
 
-  " HACK for vertical split sign
-  " highlight VertSplit gui=NONE guifg=#666666 guibg=NONE
+  " HACK make vertical split sign invisible
   highlight VertSplit gui=NONE guifg=NONE guibg=NONE
 endfunction
 
-" smarter project root by vim-rooter
+" smarter project root by vim-rooter, very useful when combined with fzf below
 let g:rooter_patterns = [
   \ 'package.json',
   \ 'setup.py',
@@ -346,7 +344,7 @@ else
 endif
 
 "
-" Key Mapping
+" Key Mappings
 "
 
 " turn off Ex mode
@@ -372,8 +370,9 @@ noremap <space>c ea<C-x><C-s>
 " Run the current script according to shebang!
 nnoremap <F6> :!%:p<Enter>
 
-" Search related tweaks
-highlight Search ctermfg=202 ctermbg=NONE cterm=bold,underline
+"
+" Centralized movement
+"
 nnoremap <silent> <CR> :nohlsearch<CR><CR>
 nnoremap <silent> * *zz
 nnoremap <silent> # #zz
