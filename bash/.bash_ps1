@@ -30,9 +30,10 @@ prettify_prompt() {
     local indicator="${BASE0}~>${COFF} "
 
     git_str="$(git_prompt)"
+    v_env_str="$(v_env_conda)"
 
     status_line="${BASE00}${pwd_str} ${dash_line} ${time_str}${COFF}"
-    old_ps1="${last_state}${git_str}${indicator}"
+    old_ps1="${last_state}${git_str}${v_env_str}${indicator}"
 
     PS1="$status_line\n$old_ps1"
 }

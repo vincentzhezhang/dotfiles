@@ -1,5 +1,14 @@
 #! /usr/bin/env bash
 
+# TODO this is just a temporary solution that sufficient enough for current works, should add
+# - node/npm version detection
+# - ruby version detection
+v_env_conda() {
+  if [ -n "$CONDA_DEFAULT_ENV" ]; then
+    echo "\[\e[07;32;5;64m\]<$CONDA_DEFAULT_ENV>\[\e[0m\]"
+  fi
+}
+
 # file stats
 fs() {
   if [ -n "$1" ]; then
