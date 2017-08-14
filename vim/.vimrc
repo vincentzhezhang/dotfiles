@@ -204,6 +204,7 @@ let g:multi_cursor_quit_key            = '<Esc>'
 let g:used_javascript_libs = 'underscore,react'
 
 let g:ycm_min_num_of_chars_for_completion = 3
+let g:ycm_python_binary_path = 'python'
 
 " TODO make NERDCommenter smarter, i.e.
 " - omni shortcut to toggle comment on/off
