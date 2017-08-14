@@ -404,29 +404,29 @@ nnoremap <leader>j i<return><esc>
 map <C-\> :NERDTreeFind<CR> | wincmd p
 
 map <F10> :!ctags -R -f ./tags `python -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())"`<CR>
-" FIXME git ls-files --exclude-standard seems not horning global ignore file
-function! FindFilesInCurrentProject()
-  let l:project_root = FindRootDirectory()
-  call fzf#run(fzf#wrap({'source': 'git ls-files --cached --others --exclude-standard ' . l:project_root}))
-endfunction
 
 function! FindReferenceOfCurrentFile()
   call fzf#vim#ag(expand('%:t:r'))
 endfunction
-nnoremap <leader>rf :call FindReferenceOfCurrentFile()<CR>
+nnoremap <silent> <leader>rf :call FindReferenceOfCurrentFile()<CR>
 
 function! FindReferenceOfCurrentWordUnderCursor()
-  call fzf#vim#ag(expand('<cword>'))
+  call fzf#vim#ag('\<' . expand('<cword>') . '\>')
 endfunction
-nnoremap <leader>rw :call FindReferenceOfCurrentWordUnderCursor()<CR>
+nnoremap <silent> <leader>rw :call FindReferenceOfCurrentWordUnderCursor()<CR>
 
-" TODO need a neat implementation
+" TODO pending implementation
 function! FindReferenceOfCurrentSelection()
   call fzf#vim#ag(expand('<cword'))
 endfunction
-nnoremap <leader>rv :call FindReferenceOfCurrentSelection()<CR>
+nnoremap <silent> <leader>rv :call FindReferenceOfCurrentSelection()<CR>
 
 " Fzf bindings
+function! FindFilesInCurrentProject()
+  let l:args = FindRootDirectory()
+  let l:cmd = 'git ls-files --cached --others --exclude-standard '
+  call fzf#run(fzf#wrap({'source': l:cmd . l:args}))
+endfunction
 nnoremap <silent> <leader>f :call FindFilesInCurrentProject()<CR>
 nnoremap <silent> <leader>b :Buffers<CR>
 
