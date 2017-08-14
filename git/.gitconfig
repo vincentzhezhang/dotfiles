@@ -17,14 +17,7 @@
   sn = !bash -c 'git checkout -b snapshot_$(/usr/bin/env date "+%y%m%d_%H%M%S")'
   unstage = reset HEAD --
   un = reset HEAD --
-  lg = log --graph \
---date=iso-local \
---pretty=format:'\
-%C(yellow)%h%Creset \
-%C(green)[%ad]%Creset \
-%C(magenta)<%aN>%Creset\
-%C(cyan)%d%Creset%n \
-%w(80)%s%n'
+  lg = log --graph --decorate --stat --date=iso
   summary = "!f(){ \
     git log \
     --oneline \
@@ -39,7 +32,6 @@
   birth-info = log --diff-filter=A --
   review = "!f(){ git branch -f \"review/$1\" \"origin/$1\" && git checkout -f \"review/$1\"; }; f"
   finish-review = !bash -c 'git checkout -f master && git branch --no-color | cut -c 3- | grep "^review/" | xargs -r git branch -D'
-  detailed-log = log --graph --decorate --stat --date=iso
 [user]
   name = Vincent Zhang
   email = v.zh@msn.com
