@@ -108,6 +108,7 @@ set nowritebackup                   " Write file in place
 set number                          " Display line numbers on the left
 set pastetoggle=<F2>                " bind paste mode for ease of use
 set scrolloff=6                     " Have some context around the current line always on screen
+set signcolumn=yes                  " always display the sign column to avoid content flickering
 set shiftwidth=2                    " Number of spaces to use for each step of (auto)indent
 set showtabline=2                   " Always display the tabline, even if there is only one tab
 set smartcase                       " Make search case-insensitive smart!
@@ -302,9 +303,6 @@ let g:neomake_info_sign = {
    \   'text': ' ━',
    \   'texthl': 'NeomakeInfoSign',
    \ }
-
-" always display the sign column to avoid content flickering
-let g:gitgutter_sign_column_always = 1
 
 function! ColorSchemeTweaks()
   " FIXME hack, make use of gitgutter function to get sign column bg
