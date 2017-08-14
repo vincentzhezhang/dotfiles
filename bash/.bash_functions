@@ -1,5 +1,15 @@
 #! /usr/bin/env bash
 
+# file stats
+fs() {
+  if [ -n "$1" ]; then
+    local dir="$1"
+  else
+    local dir=$(pwd)
+  fi
+  find "$dir" -maxdepth 1 -type f -exec wc -l {} \; | column -t | sort -n
+}
+
 clean_up_history() {
   local lines_before
   local lines_after
@@ -391,3 +401,4 @@ elif type compctl &>/dev/null; then
   compctl -K _npm_completion npm
 fi
 ###-end-npm-completion-###
+# vim: tw=80
