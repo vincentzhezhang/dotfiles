@@ -44,7 +44,6 @@ Plug 'moll/vim-node'
 Plug 'morhetz/gruvbox'
 Plug 'mxw/vim-jsx', { 'for': ['javascript.jsx'] }
 Plug 'mileszs/ack.vim'
-Plug 'neomake/neomake'
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'othree/javascript-libraries-syntax.vim'
 Plug 'pangloss/vim-javascript', { 'for': ['javascript', 'javascript.jsx'] }
@@ -61,6 +60,7 @@ Plug 'tpope/vim-surround'
 Plug 'Valloric/YouCompleteMe', { 'do': function('BuildYCM') }
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
+Plug 'w0rp/ale'
 Plug 'wakatime/vim-wakatime'
 Plug 'wavded/vim-stylus'
 Plug 'Xuyuanp/nerdtree-git-plugin'
@@ -152,28 +152,24 @@ let g:airline#extensions#default#layout = [
 command! Q q
 command! W w
 
-function! LintFile(threshold, modified)
-  if line('$') <= a:threshold && &buftype ==? '' && &modified == a:modified
-    Neomake
+function! SetUpBuffer()
+  if &modifiable == 1
+    setlocal signcolumn=auto
+  else
+    setlocal signcolumn=yes
   endif
 endfunction
-
 "
 " auto commands that make your life easier
 "
 augroup general_enhancements
   autocmd!
-
+  autocmd BufCreate * call SetUpBuffer()
   autocmd BufEnter,InsertLeave * set cursorline
   autocmd BufLeave,InsertEnter * set nocursorline
 
   " temporary disabled during the refactoring period
   " autocmd BufWritePre * StripWhitespace " strip whitespaces on save
-
-  " TODO should replace with proper partial linting, seem in progress now
-  " see https://github.com/neomake/neomake/pull/1167
-  autocmd BufWritePost * call LintFile(999, 0)
-  autocmd CursorHold * call LintFile(300, 1)
 
   autocmd VimResized * wincmd =  " make panes responsive
   autocmd WinEnter * checktime % " make autoread behave intuitively
@@ -270,47 +266,26 @@ if executable('ag')
   let g:ackprg = 'ag --vimgrep'
 endif
 
-"
-" neomake tweaks, note that gui color settings should also be set because +termguicolors is set
-"
-" prefer eslint_d for better speed, note current version is patched by me
-" let g:neomake_javascript_enabled_makers = ['eslint_d']
-let g:neomake_javascript_enabled_makers = ['eslint']
-
 " handy selection of symbols
 " poker suits:    ♠ ♥ ♣ ♦
 " common symbols: •
 " table maker:    ─━
 " block symbols:  ░▒▓
 " white space:    ] [(em)
-"
-let g:neomake_error_sign = {
-   \   'text': ' ━',
-   \   'texthl': 'NeomakeErrorSign',
-   \ }
-
-let g:neomake_warning_sign = {
-   \   'text': ' ━',
-   \   'texthl': 'NeomakeWarningSign',
-   \ }
-
-let g:neomake_message_sign = {
-   \   'text': ' ━',
-   \   'texthl': 'NeomakeMessageSign',
-   \ }
-
-let g:neomake_info_sign = {
-   \   'text': ' ━',
-   \   'texthl': 'NeomakeInfoSign',
-   \ }
+let g:ale_sign_error = ' ━'
+let g:ale_sign_warning = ' ━'
+let g:ale_sign_column_always = 1
+" FIXME This seems problematic, it raises CssSyntaxError on the first line
+" let g:ale_linters = {'jsx': ['stylelint', 'eslint']}
+" let g:ale_linter_aliases = {'jsx': 'css'}
 
 function! ColorSchemeTweaks()
-  " FIXME hack, make use of gitgutter function to get sign column bg
+  " FIXME hack, make use of gitgutter function to get sign column bg, may
+  " have better solution that can decouple this
   let [l:guibg, l:ctermbg] = gitgutter#highlight#get_background_colors('SignColumn')
-  execute 'highlight NeomakeErrorSign   guifg=#ff3300 guibg=' . l:guibg
-  execute 'highlight NeomakeWarningSign guifg=#ff9900 guibg=' . l:guibg
-  execute 'highlight NeomakeMessageSign guifg=#0099aa guibg=' . l:guibg
-  execute 'highlight NeomakeInfoSign    guifg=#666666 guibg=' . l:guibg
+
+  execute 'highlight ALEErrorSign   guifg=#ff3300 guibg=' . l:guibg
+  execute 'highlight ALEWarningSign guifg=#ff9900 guibg=' . l:guibg
 
   " HACK make vertical split sign invisible
   highlight VertSplit gui=NONE guifg=NONE guibg=NONE
@@ -326,7 +301,7 @@ let g:rooter_patterns = [
 let g:rooter_resolve_links = 1
 let g:rooter_manual_only = 1
 
-" Adapt neomake sign color after color theme change
+" Adapt sign color upon color theme change
 augroup colorscheme_tweaks
   autocmd!
   autocmd ColorScheme * call ColorSchemeTweaks()
