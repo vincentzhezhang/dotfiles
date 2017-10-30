@@ -1,4 +1,4 @@
 vim/.vim/plugged
 vim/.vim/autoload
-vim/.vim/spell
+vim/.vim/spell/*
 vim/.vim/undo
