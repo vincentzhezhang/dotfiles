@@ -91,3 +91,7 @@
   path = nvim
 [log]
   mailmap = true
+[pull]
+	rebase = true
+[http]
+	sslVerify = false
