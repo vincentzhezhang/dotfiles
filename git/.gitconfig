@@ -73,7 +73,7 @@
 [push]
   default = simple
 [cola]
-  fontdiff = Ubuntu Mono,9,-1,5,50,0,0,0,0,0
+	fontdiff = Fantasque Sans Mono,9,-1,5,50,0,0,0,0,0
   tabwidth = 2
   textwidth = 80
   boldheaders = true
