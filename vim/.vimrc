@@ -16,19 +16,26 @@ source ~/.vim/functions.vim
 let g:EditorConfig_core_mode = 'external_command'
 
 " TODO try to make a vim plugin to add descriptions for pluggins
+" TODO custom gx command for plugin source:
+"
+" The gx mapping is calling netrw#BrowseX(), so you could call that at the end
+" of your function, passing in the l:site variable you've constructed:
+"
+" call netrw#BrowseX(l:site, netrw#CheckIfRemote())
+" I would also suggest that instead of getline('.'), you use
+" expand('<cfile>'), which evaluates to the filename under the cursor. This
+" will work when the URL is on a line containing other content as well.
 call SetupVimPlug() " in case vim-plug is missing
 call plug#begin('~/.vim/plugged')
 Plug 'airblade/vim-gitgutter'
 Plug 'airblade/vim-rooter'
 Plug 'AndrewRadev/splitjoin.vim'
-Plug 'chriskempson/base16-vim'
+Plug 'arcticicestudio/nord-vim', { 'branch': 'develop' }
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'digitaltoad/vim-pug'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'elzr/vim-json', { 'for': ['json'] }
 Plug 'ericpruitt/tmux.vim', { 'rtp': 'vim' }
-Plug 'flazz/vim-colorschemes'
-Plug 'godlygeek/tabular'
 Plug 'hail2u/vim-css3-syntax'
 Plug 'ap/vim-css-color', { 'for': ['css', 'sass', 'scss'] }
 Plug 'junegunn/fzf', { 'dir': '~/.config/fzf', 'do': './install --all' }
@@ -38,7 +45,7 @@ Plug 'klen/pylama'
 Plug 'kewah/vim-stylefmt'
 Plug 'Lokaltog/vim-easymotion'
 Plug 'majutsushi/tagbar'
-Plug 'mbbill/undotree'
+Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
 Plug 'mhinz/vim-startify'
 Plug 'moll/vim-node'
 Plug 'morhetz/gruvbox'
@@ -49,11 +56,9 @@ Plug 'othree/javascript-libraries-syntax.vim'
 Plug 'pangloss/vim-javascript', { 'for': ['javascript', 'javascript.jsx'] }
 Plug 'plasticboy/vim-markdown'
 Plug 'Raimondi/delimitMate'
-Plug 'Rykka/riv.vim'
 Plug 'scrooloose/nerdcommenter'
 Plug 'scrooloose/nerdtree'
 Plug 'terryma/vim-multiple-cursors'
-Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 Plug 'tpope/vim-endwise'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
@@ -64,7 +69,6 @@ Plug 'w0rp/ale'
 Plug 'wakatime/vim-wakatime'
 Plug 'wavded/vim-stylus'
 Plug 'Xuyuanp/nerdtree-git-plugin'
-Plug 'ryanoasis/vim-devicons' " This has to be put after all supported plugins
 call plug#end()
 
 if has('nvim')
@@ -99,7 +103,7 @@ set list                            " Enable whitespace characters' display
 set listchars=nbsp:¬,tab:»·,trail:· " Better whitespace symbols
 set mouse=a                         " Grab mouse event within tmux
 set nobackup                        " Be environment friendly
-set noshowmode                      " Hide the default mode text
+set noshowmode                      " Hide the default mode text cause we have *whatever*line
 set noswapfile                      " Get rid of the annoying .swp file
 set nowrap                          " Don't wrap on long lines
 set nowritebackup                   " Write file in place
@@ -115,7 +119,7 @@ set spell                           " Enable spell check
 set spelllang=en_us                 " Use en_us for better collaboration, sorry en_gb
 set splitbelow                      " Intuitively split to below when doing horizontal split
 set splitright                      " Split to right when doing vertical split
-set synmaxcol=128                   " Limit syntax color for long lines to improve rendering speed
+set synmaxcol=256                   " Limit syntax color for long lines to improve rendering speed
 set tabstop=2                       " Number of spaces that a <Tab> in the file counts for
 set tags=./.tags,./tags,.tags,tags; " Use hidden tags files
 set undodir=~/.vim/undo/            " Persistent undo directory
@@ -124,29 +128,25 @@ set updatetime=1000                 " Make update related events slightly faster
 
 let &showbreak='↪ '     " Make soft wrap visually appealing
 
+
 " TODO verify airline symbol display with Fantastique Sans Mono on different
 " screen/font-size/dpi combinations, see left/right_sep below
 " airline tweaks
-call airline#parts#define_accent('file', 'yellow')
+call airline#parts#define_accent('file', 'bold')
 
-let g:airline#extensions#tabline#enabled       = 1
-let g:airline#extensions#whitespace#enabled    = 0
-let g:airline_detect_spell                     = 0
-let g:airline_inactive_collapse                = 1
-let g:airline_left_alt_sep                     = '│'
-let g:airline_left_sep                         = ''
-let g:airline_powerline_fonts                  = 1
-let g:airline_right_alt_sep                    = '│'
-let g:airline_right_sep                        = ''
-let g:airline_section_b                        = ''
-let g:airline_section_x                        = ''
-let g:airline_section_z                        = '%v : %l/%L'
-let g:airline#parts#ffenc#skip_expected_string = 'utf-8[unix]'
-let g:airline#extensions#tabline#tab_nr_type   = 2
-let g:airline#extensions#default#layout = [
-    \ [ 'a', 'b', 'c' ],
-    \ [ 'x', 'y', 'warning', 'error', 'z' ]
-    \ ]
+let g:airline#extensions#tabline#enabled        = 1
+let g:airline#extensions#whitespace#enabled     = 0
+let g:airline_detect_spell                      = 0
+let g:airline_inactive_collapse                 = 1
+let g:airline_left_alt_sep                      = '│'
+let g:airline_left_sep                          = ''
+let g:airline_powerline_fonts                   = 1
+let g:airline_right_alt_sep                     = '│'
+let g:airline_right_sep                         = ''
+let g:airline_section_b                         = ''
+let g:airline_section_x                         = ''
+let g:airline#parts#ffenc#skip_expected_string  = 'utf-8[unix]'
+let g:airline#extensions#tabline#tab_nr_type    = 2
 
 " make some commands case-insensitive
 command! Q q
@@ -210,6 +210,7 @@ let g:ycm_python_binary_path = 'python'
 " jsx settings if want to have jsx in side js
 let g:jsx_ext_required = 0
 let g:NERDTreeWinSize = 30
+let g:NERDTreeMinimalUI = 1
 
 " color filename as well by file type in NERDTree
 let g:NERDTreeFileExtensionHighlightFullName = 1
@@ -218,6 +219,8 @@ let g:NERDTreeFileExtensionHighlightFullName = 1
 let g:NERDSpaceDelims = 1
 let g:NERDCommentEmptyLines = 1
 let g:NERDTrimTrailingWhitespace = 1
+nnoremap <C-_> :call NERDComment('n', 'toggle')<CR>
+xnoremap <C-_> :call NERDComment('x', 'toggle')<CR>
 
 " NerdTree git plugin
 " TODO: find better icons, the previous one looks too bulky and not
@@ -328,9 +331,12 @@ map Q <Nop>
 " turn off Recording mode
 map q <Nop>
 
+" make Y behave like other capitals
+nnoremap Y y$
+
 " Git Fugititve key mapping
-nnoremap <space>gb :Gblame<CR>
-nnoremap <space>gs :Gstatus<CR>
+nnoremap <leader>gb :Gblame<CR>
+nnoremap <leader>gs :Gstatus<CR>
 
 " vim-easy-align
 nmap ga <Plug>(EasyAlign)
@@ -368,6 +374,8 @@ nnoremap <silent> <F12> :set number!<CR>
 
 " Tagbar Toggle
 nnoremap <silent> <C-t> :TagbarToggle<CR>
+" jump to first match
+nnoremap <C-]> g<C-]>
 
 " Quick edit .vimrc
 nnoremap <leader>V :e $MYVIMRC<CR>
@@ -378,6 +386,8 @@ nnoremap <leader>j i<return><esc>
 " NERDTree
 map <C-\> :NERDTreeFind<CR> | wincmd p
 
+" FIXME this only works with Python (hopefully), will need a proper
+" implementation
 map <F10> :!ctags -R -f ./tags `python -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())"`<CR>
 
 function! FindReferenceOfCurrentFile()
@@ -385,16 +395,12 @@ function! FindReferenceOfCurrentFile()
 endfunction
 nnoremap <silent> <leader>rf :call FindReferenceOfCurrentFile()<CR>
 
-function! FindReferenceOfCurrentWordUnderCursor()
-  call fzf#vim#ag('\<' . expand('<cword>') . '\>')
-endfunction
-nnoremap <silent> <leader>rw :call FindReferenceOfCurrentWordUnderCursor()<CR>
-
-" TODO pending implementation
-function! FindReferenceOfCurrentSelection()
-  call fzf#vim#ag(expand('<cword'))
-endfunction
-nnoremap <silent> <leader>rv :call FindReferenceOfCurrentSelection()<CR>
+" find word under cursor
+nnoremap <silent> <leader>ag :Ag <C-R><C-W><CR>
+" find whitespace delimited segments
+nnoremap <silent> <leader>AG :Ag <C-R><C-A><CR>
+" find selection
+xnoremap <silent> <leader>rw y:Ag <C-R>"<CR>
 
 " Fzf bindings
 function! FindFilesInCurrentProject()
@@ -403,7 +409,10 @@ function! FindFilesInCurrentProject()
   call fzf#run(fzf#wrap({'source': l:cmd . l:args}))
 endfunction
 nnoremap <silent> <leader>f :call FindFilesInCurrentProject()<CR>
-nnoremap <silent> <leader>b :Buffers<CR>
+nnoremap <silent> <leader>B :Buffers<CR>
+" fast switch with previous buffer
+nnoremap <silent> <leader>b :b#<CR>
+nnoremap <silent> <leader>L :Lines<CR>
 
 " Tmux/Vim seamless navigation
 nnoremap <silent> <A-h> :TmuxNavigateLeft<CR>

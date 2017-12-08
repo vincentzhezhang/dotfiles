@@ -2,11 +2,14 @@
 # TODO try .inputrc
 # TODO extra platform specific settings to a separate script
 
-[[ $- == *i* ]] && echo 'Interactive' || echo 'Not interactive'
-shopt -q login_shell && echo 'Login shell' || echo 'Not login shell'
+BBQ="$([[ $- == *i* ]] && echo 'interactive' || echo 'non-interactive')"
+BBQ="$BBQ $(shopt -q login_shell && echo 'login' || echo 'non-login')"
 
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
+
+# handy injection before load the main script
+[ -f ~/.bashrc.before ] && . ~/.bashrc.before
 
 # common non-interactive shells including:
 # - vi visual mode for long commands in shell
@@ -21,11 +24,13 @@ else
     esac
 fi
 
-if [ -z "$REMOTE_SESSION" ]; then
-  TERM="tmux-256color"
+if [ -n "$REMOTE_SESSION" ]; then
+  BBQ="$BBQ remote"
+  export TERM='xterm-256color'
 else
-  TERM="xterm-256color"
+  export TERM='tmux-256color'
 fi
+
 # update window size after every command
 shopt -s checkwinsize
 
@@ -38,7 +43,7 @@ HISTFILESIZE=9999   # maximum lines allowed in history file
 HISTIGNORE=cd:mv:cp:ls:bg:fg:echo:exit:clear:vi:vim:nvim:history:type:man:rm:wget
 HISTCONTROL=ignoreboth:erasedups
 
-# CAVEAT anything executed before interative shell checking MUST has
+# CAVEAT anything executed before interactive shell checking MUST has
 # backwards compatibility with sh, otherwise the login shell will fail
 if [ -x "$(command -v nvim)" ]; then
   export EDITOR="nvim"
@@ -69,11 +74,8 @@ for s in "${BASH_SCRIPTS[@]}"; do
   [ -f ~/.bash_"${s}" ] && . ~/.bash_"${s}"
 done
 
-# handy injection before load the main script
-[ -f ~/.bashrc.before ] && . ~/.bashrc.before
-
 # make less more friendly for non-text input files, see lesspipe(1)
-[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
+[ -x lesspipe ] && eval "$(lesspipe)"
 
 # set variable identifying the chroot you work in (used in the prompt below)
 if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
@@ -89,7 +91,7 @@ fi
 [ -f $BCMP_PATH ] && . $BCMP_PATH
 
 # enable color support
-if [ -x /usr/bin/dircolors ]; then
+if [ -x dircolors ]; then
   if [ -f ~/.dircolors ]; then
     eval "$(dircolors -b ~/.dircolors)"
   else
@@ -112,18 +114,21 @@ PATH=$(echo -n "$PATH" | awk -v RS=: -v ORS=: '!x[$0]++' | sed "s/\(.*\).\{1\}/\
 # just for fun
 random_splash
 
+echo -e "I am in a $BBQ shell"
+
 # Automatic TMUX
-if [ -z "$REMOTE_SESSION" ] && [ -z "$TMUX" ] && [ -x "$(command -v tmux)" ]; then
-  # if a $HOSTNAME session exists, attach to it automatically
-  if tmux ls | grep -i "$HOSTNAME" > /dev/null 2>&1 ; then
-    tmux a -t "$HOSTNAME"
-  else
-    # Use tmuxinator if possible
-    if [ -x "$(command -v tmuxinator)" ]; then
-      tmuxinator "$HOSTNAME"
-    else
-      tmux new -A -s "$HOSTNAME"
-    fi
-    # reuse the same session
-  fi
-fi
+# if [ -z "$REMOTE_SESSION" ] && [ -z "$TMUX" ] && [ -x "$(command -v tmux)" ]; then
+#   # if a $HOSTNAME session exists, attach to it automatically
+#   if tmux ls | grep -i "$HOSTNAME" > /dev/null 2>&1 ; then
+#     tmux a -t "$HOSTNAME"
+#   else
+#     # Use tmuxinator if possible
+#     if [ -x "$(command -v tmuxinator)" ]; then
+#       tmuxinator "$HOSTNAME"
+#     else
+#       tmux new -A -s "$HOSTNAME"
+#     fi
+#     # reuse the same session
+#   fi
+# fi
+# vim: set ai tw=79 sw=2:

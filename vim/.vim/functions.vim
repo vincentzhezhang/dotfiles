@@ -27,6 +27,8 @@ augroup END
 
 " Use local node binaries if possible, with fallback to global binaries
 " Currently just for eslint, will add other stuff
+" TODO
+" - make it path agnostic
 function! PreferLocalNodeBinaries()
   let l:local_eslint = $PWD . '/node_modules/.bin/eslint'
   let l:global_eslint = system('which eslint')
@@ -41,6 +43,7 @@ endfunction
 augroup node_path_hack
   autocmd BufEnter *.js* call PreferLocalNodeBinaries()
 augroup END
+
 "
 " Vim Plug callback functions
 "
@@ -74,15 +77,17 @@ endfunction
 "
 let g:gruvbox_italic=1
 let g:gruvbox_contrast_light='soft'
-let g:gruvbox_contrast_dark='normal'
+let g:gruvbox_contrast_dark='soft'
 
 function SunnyDays()
   colorscheme gruvbox
   set background=light
 endfunction
 
+let g:nord_italic_comments = 1
+
 function InDoor()
-  colorscheme gruvbox
+  colorscheme nord
   set background=dark
 endfunction
 

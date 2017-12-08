@@ -271,14 +271,21 @@ git_prompt()
       local unstaged_state=''
       modified_count=$(echo "$current_status" | grep -E '^.M' --count)
       deleted_count=$(echo "$current_status" | grep -E '^.D' --count)
+      type_changed_count=$(echo "$current_status" | grep -E '^.T' --count)
       untracked_files_count=$(echo "$current_status" | grep -E '^\?\? ' --count)
 
       if [[ $modified_count -gt 0 ]]; then
         unstaged_state+="${BLUE}m${modified_count}${COFF}"
       fi
+
       if [[ $deleted_count -gt 0 ]]; then
         unstaged_state+="${RED}d${deleted_count}${COFF}"
       fi
+
+      if [[ $type_changed_count -gt 0 ]]; then
+        unstaged_state+="${YELLOW}t${type_changed_count}${COFF}"
+      fi
+
       if [[ $untracked_files_count -gt 0 ]]; then
         unstaged_state+="${VIOLET}u${untracked_files_count}${COFF}"
       fi
@@ -287,15 +294,22 @@ git_prompt()
       local staged_state=''
       staged_new_count=$(echo "$current_status" | grep -E '^A' --count)
       staged_modified_count=$(echo "$current_status" | grep -E '^M' --count)
+      staged_type_changed_count=$(echo "$current_status" | grep -E '^T' --count)
       staged_deleted_count=$(echo "$current_status" | grep -E '^D' --count)
       if [[ $staged_new_count -gt 0 ]]; then
         staged_state+="${GREEN}A${staged_new_count}${COFF}"
       fi
+
       if [[ $staged_modified_count -gt 0 ]]; then
         staged_state+="${BLUE}M${staged_modified_count}${COFF}"
       fi
+
       if [[ $staged_deleted_count -gt 0 ]]; then
         staged_state+="${RED}D${staged_deleted_count}${COFF}"
+      fi
+
+      if [[ $staged_type_changed_count -gt 0 ]]; then
+        staged_state+="${YELLOW}T${staged_type_changed_count}${COFF}"
       fi
 
       if [[ -n "$unstaged_state" ]]; then

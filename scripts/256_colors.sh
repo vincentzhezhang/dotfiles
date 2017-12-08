@@ -11,7 +11,7 @@ for fgbg in 38 48 ; do #Foreground/Background
         #Display the color
         echo -en "\e[${fgbg};5;${color}m ${color}\t\e[0m"
         #Display 10 colors per lines
-        if [ $((($color + 1) % 10)) == 0 ] ; then
+        if [ $((($color + 1) % 8)) == 0 ] ; then
             echo #New line
         fi
     done

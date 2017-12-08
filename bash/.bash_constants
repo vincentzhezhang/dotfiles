@@ -8,6 +8,12 @@ COFF="\[\033[0m\]"
 
 #
 # Solarized Colour theme in convenient naming
+# TODO removed solarized colour pallate and replace with base16 like codes for
+# better look across different terminal color schemes
+#
+#
+#
+# XXX Please note the color palette below is using 256 color codes
 #
 color_codes=(234 235 240 241 244 245 254 230 136 166 160 125 61 33 37 64)
 color_names=(BASE03 BASE02 BASE01 BASE00 BASE0 BASE1 BASE2 BASE3 YELLOW ORANGE RED MAGENTA VIOLET BLUE CYAN GREEN)
@@ -19,3 +25,5 @@ for i in "${!color_names[@]}"; do
 done
 unset color_codes
 unset color_names
+
+# vim: set ai ts=2 tw=79:
