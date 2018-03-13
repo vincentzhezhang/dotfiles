@@ -36,10 +36,12 @@ Plug 'digitaltoad/vim-pug'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'elzr/vim-json', { 'for': ['json'] }
 Plug 'ericpruitt/tmux.vim', { 'rtp': 'vim' }
+Plug 'flazz/vim-colorschemes'
 Plug 'hail2u/vim-css3-syntax'
 Plug 'ap/vim-css-color', { 'for': ['css', 'sass', 'scss'] }
 Plug 'junegunn/fzf', { 'dir': '~/.config/fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
+Plug 'junegunn/seoul256.vim'
 Plug 'junegunn/vim-easy-align'
 Plug 'klen/pylama'
 Plug 'kewah/vim-stylefmt'
@@ -56,6 +58,7 @@ Plug 'othree/javascript-libraries-syntax.vim'
 Plug 'pangloss/vim-javascript', { 'for': ['javascript', 'javascript.jsx'] }
 Plug 'plasticboy/vim-markdown'
 Plug 'Raimondi/delimitMate'
+Plug 'romainl/flattened'
 Plug 'scrooloose/nerdcommenter'
 Plug 'scrooloose/nerdtree'
 Plug 'terryma/vim-multiple-cursors'
