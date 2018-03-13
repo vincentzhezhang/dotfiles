@@ -424,7 +424,13 @@ map <C-\> :NERDTreeFind<CR> | wincmd p
 map <F10> :!ctags -R -f ./tags `python -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())"`<CR>
 
 function! FindReferenceOfCurrentFile()
-  call fzf#vim#ag(expand('%:t:r'))
+  " call fzf#vim#ag(expand('%:t:r'))
+  let l:root = FindRootDirectory()
+  let l:extension = strpart(expand('%:e'), 0, 2)
+  let l:filename = expand('%:t:r')
+  let l:search = 'ag --color --nogroup --word-regexp --' . l:extension . ' ' . l:filename
+  echo l:search
+  call fzf#run(fzf#wrap({ 'source': l:search }))
 endfunction
 nnoremap <silent> <leader>rf :call FindReferenceOfCurrentFile()<CR>
 
