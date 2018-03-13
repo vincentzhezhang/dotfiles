@@ -4,7 +4,7 @@
 
 # Colour Off
 # shellcheck disable=SC2034
-COFF="\[\033[0m\]"
+COFF="\[\e[0m\]"
 
 #
 # Solarized Colour theme in convenient naming
@@ -15,15 +15,58 @@ COFF="\[\033[0m\]"
 #
 # XXX Please note the color palette below is using 256 color codes
 #
-color_codes=(234 235 240 241 244 245 254 230 136 166 160 125 61 33 37 64)
-color_names=(BASE03 BASE02 BASE01 BASE00 BASE0 BASE1 BASE2 BASE3 YELLOW ORANGE RED MAGENTA VIOLET BLUE CYAN GREEN)
+color_codes=(234 235 240 241 244 245 254 230 3 1 5 4 6 2)
+color_names=(BASE03 BASE02 BASE01 BASE00 BASE0 BASE1 BASE2 BASE3 YELLOW RED MAGENTA BLUE CYAN GREEN)
 for i in "${!color_names[@]}"; do
-  declare  "${color_names[$i]}=\[\033[00;38;5;${color_codes[$i]}m\]"  # Normal
-  declare "B${color_names[$i]}=\[\033[01;38;5;${color_codes[$i]}m\]"  # Bold
-  declare "U${color_names[$i]}=\[\033[04;38;5;${color_codes[$i]}m\]"  # Underlined
-  declare "I${color_names[$i]}=\[\033[04;38;5;${color_codes[$i]}m\]"  # Inverse
+  declare  "${color_names[$i]}=\[\e[00;38;5;${color_codes[$i]}m\]"  # Normal
+  declare "B${color_names[$i]}=\[\e[01;38;5;${color_codes[$i]}m\]"  # Bold
+  declare "U${color_names[$i]}=\[\e[04;38;5;${color_codes[$i]}m\]"  # Underlined
+  declare "I${color_names[$i]}=\[\e[07;38;5;${color_codes[$i]}m\]"  # Inverted
 done
 unset color_codes
 unset color_names
+
+# generate base 256 colors codes
+colorize()
+{
+  for fgbg in 38 48 ; do #Foreground/Background
+    for color in {0..16} {232..256}; do #Colors
+      for attr in 0 1 2 3 4 7; do # Attr: normal bold dim italic underline inverted
+        #Display the color
+        local color_code="${attr};${fgbg};5;${color}"
+        echo -en "\e[${color_code}m ${color_code}\t\e[0m"
+      done
+      echo #New line
+    done
+    echo #New line
+  done
+}
+
+# Gnome-terminal specific
+# ^[[9m for strikeout
+
+typeset -A colors
+colors=(
+  [red]=1
+  [green]=2
+  [yellow]=3
+  [blue]=4
+  [magenta]=5
+  [cyan]=6
+  [lred]=9
+  [lgreen]=10
+  [lyellow]=11
+  [lblue]=12
+  [lmagenta]=13
+  [lcyan]=14
+)
+
+typeset -A shades_of_gray
+shades_of_gray=(
+)
+
+typeset -A nord_mapping
+nord_mapping=(
+)
 
 # vim: set ai ts=2 tw=79:
