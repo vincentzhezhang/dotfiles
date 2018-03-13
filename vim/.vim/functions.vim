@@ -80,7 +80,7 @@ let g:gruvbox_contrast_light='soft'
 let g:gruvbox_contrast_dark='soft'
 
 function SunnyDays()
-  colorscheme gruvbox
+  colorscheme flattened_light
   set background=light
 endfunction
 
