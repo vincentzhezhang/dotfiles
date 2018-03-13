@@ -5,10 +5,11 @@ shopt -s expand_aliases
 alias c='clear'
 
 # handy ls aliases
-alias ls='ls -CF --color=auto'
+alias ls='ls -CFh --color=auto'
+alias sl='ls'
 alias l='ls'
 alias la='ls -A'
-alias ll='ls -alh'
+alias ll='ls -al'
 alias lt='ls -ltur'
 alias lg='ll -A | grep -i'
 
@@ -60,6 +61,7 @@ alias nano='nvim'
 alias ftp='ncftp Personal'
 alias wget='wget -c'
 alias scrot='scrot -c -d 7'
+alias tldr='tldr -t ocean'
 
 ## Easy script callin'
 alias show-info='~/.bin/info.pl'
