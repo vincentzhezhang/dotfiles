@@ -285,11 +285,41 @@ let g:ale_sign_column_always = 1
 " let g:ale_linters = {'jsx': ['stylelint', 'eslint']}
 " let g:ale_linter_aliases = {'jsx': 'css'}
 
-function! ColorSchemeTweaks()
-  " FIXME hack, make use of gitgutter function to get sign column bg, may
-  " have better solution that can decouple this
-  let [l:guibg, l:ctermbg] = gitgutter#highlight#get_background_colors('SignColumn')
+function! s:match_highlight(highlight, pattern) abort
+  let matches = matchlist(a:highlight, a:pattern)
+  if len(matches) == 0
+    return 'NONE'
+  endif
+  return matches[1]
+endfunction
 
+function! s:get_highlight(group) abort
+  redir => l:highlight
+  silent execute 'silent highlight ' . a:group
+  redir END
+
+  let l:link_matches = matchlist(l:highlight, 'links to \(\S\+\)')
+  if len(l:link_matches) > 0 " follow the link
+    return s:get_highlight(l:link_matches[1])
+  endif
+
+  let l:ctermbg = s:match_highlight(l:highlight, 'ctermbg=\([0-9A-Za-z]\+\)')
+  let l:ctermfg = s:match_highlight(l:highlight, 'ctermfg=\([0-9A-Za-z]\+\)')
+  let l:guibg   = s:match_highlight(l:highlight, 'guibg=\([#0-9A-Za-z]\+\)')
+  let l:guifg   = s:match_highlight(l:highlight, 'guifg=\([#0-9A-Za-z]\+\)')
+  return [
+    \ l:guibg,
+    \ l:guifg,
+    \ l:ctermbg,
+    \ l:ctermfg,
+    \ ]
+endfunction
+
+function! ColorSchemeTweaks()
+  "TODO seems like flattnend (solarized alternative) set guibg to Grey which
+  "is weird
+  let [l:guibg, w, t, f] = s:get_highlight('SignColumn')
+"
   execute 'highlight ALEErrorSign   guifg=#ff3300 guibg=' . l:guibg
   execute 'highlight ALEWarningSign guifg=#ff9900 guibg=' . l:guibg
 
