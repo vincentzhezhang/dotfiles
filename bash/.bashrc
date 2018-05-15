@@ -2,11 +2,12 @@
 # TODO try .inputrc
 # TODO extra platform specific settings to a separate script
 
-BBQ="$([[ $- == *i* ]] && echo 'interactive' || echo 'non-interactive')"
-BBQ="$BBQ $(shopt -q login_shell && echo 'login' || echo 'non-login')"
-
 # If not running interactively, don't do anything
-[ -z "$PS1" ] && return
+case $- in
+    *i*) ;;
+      *) return;;
+esac
+
 
 # handy injection before load the main script
 [ -f ~/.bashrc.before ] && . ~/.bashrc.before
@@ -24,12 +25,13 @@ else
     esac
 fi
 
-if [ -n "$REMOTE_SESSION" ]; then
-  BBQ="$BBQ remote"
-  export TERM='xterm-256color'
-else
-  export TERM='tmux-256color'
-fi
+# TODO double check if conditional TERM is still applicable
+# if [ -n "$REMOTE_SESSION" ]; then
+  # export TERM='xterm-256color'
+# else
+  # export TERM='screen-256color'
+# fi
+export TERM='xterm-256color'
 
 # update window size after every command
 shopt -s checkwinsize
@@ -105,16 +107,50 @@ unset color_prompt force_color_prompt
 # handy injection after load the main script
 [ -f ~/.bashrc.after ] && . ~/.bashrc.after
 
-# setup the amazing fzf fuzzy finder for bash
+#
+# fzf tweaks
+#
+
+# let __fzf_cd__ ignore node_modules and static directories
+read -r -d '' FZF_ALT_C_COMMAND <<BASH
+command find -L . -mindepth 1 \
+  \\(\
+    -path '*/\\.*' -o \
+    -path '*/node_modules' -o \
+    -path '*/static' -o \
+    -fstype 'sysfs' -o \
+    -fstype 'devfs' -o \
+    -fstype 'devtmpfs' -o \
+    -fstype 'proc' \
+  \\) -prune -o -type d -print 2> /dev/null | cut -b3-
+BASH
+export FZF_ALT_C_COMMAND
+
+# let __fzf_select__ ignore node_modules and static directories
+read -r -d '' FZF_CTRL_T_COMMAND <<BASH
+command find -L . -mindepth 1 \
+  \\(\
+      -path '*/\\.*' -o \
+      -path '*/node_modules' -o \
+      -path '*/static' -o \
+      -fstype 'sysfs' -o \
+      -fstype 'devfs' -o \
+      -fstype 'devtmpfs' -o \
+      -fstype 'proc' \
+  \\) -prune -o \
+  -type f -print -o \
+  -type d -print -o \
+  -type l -print 2> /dev/null | cut -b3-
+BASH
+export FZF_CTRL_T_COMMAND
 [ -f ~/.fzf.bash ] && . ~/.fzf.bash
 
+# FIXME proper fix to eliminate the possibility of duplicates
 # remove duplicates from $PATH
 PATH=$(echo -n "$PATH" | awk -v RS=: -v ORS=: '!x[$0]++' | sed "s/\(.*\).\{1\}/\1/")
 
 # just for fun
 random_splash
-
-echo -e "I am in a $BBQ shell"
 
 # Automatic TMUX
 # if [ -z "$REMOTE_SESSION" ] && [ -z "$TMUX" ] && [ -x "$(command -v tmux)" ]; then

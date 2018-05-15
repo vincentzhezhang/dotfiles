@@ -1,11 +1,16 @@
 #! /usr/bin/env bash
 shopt -s expand_aliases
 
+#
+# craps
+#
+alias weather='curl http://wttr.in/~shanghai,pudong,guozhan'
+
 # you can never been too lazy
 alias c='clear'
 
 # handy ls aliases
-alias ls='ls -CFh --color=auto'
+alias ls='ls -CFh --color=auto' # h is not effective here but can be re-use by other aliases
 alias sl='ls'
 alias l='ls'
 alias la='ls -A'
@@ -82,6 +87,7 @@ alias x='$(IFS=":"; for p in $PATH; do command ls -1 "$p" 2>/dev/null; done | fz
 
 # use most recent version of git-cola
 alias cola='git-cola'
+alias config_change='git --no-pager diff --no-color | xclip -sel clip | xclip -o -sel clip'
 
 # OS specific aliases
 if [[ $OSTYPE == darwin* ]]; then
