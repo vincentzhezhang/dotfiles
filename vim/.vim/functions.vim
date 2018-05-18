@@ -87,7 +87,7 @@ endfunction
 let g:nord_italic_comments = 1
 
 function InDoor()
-  colorscheme nord
+  colorscheme deus
   set background=dark
 endfunction
 

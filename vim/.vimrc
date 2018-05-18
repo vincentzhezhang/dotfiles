@@ -1,7 +1,7 @@
 " TODO: add contional loading for pluggins
 " TODO: try https://github.com/Chiel92/vim-autoformat
 " TODO: fix cursorline caused slowness, in fast scroll and gblame
-
+"
 " Make use of bash utilities in vim
 let $BASH_ENV = '~/.bash_utilities'
 
@@ -29,6 +29,7 @@ call SetupVimPlug() " in case vim-plug is missing
 call plug#begin('~/.vim/plugged')
 Plug 'airblade/vim-gitgutter'
 Plug 'airblade/vim-rooter'
+Plug 'ajmwagar/vim-deus'
 Plug 'AndrewRadev/splitjoin.vim'
 Plug 'arcticicestudio/nord-vim', { 'branch': 'develop' }
 Plug 'christoomey/vim-tmux-navigator'
@@ -43,7 +44,6 @@ Plug 'junegunn/fzf', { 'dir': '~/.config/fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'junegunn/seoul256.vim'
 Plug 'junegunn/vim-easy-align'
-Plug 'klen/pylama'
 Plug 'kewah/vim-stylefmt'
 Plug 'Lokaltog/vim-easymotion'
 Plug 'majutsushi/tagbar'
@@ -69,10 +69,10 @@ Plug 'Valloric/YouCompleteMe', { 'do': function('BuildYCM') }
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'w0rp/ale'
-Plug 'wakatime/vim-wakatime'
 Plug 'wavded/vim-stylus'
 Plug 'Xuyuanp/nerdtree-git-plugin'
 call plug#end()
+
 
 if has('nvim')
   " Window related settings
@@ -101,6 +101,7 @@ scriptencoding utf-8
 set autowrite                       " Save changes before switching buffers
 set expandtab                       " Expand tabs to spaces
 set fillchars+=vert:\               " Make vertical split bar prettier
+set guicursor=                      " Seems buggy? Have to unset to mitigate junk chars
 set ignorecase                      " Make search case-insensitive
 set list                            " Enable whitespace characters' display
 set listchars=nbsp:¬,tab:»·,trail:· " Better whitespace symbols
@@ -130,7 +131,6 @@ set undofile                        " Persistent undo
 set updatetime=1000                 " Make update related events slightly faster
 
 let &showbreak='↪ '     " Make soft wrap visually appealing
-
 
 " TODO verify airline symbol display with Fantastique Sans Mono on different
 " screen/font-size/dpi combinations, see left/right_sep below
@@ -168,8 +168,11 @@ endfunction
 augroup general_enhancements
   autocmd!
   autocmd BufCreate * call SetUpBuffer()
+  autocmd BufEnter *.log set nospell "no spell check for log files
   autocmd BufEnter,InsertLeave * set cursorline
   autocmd BufLeave,InsertEnter * set nocursorline
+
+  " FIXME use filetype to disable cursorline within fugitiveblame
 
   " temporary disabled during the refactoring period
   " autocmd BufWritePre * StripWhitespace " strip whitespaces on save
@@ -202,7 +205,8 @@ let g:multi_cursor_quit_key            = '<Esc>'
 " setup javascript-libraries-syntax
 let g:used_javascript_libs = 'underscore,react'
 
-let g:ycm_min_num_of_chars_for_completion = 3
+" let g:ycm_min_num_of_chars_for_completion = 2
+" use Python from virtual env
 let g:ycm_python_binary_path = 'python'
 
 " TODO make NERDCommenter smarter, i.e.
@@ -459,6 +463,11 @@ nnoremap <silent> <A-j> :TmuxNavigateDown<CR>
 nnoremap <silent> <A-k> :TmuxNavigateUp<CR>
 nnoremap <silent> <A-l> :TmuxNavigateRight<CR>
 nnoremap <silent> <A-,> :TmuxNavigatePrevious<CR>
+
+nnoremap <silent> <C-h> :vertical res +10<CR>
+nnoremap <silent> <C-j> :res +5<CR>
+nnoremap <silent> <C-k> :res -5<CR>
+nnoremap <silent> <C-l> :vertical res -10<CR>
 
 if !empty(glob('~/.vimrc.after'))
   source ~/.vimrc.after
