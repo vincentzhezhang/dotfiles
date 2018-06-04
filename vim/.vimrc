@@ -464,10 +464,11 @@ nnoremap <silent> <A-k> :TmuxNavigateUp<CR>
 nnoremap <silent> <A-l> :TmuxNavigateRight<CR>
 nnoremap <silent> <A-,> :TmuxNavigatePrevious<CR>
 
-nnoremap <silent> <C-h> :vertical res +10<CR>
-nnoremap <silent> <C-j> :res +5<CR>
-nnoremap <silent> <C-k> :res -5<CR>
-nnoremap <silent> <C-l> :vertical res -10<CR>
+" FIXME need to have a second thought on this
+" nnoremap <silent> <C-h> :vertical res +10<CR>
+" nnoremap <silent> <C-j> :res +5<CR>
+" nnoremap <silent> <C-k> :res -5<CR>
+" nnoremap <silent> <C-l> :vertical res -10<CR>
 
 if !empty(glob('~/.vimrc.after'))
   source ~/.vimrc.after
