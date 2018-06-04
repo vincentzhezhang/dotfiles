@@ -73,7 +73,6 @@ Plug 'wavded/vim-stylus'
 Plug 'Xuyuanp/nerdtree-git-plugin'
 call plug#end()
 
-
 if has('nvim')
   " Window related settings
   " mitigate ctrl-h mess within some terminal
@@ -208,6 +207,7 @@ let g:used_javascript_libs = 'underscore,react'
 " let g:ycm_min_num_of_chars_for_completion = 2
 " use Python from virtual env
 let g:ycm_python_binary_path = 'python'
+let g:ycm_autoclose_preview_window_after_completion=1
 
 " TODO make NERDCommenter smarter, i.e.
 " - omni shortcut to toggle comment on/off
