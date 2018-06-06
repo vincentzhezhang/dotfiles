@@ -17,6 +17,7 @@ alias la='ls -A'
 alias ll='ls -al'
 alias lt='ls -ltur'
 alias lg='ll -A | grep -i'
+alias tree='tree -C'
 
 # handy grep aliases
 alias grep='grep --color=auto'
@@ -80,6 +81,7 @@ alias cap='bundle exec cap'
 alias rake='bundle exec rake'
 alias pyserver='python -m SimpleHTTPServer'
 alias ipython='ipython --colors=linux'
+alias git-root='cd $(git rev-parse --show-toplevel)'
 
 # TODO
 # fzf based command line app launcher
