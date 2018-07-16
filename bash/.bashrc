@@ -36,14 +36,63 @@ export TERM='xterm-256color'
 # update window size after every command
 shopt -s checkwinsize
 
+shopt -s cdspell
+shopt -s dirspell
+
 # history settings
-shopt -s histappend # append to HISTFILE Instead of overwrite
+#
+# history settings are archaic and screwed in bash
+# only history -w will write to the file and any other params mentioning
+# history file will only interact with the current history list/file
+# instead of actually touch the history file
+# history -n only load entries from history_list, note the list is kept if you
+# calling history -c
+# history -r will load actual history entries from HISTFILE, note: this can be
+# added up
+#
+function join_by { local d=$1; shift; echo -n "$1"; shift; printf "%s" "${@/#/$d}"; }
+hist_ignore=(
+bg
+cd
+clear
+cp
+echo
+exit
+fg
+history
+ls
+ll
+la
+man
+mv
+nvim
+rm
+type
+vi
+vim
+wget
+xdg-open
+)
+
 shopt -s cmdhist    # force multi-line histories format in a single line
+shopt -s histappend
 unset HISTTIMEFORMAT
+HISTCONTROL=ignoreboth:erasedups
 HISTSIZE=9999       # maximum entries allowed in current history
 HISTFILESIZE=9999   # maximum lines allowed in history file
-HISTIGNORE=cd:mv:cp:ls:bg:fg:echo:exit:clear:vi:vim:nvim:history:type:man:rm:wget
-HISTCONTROL=ignoreboth:erasedups
+HISTIGNORE="$(join_by '*:' "${hist_ignore[@]}")"
+
+# TODO remove debug print once stable
+working_history () {
+  if [[ -x $(command -v notify-send) ]]; then
+    tail -10 "$HISTFILE" > ~/hist_last
+    notify-send yes
+  fi
+  clean_up_history
+}
+
+trap working_history EXIT
+
 
 # CAVEAT anything executed before interactive shell checking MUST has
 # backwards compatibility with sh, otherwise the login shell will fail

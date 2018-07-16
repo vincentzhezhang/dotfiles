@@ -72,22 +72,47 @@ fs() {
 }
 
 clean_up_history() {
+  #
+  # remove ignored, duplicates, and invalid commands from bash history
+  # this is very useful when you have multiple terminal sharing the same
+  # history
+  #
   local lines_before
   local lines_after
   local lines_removed
+  local tmp_file
+  local IFS=:
+  local verbose=$1
 
-  lines_before=$(wc -l < ~/.bash_history)
-  IFS=:
+  src_file="$HOME/.bash_history"
+  tmp_file="/tmp/bash_history_tmp_$(date +'%N')"
+  bak_file="$HOME/.bash_history_bak_$(date +'%N')"
+  lines_before=$(wc -l < "$src_file")
 
+  cp "$src_file" "$bak_file"
+
+  # remove anything ignored in HISTIGNORE
   for str in $HISTIGNORE; do
-    sed -i "/^${str}/d" ~/.bash_history
+    sed -i "/^${str}/d" "$src_file"
   done
 
-  tac ~/.bash_history | sort -u -i -r -f >| ~/.bash_history.tmp
-  mv -f ~/.bash_history.tmp ~/.bash_history
+  # FIXME the order is actually screwed
+  # remove duplicates while keep the order
+  tac "$src_file" | sort -u -i -r -f >| "$tmp_file"
 
-  lines_after=$(wc -l < ~/.bash_history)
+  # TODO remove invalid commands
+  while read -r line || [[ -n $line ]]; do
+    echo "$line"
+  done < "$src_file"
+
+  mv -f "$tmp_file" "$src_file"
+
+  lines_after=$(wc -l < "$src_file")
   lines_removed=$((lines_before - lines_after))
+
+  if [[ ! $verbose ]]; then
+    exit 0
+  fi
 
   if [[ $lines_removed -eq 0 ]]; then
     echo "your bash history is clean and tidy!"
@@ -104,17 +129,17 @@ clean_up_history() {
 extract () {
   if [ -f "$1" ] ; then
     case "$1" in
-      *.7z)        7z x "$1"        ;;
-      *.bz2)       bunzip2 "$1"     ;;
-      *.gz)        gunzip "$1"      ;;
-      *.rar)       rar x "$1"       ;;
-      *.tar)       tar xvf "$1"     ;;
       *.tar.bz2)   tar xvjf "$1"    ;;
       *.tar.gz)    tar xvzf "$1"    ;;
+      *.tar)       tar xvf "$1"     ;;
       *.tbz2)      tar xvjf "$1"    ;;
       *.tgz)       tar xvzf "$1"    ;;
       *.Z)         uncompress "$1"  ;;
+      *.bz2)       bunzip2 "$1"     ;;
+      *.gz)        gunzip "$1"      ;;
       *.zip)       unzip "$1"       ;;
+      *.7z)        7z x "$1"        ;;
+      *.rar)       rar x "$1"       ;;
       *)           echo "don't know how to extract $1..." ;;
     esac
   else
