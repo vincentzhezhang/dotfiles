@@ -67,6 +67,7 @@ Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
 Plug 'Valloric/YouCompleteMe', { 'do': function('BuildYCM') }
 Plug 'vim-airline/vim-airline'
+Plug 'vim-ruby/vim-ruby', { 'for': ['ruby', 'haml', 'erb'] }
 Plug 'vim-airline/vim-airline-themes'
 Plug 'w0rp/ale'
 Plug 'wavded/vim-stylus'
