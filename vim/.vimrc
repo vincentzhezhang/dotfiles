@@ -44,7 +44,6 @@ Plug 'majutsushi/tagbar'
 Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
 Plug 'mhinz/vim-startify'
 Plug 'moll/vim-node'
-Plug 'mileszs/ack.vim' " search front-end for AG, TODO check for better opt
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'Raimondi/delimitMate'
 Plug 'romainl/flattened'
