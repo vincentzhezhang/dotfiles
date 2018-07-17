@@ -87,6 +87,7 @@ end
 scriptencoding utf-8
 
 set autowrite                       " Save changes before switching buffers
+set completeopt-=preview            " Get rid of the annoying preview window on autocomplete
 set expandtab                       " Expand tabs to spaces
 set fillchars+=vert:\               " Make vertical split bar prettier
 set guicursor=                      " Seems buggy? Have to unset to mitigate junk chars
@@ -193,10 +194,8 @@ let g:multi_cursor_quit_key            = '<Esc>'
 " setup javascript-libraries-syntax
 let g:used_javascript_libs = 'underscore,react'
 
-" let g:ycm_min_num_of_chars_for_completion = 2
 " use Python from virtual env
 let g:ycm_python_binary_path = 'python'
-let g:ycm_autoclose_preview_window_after_completion=1
 
 " TODO make NERDCommenter smarter, i.e.
 " - omni shortcut to toggle comment on/off
@@ -400,8 +399,9 @@ nnoremap <silent> <F12> :set number!<CR>
 
 " Tagbar Toggle
 nnoremap <silent> <C-t> :TagbarToggle<CR>
+
 " jump to first match
-nnoremap <C-]> g<C-]>
+nnoremap <C-]> :YcmCompleter GoTo<CR>
 
 " Quick edit .vimrc
 nnoremap <leader>V :e $MYVIMRC<CR>
