@@ -1,6 +1,7 @@
 " TODO: add contional loading for pluggins
 " TODO: try https://github.com/Chiel92/vim-autoformat
 " TODO: fix cursorline caused slowness, in fast scroll and gblame
+" TODO: use
 "
 " Make use of bash utilities in vim
 let $BASH_ENV = '~/.bash_utilities'
@@ -191,19 +192,15 @@ let g:multi_cursor_next_key            = '<C-n>'
 let g:multi_cursor_prev_key            = '<C-p>'
 let g:multi_cursor_skip_key            = '<C-x>'
 let g:multi_cursor_quit_key            = '<Esc>'
-" setup javascript-libraries-syntax
-let g:used_javascript_libs = 'underscore,react'
 
 " use Python from virtual env
 let g:ycm_python_binary_path = 'python'
 
 " TODO make NERDCommenter smarter, i.e.
-" - omni shortcut to toggle comment on/off
-" - detect mode automatically and apply corresponding style
-" - use comment line left align as default
+" - [x] omni shortcut to toggle comment on/off
+" - [ ] detect mode automatically and apply corresponding style
+" - [ ] use comment line left align as default
 
-" jsx settings if want to have jsx in side js
-let g:jsx_ext_required = 0
 let g:NERDTreeWinSize = 30
 let g:NERDTreeMinimalUI = 1
 
@@ -231,10 +228,6 @@ let g:NERDTreeIndicatorMapCustom = {
     \ 'Unknown'   : '?'
     \ }
 
-" the amount of space to use after the glyph character (default ' ')
-let g:WebDevIconsNerdTreeAfterGlyphPadding = ' '
-let g:WebDevIconsNerdTreeGitPluginForceVAlign = 0
-
 " Customize fzf colors to match your color scheme
 let g:fzf_colors =
 \ { 'fg':      ['fg', 'Normal'],
@@ -250,19 +243,8 @@ let g:fzf_colors =
   \ 'spinner': ['fg', 'Label'],
   \ 'header':  ['fg', 'Comment'] }
 
-" Disable vim-json double quotes concealing as it's a bit awkward for me
-let g:vim_json_syntax_conceal = 0
-
-" disable folding on markdown which is annoying
-let g:vim_markdown_folding_disabled = 1
-
 " seamless vim/tmux navigation
 let g:tmux_navigator_no_mappings = 1
-
-" use ag if possible, for better performance
-if executable('ag')
-  let g:ackprg = 'ag --vimgrep'
-endif
 
 " handy selection of symbols
 " poker suits:    ♠ ♥ ♣ ♦
@@ -277,6 +259,12 @@ let g:ale_sign_column_always = 1
 " let g:ale_linters = {'jsx': ['stylelint', 'eslint']}
 " let g:ale_linter_aliases = {'jsx': 'css'}
 
+"
+" color tweaks
+"
+" TODO find a better solution for color matching between colorscheme
+" and sign column
+"
 function! s:match_highlight(highlight, pattern) abort
   let matches = matchlist(a:highlight, a:pattern)
   if len(matches) == 0
@@ -319,6 +307,12 @@ function! ColorSchemeTweaks()
   highlight VertSplit gui=NONE guifg=NONE guibg=NONE
 endfunction
 
+" Adapt sign color upon color theme change
+augroup colorscheme_tweaks
+  autocmd!
+  autocmd ColorScheme * call ColorSchemeTweaks()
+augroup END
+
 " smarter project root by vim-rooter, very useful when combined with fzf below
 let g:rooter_patterns = [
   \ 'package.json',
@@ -328,12 +322,6 @@ let g:rooter_patterns = [
   \ ]
 let g:rooter_resolve_links = 1
 let g:rooter_manual_only = 1
-
-" Adapt sign color upon color theme change
-augroup colorscheme_tweaks
-  autocmd!
-  autocmd ColorScheme * call ColorSchemeTweaks()
-augroup END
 
 " adaptive theme with extra fine tuning, also fast switching by F5
 " XXX this has to be put after ColorSchemeTweaks in order to detect correct bg
@@ -386,7 +374,7 @@ nnoremap <silent> # #zz
 nnoremap <silent> gg ggzz
 
 "
-" consistent next/prev result keymapping
+" more intuitive next/prev result keymapping
 "
 nnoremap <expr> n (v:searchforward ? 'nzz' : 'Nzz')
 nnoremap <expr> N (v:searchforward ? 'Nzz' : 'nzz')
