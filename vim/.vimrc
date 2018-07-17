@@ -33,12 +33,8 @@ Plug 'ajmwagar/vim-deus'
 Plug 'AndrewRadev/splitjoin.vim'
 Plug 'arcticicestudio/nord-vim', { 'branch': 'develop' }
 Plug 'christoomey/vim-tmux-navigator'
-Plug 'digitaltoad/vim-pug'
 Plug 'editorconfig/editorconfig-vim'
-Plug 'elzr/vim-json', { 'for': ['json'] }
-Plug 'ericpruitt/tmux.vim', { 'rtp': 'vim' }
 Plug 'flazz/vim-colorschemes'
-Plug 'hail2u/vim-css3-syntax'
 Plug 'ap/vim-css-color', { 'for': ['css', 'sass', 'scss'] }
 Plug 'junegunn/fzf', { 'dir': '~/.config/fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
@@ -51,26 +47,22 @@ Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
 Plug 'mhinz/vim-startify'
 Plug 'moll/vim-node'
 Plug 'morhetz/gruvbox'
-Plug 'mxw/vim-jsx', { 'for': ['javascript.jsx'] }
-Plug 'mileszs/ack.vim'
+Plug 'mileszs/ack.vim' " search front-end for AG, TODO check for better opt
 Plug 'ntpeters/vim-better-whitespace'
-Plug 'othree/javascript-libraries-syntax.vim'
-Plug 'pangloss/vim-javascript', { 'for': ['javascript', 'javascript.jsx'] }
-Plug 'plasticboy/vim-markdown'
 Plug 'Raimondi/delimitMate'
 Plug 'romainl/flattened'
 Plug 'scrooloose/nerdcommenter'
 Plug 'scrooloose/nerdtree'
+Plug 'sheerun/vim-polyglot'
+Plug 'peitalin/vim-jsx-typescript' " TODO remove after polyglot added support
 Plug 'terryma/vim-multiple-cursors'
 Plug 'tpope/vim-endwise'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
 Plug 'Valloric/YouCompleteMe', { 'do': function('BuildYCM') }
 Plug 'vim-airline/vim-airline'
-Plug 'vim-ruby/vim-ruby', { 'for': ['ruby', 'haml', 'erb'] }
 Plug 'vim-airline/vim-airline-themes'
 Plug 'w0rp/ale'
-Plug 'wavded/vim-stylus'
 Plug 'Xuyuanp/nerdtree-git-plugin'
 call plug#end()
 
