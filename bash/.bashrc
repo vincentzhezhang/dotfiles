@@ -3,6 +3,7 @@
 # TODO extra platform specific settings to a separate script
 
 # If not running interactively, don't do anything
+# this is essential for login shell working correctly
 case $- in
     *i*) ;;
       *) return;;
@@ -25,6 +26,20 @@ else
     esac
 fi
 
+#
+# load bash related script modules
+#
+BASH_SCRIPTS=(\
+  constants\
+  utilities\
+  aliases\
+  ps1\
+  )
+
+for s in "${BASH_SCRIPTS[@]}"; do
+  [ -f ~/.bash_"${s}" ] && . ~/.bash_"${s}"
+done
+
 # TODO double check if conditional TERM is still applicable
 # if [ -n "$REMOTE_SESSION" ]; then
   # export TERM='xterm-256color'
@@ -39,39 +54,14 @@ shopt -s checkwinsize
 shopt -s cdspell
 shopt -s dirspell
 
-# history settings
 #
-# history settings are archaic and screwed in bash
-# only history -w will write to the file and any other params mentioning
-# history file will only interact with the current history list/file
-# instead of actually touch the history file
-# history -n only load entries from history_list, note the list is kept if you
-# calling history -c
-# history -r will load actual history entries from HISTFILE, note: this can be
-# added up
+# history settings
 #
 function join_by { local d=$1; shift; echo -n "$1"; shift; printf "%s" "${@/#/$d}"; }
 hist_ignore=(
-bg
-cd
 clear
-cp
-echo
 exit
-fg
 history
-ls
-ll
-la
-man
-mv
-nvim
-rm
-type
-vi
-vim
-wget
-xdg-open
 )
 
 shopt -s cmdhist    # force multi-line histories format in a single line
@@ -81,21 +71,11 @@ HISTCONTROL=ignoreboth:erasedups
 HISTSIZE=9999       # maximum entries allowed in current history
 HISTFILESIZE=9999   # maximum lines allowed in history file
 HISTIGNORE="$(join_by '*:' "${hist_ignore[@]}")"
+trap clean_up_history EXIT
 
-# TODO remove debug print once stable
-working_history () {
-  if [[ -x $(command -v notify-send) ]]; then
-    tail -10 "$HISTFILE" > ~/hist_last
-    notify-send yes
-  fi
-  clean_up_history
-}
-
-trap working_history EXIT
-
-
-# CAVEAT anything executed before interactive shell checking MUST has
-# backwards compatibility with sh, otherwise the login shell will fail
+#
+# default editor
+#
 if [ -x "$(command -v nvim)" ]; then
   export EDITOR="nvim"
   export VISUAL="nvim"
@@ -111,19 +91,6 @@ fi
 # NOTE: set -o vi has to be placed before fzf.bash in order to correctly setup key bindings
 #   see: https://github.com/junegunn/fzf#key-bindings-for-command-line
 set -o vi
-
-# load bash related script modules
-BASH_SCRIPTS=(\
-  constants\
-  utilities\
-  functions\
-  aliases\
-  ps1\
-  )
-
-for s in "${BASH_SCRIPTS[@]}"; do
-  [ -f ~/.bash_"${s}" ] && . ~/.bash_"${s}"
-done
 
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x lesspipe ] && eval "$(lesspipe)"
