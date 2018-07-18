@@ -51,9 +51,12 @@ augroup END
 " - name:   name of the plugin
 " - status: 'installed', 'updated', or 'unchanged'
 " - force:  set on PlugInstall! or PlugUpdate!
+"
 function! BuildYCM(...)
+  " build YouCompleteMe using the same Python3 as used by
+  " g:ycm_server_python_interpreter
   if a:0 < 1 || a:1.status ==? 'installed' || a:1.status ==? 'updated' || a:1.force
-    !./install.py --clang-completer --tern-completer
+    execute '!' . g:ycm_server_python_interpreter . ' install.py --clang-completer --tern-completer'
   endif
 endfunction
 
