@@ -86,10 +86,7 @@ clean_up_history() {
 
   src_file="$HOME/.bash_history"
   tmp_file="/tmp/bash_history_tmp_$(date +'%N')"
-  bak_file="$HOME/.bash_history_bak_$(date +'%N')"
   lines_before=$(wc -l < "$src_file")
-
-  cp "$src_file" "$bak_file"
 
   # remove anything ignored in HISTIGNORE
   for str in $HISTIGNORE; do

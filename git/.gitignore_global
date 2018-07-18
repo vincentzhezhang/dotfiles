@@ -52,3 +52,7 @@ tags
 # audio files
 *.mp3
 *.wav
+
+# project related
+node_modules/
+package-lock.json

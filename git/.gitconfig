@@ -72,13 +72,14 @@
 [push]
   default = simple
 [cola]
-  fontdiff = Fantasque Sans Mono,9,-1,5,50,0,0,0,0,0
+	fontdiff = Fantasque Sans Mono,10,-1,5,50,0,0,0,0,0
   tabwidth = 2
   textwidth = 80
   boldheaders = true
   savewindowsettings = true
   blameviewer = git gui blame
   spellcheck = true
+	expandtab = true
 [filter "lfs"]
   clean = git-lfs clean %f
   smudge = git-lfs smudge %f
@@ -94,3 +95,5 @@
   rebase = true
 [http]
   sslVerify = false
+[submodule]
+	recurse = true

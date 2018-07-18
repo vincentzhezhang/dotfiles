@@ -1,5 +1,5 @@
 " TODO: add contional loading for pluggins
-" TODO: try https://github.com/Chiel92/vim-autoformat
+" TODO: make use of prettier, yapf, and other fixers with ALE
 " TODO: fix cursorline caused slowness, in fast scroll and gblame
 " TODO: use
 "
@@ -119,8 +119,9 @@ set tags=./.tags,./tags,.tags,tags; " Use hidden tags files
 set undodir=~/.vim/undo/            " Persistent undo directory
 set undofile                        " Persistent undo
 set updatetime=1000                 " Make update related events slightly faster
-
-let &showbreak='↪ '     " Make soft wrap visually appealing
+" let &showbreak='↪ '                 " Make soft wrap visually appealing
+set showbreak=>>>\                    " Make soft wrap visually appealing
+" set cpoptions=n                     " Use line number column for wrapping
 
 " TODO verify airline symbol display with Fantastique Sans Mono on different
 " screen/font-size/dpi combinations, see left/right_sep below
@@ -159,6 +160,7 @@ augroup general_enhancements
   autocmd!
   autocmd BufCreate * call SetUpBuffer()
   autocmd BufEnter *.log set nospell "no spell check for log files
+  autocmd BufEnter *.md set wrap
   autocmd BufEnter,InsertLeave * set cursorline
   autocmd BufLeave,InsertEnter * set nocursorline
 
