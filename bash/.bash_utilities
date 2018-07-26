@@ -42,25 +42,6 @@ greeting () {
   echo "Have a ${prefix} $(date +%A), $(whoami)!"
 }
 
-# TODO this is just a temporary solution that sufficient enough for current works, should add
-# - node/npm version detection
-# - ruby version detection
-v_env_conda() {
-  if [ -z "$CONDA_DEFAULT_ENV" ]; then
-    exit 0
-  fi
-
-  if [[ -f ~/.config/venv/.conda_python_version ]]; then
-    CONDA_PYTHON_VERSION=$(cat ~/.config/venv/.conda_python_version)
-  fi
-
-  echo -n "\\[\\e[07;32;5;64m\\]"
-  echo -n "<$CONDA_DEFAULT_ENV"
-  echo -n "|"
-  echo -n "${CONDA_PYTHON_VERSION-unknown}>"
-  echo -n "\\[\\e[0m\\]"
-}
-
 # file stats
 fs() {
   if [ -n "$1" ]; then
