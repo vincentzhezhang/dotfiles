@@ -300,10 +300,11 @@ endfunction
 function! ColorSchemeTweaks()
   "TODO seems like flattnend (solarized alternative) set guibg to Grey which
   "is weird
-  let [l:guibg, w, t, f] = s:get_highlight('SignColumn')
+  let [l:guibg, l:guifg, l:ctermbg, l:ctermfg] = s:get_highlight('SignColumn')
 "
   execute 'highlight ALEErrorSign   guifg=#ff3300 guibg=' . l:guibg
   execute 'highlight ALEWarningSign guifg=#ff9900 guibg=' . l:guibg
+  execute 'highlight ExtraWhitespace guibg=' . l:guibg
 
   " HACK make vertical split sign invisible
   highlight VertSplit gui=NONE guifg=NONE guibg=NONE
