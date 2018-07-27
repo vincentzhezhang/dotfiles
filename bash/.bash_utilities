@@ -1,5 +1,12 @@
 #! /usr/bin/env bash
 
+pg()
+{
+  ps -eo user,pid,ppid,bsdstart,etime,cmd --sort etime |\
+    grep -v 'grep' |\
+    grep -E --color=auto "PID|$1"
+}
+
 #
 # Share contrast across applications
 #
