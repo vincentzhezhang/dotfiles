@@ -135,7 +135,7 @@ v_env_conda() {
 
   CONDA_PYTHON_VERSION=$(python -V | cut -d ' ' -f2)
 
-  echo -n "\\[\\e[07;32;2;64m\\]"
+  echo -n "\\[\\e[07;32;1;64m\\]"
   echo -n "$CONDA_DEFAULT_ENV"
   echo -n "|"
   echo -n "${CONDA_PYTHON_VERSION:-unknown}"
