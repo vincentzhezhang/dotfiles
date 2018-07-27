@@ -1,5 +1,130 @@
 #! /usr/bin/env bash
 
+#
+# git prompt snippet, use plumbing commands for reliable states parsing
+#
+git_prompt()
+{
+  # check if current working directory is a git tracked directory
+  if (git rev-parse --git-dir &> /dev/null); then
+    git_dir="$(git rev-parse --git-dir)"
+    current_branch="$(git symbolic-ref --short HEAD 2> /dev/null)"
+    current_status="$(git status --porcelain 2> /dev/null)"
+
+    # detect rebase in progress
+    rb_merge_dir="${git_dir}/rebase-merge"
+    rb_apply_dir="${git_dir}/rebase-apply"
+
+    if [[ -d $rb_apply_dir ]]; then
+      echo "${BRED}[-R-]${COFF}"
+      return
+    elif [[ -d $rb_merge_dir ]]; then
+      echo "${BRED}[-M-]${COFF}"
+      return
+    fi
+
+    if [[ -z $current_status ]]; then
+      unset dirty_state
+    else
+      local dirty_state=''
+      #
+      # NOTE: for matching patterns, please refer to git status manual
+      #
+      # stats for files not staged
+      local unstaged_state=''
+      modified_count=$(echo "$current_status" | grep -E '^.M' --count)
+      deleted_count=$(echo "$current_status" | grep -E '^.D' --count)
+      type_changed_count=$(echo "$current_status" | grep -E '^.T' --count)
+      untracked_files_count=$(echo "$current_status" | grep -E '^\?\? ' --count)
+
+      if [[ $modified_count -gt 0 ]]; then
+        unstaged_state+="${BLUE}m${modified_count}${COFF}"
+      fi
+
+      if [[ $deleted_count -gt 0 ]]; then
+        unstaged_state+="${RED}d${deleted_count}${COFF}"
+      fi
+
+      if [[ $type_changed_count -gt 0 ]]; then
+        unstaged_state+="${YELLOW}t${type_changed_count}${COFF}"
+      fi
+
+      if [[ $untracked_files_count -gt 0 ]]; then
+        unstaged_state+="${BASE01}u${untracked_files_count}${COFF}"
+      fi
+
+      # stats for staged files
+      local staged_state=''
+      staged_new_count=$(echo "$current_status" | grep -E '^A' --count)
+      staged_modified_count=$(echo "$current_status" | grep -E '^M' --count)
+      staged_type_changed_count=$(echo "$current_status" | grep -E '^T' --count)
+      staged_deleted_count=$(echo "$current_status" | grep -E '^D' --count)
+      staged_renamed_files_count=$(echo "$current_status" | grep -E '^R ' --count)
+
+      if [[ $staged_new_count -gt 0 ]]; then
+        staged_state+="${BGREEN}A${staged_new_count}${COFF}"
+      fi
+
+      if [[ $staged_modified_count -gt 0 ]]; then
+        staged_state+="${BBLUE}M${staged_modified_count}${COFF}"
+      fi
+
+      if [[ $staged_deleted_count -gt 0 ]]; then
+        staged_state+="${BRED}D${staged_deleted_count}${COFF}"
+      fi
+
+      if [[ $staged_type_changed_count -gt 0 ]]; then
+        staged_state+="${BYELLOW}T${staged_type_changed_count}${COFF}"
+      fi
+
+      if [[ $staged_renamed_files_count -gt 0 ]]; then
+        staged_state+="${BCYAN}R${staged_renamed_files_count}${COFF}"
+      fi
+
+      if [[ -n "$unstaged_state" ]]; then
+        dirty_state+="$unstaged_state"
+      fi
+
+      if [[ -n "$unstaged_state" && -n "$staged_state" ]]; then
+        dirty_state+="${YELLOW}|${COFF}"
+      fi
+
+      if [[ -n "$staged_state" ]]; then
+        dirty_state+="$staged_state"
+      fi
+
+      dirty_state="${YELLOW}*[${COFF}${dirty_state}${YELLOW}]${COFF}"
+    fi
+
+    # only check status against tracking upstream when it exists
+    if (git branch -r | grep -q "/$current_branch$"); then
+      local_rev=$(git rev-parse @)
+      remote_rev=$(git rev-parse '@{u}')
+      base_rev=$(git merge-base @ '@{u}')
+
+      if [ "$local_rev" = "$remote_rev" ]; then
+        repo_state="${GREEN}[√]${COFF}"
+      elif [ "$local_rev" = "$base_rev" ]; then
+
+        repo_state="${YELLOW}↓$(git rev-list "$base_rev..$remote_rev" --count)${COFF}"
+      elif [ "$remote_rev" = "$base_rev" ]; then
+        repo_state="${YELLOW}↑$(git rev-list "$base_rev..$local_rev" --count)${COFF}"
+      else
+        repo_state="${BRED}↑$(git rev-list "$base_rev..$local_rev" --count)${COFF}"
+        repo_state+="${BRED}↓$(git rev-list "$base_rev..$remote_rev" --count)${COFF}"
+      fi
+    else
+      repo_state="${BLUE}[?]${COFF}"
+    fi
+
+    branch_prompt="${BYELLOW}@${COFF}${CYAN}${current_branch}${COFF}"
+    git_str="${branch_prompt}${repo_state}${dirty_state}"
+    echo "$git_str"
+  else
+    return 2
+  fi
+}
+
 # TODO this is just a temporary solution that sufficient enough for current works, should add
 # - node/npm version detection
 # - ruby version detection
@@ -28,15 +153,23 @@ prettify_prompt() {
 
     # create a dash line which has a length of the current terminal columns minus
     # user@hostname, time string and padding spaces
-    local time_str=''
-    local dash_line=''
+    local host_str
+    local time_str
+    local dash_line
     local dash_line_padding=2 # spaces before and after the dash line
     local dash_line_width=0
 
+    host_str="$(hostname):"
+
     pwd_str=$(readlink -f "$PWD")
+
+    if [[ ${#pwd_str} -gt $(( COLUMNS / 3)) ]]; then
+      pwd_str="$(sed "s:\\([^/]\\)[^/]*/:\\1/:g" <<< "$pwd_str")"
+    fi
+
     time_str="$(date +'%H:%M:%S')"
 
-    dash_line_width=$((COLUMNS - ${#pwd_str} - ${#time_str} - dash_line_padding))
+    dash_line_width=$((COLUMNS - ${#host_str} - ${#pwd_str} - ${#time_str} - dash_line_padding))
 
     while [[ $dash_line_width -gt 0 ]]
     do
@@ -49,7 +182,7 @@ prettify_prompt() {
     git_str="$(git_prompt)"
     v_env_str="$(v_env_conda)"
 
-    status_line="${BASE00}${pwd_str} ${dash_line} ${time_str}${COFF}"
+    status_line="${BASE00}${host_str}${pwd_str} ${dash_line} ${time_str}${COFF}"
     old_ps1="${last_state}${git_str}${v_env_str}${indicator}"
 
     PS1="$status_line\\n$old_ps1"
