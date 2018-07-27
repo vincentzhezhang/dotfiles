@@ -65,8 +65,6 @@
   tool = meld
 [merge]
   tool = meld
-  confictstyle = diff3
-  conflictstyle = diff3
 [blame]
   date = format:%Y-%m-%d %H:%M
 [push]
