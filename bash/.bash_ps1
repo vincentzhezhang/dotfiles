@@ -11,14 +11,12 @@ git_prompt()
     current_branch="$(git symbolic-ref --short HEAD 2> /dev/null)"
     current_status="$(git status --porcelain 2> /dev/null)"
 
-    # detect rebase in progress
-    rb_merge_dir="${git_dir}/rebase-merge"
-    rb_apply_dir="${git_dir}/rebase-apply"
-
-    if [[ -d $rb_apply_dir ]]; then
-      echo "${BRED}[-R-]${COFF}"
+    if [[ -f "$git_dir/REBASE_HEAD" ]]; then
+      echo "${BRED}[-RG-]${COFF}"
       return
-    elif [[ -d $rb_merge_dir ]]; then
+    fi
+
+    if [[ -f "$git_dir/MERGE_HEAD" ]]; then
       echo "${BRED}[-M-]${COFF}"
       return
     fi
@@ -50,7 +48,7 @@ git_prompt()
       fi
 
       if [[ $untracked_files_count -gt 0 ]]; then
-        unstaged_state+="${BASE01}u${untracked_files_count}${COFF}"
+        unstaged_state+="${BASE1}u${untracked_files_count}${COFF}"
       fi
 
       # stats for staged files
