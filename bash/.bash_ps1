@@ -128,17 +128,16 @@ git_prompt()
 # TODO this is just a temporary solution that sufficient enough for current works, should add
 # - node/npm version detection
 # - ruby version detection
+# - use named color codes instead of explicit numbers
 v_env_conda() {
-  if [ -z "$CONDA_DEFAULT_ENV" ]; then
+  if [[ -z "${__python_venv_name:-}" ]] || [[ -z "${__python_venv_version:-}" ]]; then
     exit 0
   fi
 
-  CONDA_PYTHON_VERSION=$(python -V | cut -d ' ' -f2)
-
   echo -n "\\[\\e[07;32;1;64m\\]"
-  echo -n "$CONDA_DEFAULT_ENV"
+  echo -n "$__python_venv_name"
   echo -n "|"
-  echo -n "${CONDA_PYTHON_VERSION:-unknown}"
+  echo -n "${__python_venv_version}"
   echo -n "\\[\\e[0m\\]"
 }
 
