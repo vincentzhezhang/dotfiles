@@ -272,16 +272,21 @@ bulltruth()
 #
 random_splash()
 {
-  # TODO temporary workaround to avoid graph distortion on small screen
-  if [[ $COLUMNS -lt 80 ]]; then
+  magic_number=$RANDOM
+
+  if [[ $magic_number -gt 4096 ]]; then
+    return
+  fi
+
+  if [[ $COLUMNS -lt 96 ]] || [[ $LINES -lt 32 ]]; then
     local x=1
-  elif [[ $COLUMNS -lt 100 ]]; then
+  elif [[ $COLUMNS -lt 128 ]] || [[ $LINES -lt 64 ]]; then
     local x=2
   else
     local x=4
   fi
 
-  case $((RANDOM%x)) in
+  case $((magic_number % x)) in
     0) bulltruth ;;
     1) bullshit ;;
     2) retrogame invaders ;;
