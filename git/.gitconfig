@@ -4,19 +4,20 @@
   st = status -sb
   br = branch -vv
   brr = "!f(){ \
+    unbuffer \
     git for-each-ref \
     --sort='-committerdate' refs/heads/ \
     --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset)|\
-    %(color:red)%(objectname:short)%(color:reset)|\
-    (%(color:green)%(committerdate:relative)%(color:reset))|\
-    %(authorname)|\
-    %<(30, trunc)%(contents:subject)';\
-  }; f"
+      %(color:red)%(objectname:short)%(color:reset)|\
+      %(color:green)%(committerdate:relative)%(color:reset)|\
+      %(authorname)|\
+      %(contents:subject)'; \
+  }; f | column -ts \\|"
   last = log -1 HEAD
   sn = !bash -c 'git checkout -b snapshot_$(/usr/bin/env date "+%y%m%d_%H%M%S")'
   unstage = reset HEAD --
   un = reset HEAD --
-  lg = log --graph --decorate --stat --date=iso
+  lg = log --graph --decorate --stat --date=iso --pretty=fuller
   summary = "!f(){ \
     git log \
     --oneline \
