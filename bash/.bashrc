@@ -100,12 +100,7 @@ if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
   debian_chroot=$(cat /etc/debian_chroot)
 fi
 
-# Use bash-completion, if available
-if [[ "$(command -v bash)" =~ brew ]]; then
-  BCMP_PATH="$(brew --prefix)/etc/bash_completion"
-else
-  BCMP_PATH=/usr/share/bash-completion/bash_completion
-fi
+BCMP_PATH=/usr/share/bash-completion/bash_completion
 [[ -f $BCMP_PATH ]] && . $BCMP_PATH
 
 # enable color support
