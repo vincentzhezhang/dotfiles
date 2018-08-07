@@ -101,12 +101,12 @@ if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
 fi
 
 # Use bash-completion, if available
-if [[ $OSTYPE == darwin* ]]; then
+if [[ "$(command -v bash)" =~ brew ]]; then
   BCMP_PATH="$(brew --prefix)/etc/bash_completion"
 else
   BCMP_PATH=/usr/share/bash-completion/bash_completion
 fi
-[ -f $BCMP_PATH ] && . $BCMP_PATH
+[[ -f $BCMP_PATH ]] && . $BCMP_PATH
 
 # enable color support
 if [ -x dircolors ]; then

@@ -254,8 +254,8 @@ let g:tmux_navigator_no_mappings = 1
 " table maker:    ─━
 " block symbols:  ░▒▓
 " white space:    ] [(em)
-let g:ale_sign_error = ' ━'
-let g:ale_sign_warning = ' ━'
+let g:ale_sign_error = ' •'
+let g:ale_sign_warning = ' •'
 let g:ale_sign_column_always = 1
 " FIXME This seems problematic, it raises CssSyntaxError on the first line
 " let g:ale_linters = {'jsx': ['stylelint', 'eslint']}
