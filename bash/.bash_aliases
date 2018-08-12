@@ -61,9 +61,10 @@ alias localhost='cd /var/www'
 # NeoVim for the win
 alias vi='nvim'
 alias vim='nvim'
+alias emacs='nvim'
+alias nano='nvim'
 
 ## App-specific
-alias nano='nvim'
 alias ftp='ncftp Personal'
 alias wget='wget -c'
 alias scrot='scrot -c -d 7'
