@@ -254,8 +254,8 @@ let g:tmux_navigator_no_mappings = 1
 " table maker:    ─━
 " block symbols:  ░▒▓
 " white space:    ] [(em)
-let g:ale_sign_error = ' •'
-let g:ale_sign_warning = ' •'
+let g:ale_sign_error = ' ■'
+let g:ale_sign_warning = ' ■'
 let g:ale_sign_column_always = 1
 " FIXME This seems problematic, it raises CssSyntaxError on the first line
 " let g:ale_linters = {'jsx': ['stylelint', 'eslint']}
@@ -298,13 +298,17 @@ function! s:get_highlight(group) abort
 endfunction
 
 function! ColorSchemeTweaks()
-  "TODO seems like flattnend (solarized alternative) set guibg to Grey which
-  "is weird
-  let [l:guibg, l:guifg, l:ctermbg, l:ctermfg] = s:get_highlight('SignColumn')
-"
-  execute 'highlight ALEErrorSign   guifg=#ff3300 guibg=' . l:guibg
-  execute 'highlight ALEWarningSign guifg=#ff9900 guibg=' . l:guibg
-  execute 'highlight ExtraWhitespace guibg=' . l:guibg
+  "TODO get color from ALE?
+  " let [l:guibg, l:guifg, l:ctermbg, l:ctermfg] = s:get_highlight('SignColumn')
+
+  highlight ALEErrorSign          guifg=#ff3300 guibg=None
+  highlight ALEWarningSign        guifg=#ff9900 guibg=None
+  " highlight ExtraWhitespace       guibg=None
+  highlight SignColumn            guibg=NONE
+  highlight GitGutterAdd          guifg=#98C379 guibg=NONE ctermbg=NONE
+  highlight GitGutterChange       guifg=#fabd2f guibg=NONE ctermbg=NONE
+  highlight GitGutterChangeDelete guifg=#fb4934 guibg=NONE ctermbg=NONE
+  highlight GitGutterDelete       guifg=#fb4934 guibg=NONE ctermbg=NONE
 
   " HACK make vertical split sign invisible
   highlight VertSplit gui=NONE guifg=NONE guibg=NONE
@@ -325,6 +329,15 @@ let g:rooter_patterns = [
   \ ]
 let g:rooter_resolve_links = 1
 let g:rooter_manual_only = 1
+
+" no need of mapping, visual clue only
+let g:gitgutter_map_keys = 0
+let g:gitgutter_override_sign_column_highlight = 0
+let g:gitgutter_sign_added = '│ '
+let g:gitgutter_sign_modified = '│ '
+let g:gitgutter_sign_removed = '│ '
+let g:gitgutter_sign_removed_first_line = '│ '
+let g:gitgutter_sign_modified_removed = '│ '
 
 " adaptive theme with extra fine tuning, also fast switching by F5
 " XXX this has to be put after ColorSchemeTweaks in order to detect correct bg
