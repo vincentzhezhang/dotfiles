@@ -119,9 +119,7 @@ set tags=./.tags,./tags,.tags,tags; " Use hidden tags files
 set undodir=~/.vim/undo/            " Persistent undo directory
 set undofile                        " Persistent undo
 set updatetime=1000                 " Make update related events slightly faster
-" let &showbreak='↪ '                 " Make soft wrap visually appealing
-set showbreak=>>>\                    " Make soft wrap visually appealing
-" set cpoptions=n                     " Use line number column for wrapping
+let &showbreak='↪ '                 " Make soft wrap visually appealing
 
 " TODO verify airline symbol display with Fantastique Sans Mono on different
 " screen/font-size/dpi combinations, see left/right_sep below
@@ -248,18 +246,32 @@ let g:fzf_colors =
 " seamless vim/tmux navigation
 let g:tmux_navigator_no_mappings = 1
 
+"
+" Sign Column Tweaks
+"
 " handy selection of symbols
-" poker suits:    ♠ ♥ ♣ ♦
-" common symbols: •
-" table maker:    ─━
-" block symbols:  ░▒▓
-" white space:    ] [(em)
+" - poker suits:    ♠ ♥ ♣ ♦
+" - common symbols: •
+" - table maker:    ─━
+" - block symbols:  ░▒▓
+" - white space:    ] [(em)
+"
+
 let g:ale_sign_error = ' ■'
 let g:ale_sign_warning = ' ■'
 let g:ale_sign_column_always = 1
 " FIXME This seems problematic, it raises CssSyntaxError on the first line
 " let g:ale_linters = {'jsx': ['stylelint', 'eslint']}
 " let g:ale_linter_aliases = {'jsx': 'css'}
+"
+let g:gitgutter_map_keys = 0 " no need of mapping, visual clue only
+let g:gitgutter_override_sign_column_highlight = 0
+let g:gitgutter_sign_added = '│ '
+let g:gitgutter_sign_modified = '│ '
+let g:gitgutter_sign_removed = '│ '
+let g:gitgutter_sign_removed_first_line = '│ '
+let g:gitgutter_sign_modified_removed = '│ '
+
 
 "
 " color tweaks
@@ -301,14 +313,13 @@ function! ColorSchemeTweaks()
   "TODO get color from ALE?
   " let [l:guibg, l:guifg, l:ctermbg, l:ctermfg] = s:get_highlight('SignColumn')
 
-  highlight ALEErrorSign          guifg=#ff3300 guibg=None
-  highlight ALEWarningSign        guifg=#ff9900 guibg=None
-  " highlight ExtraWhitespace       guibg=None
-  highlight SignColumn            guibg=NONE
+  highlight ALEErrorSign          guifg=#ff3300 guibg=NONE
+  highlight ALEWarningSign        guifg=#ff9900 guibg=NONE
   highlight GitGutterAdd          guifg=#98C379 guibg=NONE ctermbg=NONE
   highlight GitGutterChange       guifg=#fabd2f guibg=NONE ctermbg=NONE
   highlight GitGutterChangeDelete guifg=#fb4934 guibg=NONE ctermbg=NONE
   highlight GitGutterDelete       guifg=#fb4934 guibg=NONE ctermbg=NONE
+  highlight SignColumn            guibg=NONE
 
   " HACK make vertical split sign invisible
   highlight VertSplit gui=NONE guifg=NONE guibg=NONE
@@ -336,15 +347,6 @@ let g:rooter_patterns = [
   \ ]
 let g:rooter_resolve_links = 1
 let g:rooter_manual_only = 1
-
-" no need of mapping, visual clue only
-let g:gitgutter_map_keys = 0
-let g:gitgutter_override_sign_column_highlight = 0
-let g:gitgutter_sign_added = '│ '
-let g:gitgutter_sign_modified = '│ '
-let g:gitgutter_sign_removed = '│ '
-let g:gitgutter_sign_removed_first_line = '│ '
-let g:gitgutter_sign_modified_removed = '│ '
 
 " adaptive theme with extra fine tuning, also fast switching by F5
 " XXX this has to be put after ColorSchemeTweaks in order to detect correct bg
