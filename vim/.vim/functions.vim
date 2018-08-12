@@ -123,14 +123,17 @@ nmap <silent> <C-F12> :call ToggleSyntax()<CR>
 " Install plug for Vim/NeoVim if not exist
 " FIXME: could extract the common part
 function SetupVimPlug()
+  let l:need_init = 0
   if has('nvim') && empty(glob('~/.config/nvim/autoload/plug.vim'))
+    let l:need_init = 1
     silent !curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs
           \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-    autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
   elseif empty(glob('~/.vim/autoload/plug.vim'))
+    let l:need_init = 1
     silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
           \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-    autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+  else
+    " do nothing
   endif
 endfunction
 
