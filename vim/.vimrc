@@ -320,8 +320,15 @@ augroup colorscheme_tweaks
   autocmd ColorScheme * call ColorSchemeTweaks()
 augroup END
 
+"
 " smarter project root by vim-rooter, very useful when combined with fzf below
+" TODO
+" the detection can be further improved with updated project structures, need
+" to find a collection of files that can denote a package though
 let g:rooter_patterns = [
+  \ 'conda.yaml',
+  \ 'meta.yaml',
+  \ 'build.sh',
   \ 'package.json',
   \ 'setup.py',
   \ '.git',
