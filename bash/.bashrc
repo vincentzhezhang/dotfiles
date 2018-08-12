@@ -5,8 +5,8 @@
 # If not running interactively, don't do anything
 # this is essential for login shell working correctly
 case $- in
-    *i*) ;;
-      *) return;;
+  *i*) ;;
+  *) return;;
 esac
 
 
@@ -19,11 +19,11 @@ esac
 
 # SSH detection, courtesy https://unix.stackexchange.com/a/9607
 if [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ]; then
-    REMOTE_SESSION=remote/ssh
+  REMOTE_SESSION=remote/ssh
 else
-    case $(ps -o comm= -p $PPID) in
-        sshd|*/sshd) REMOTE_SESSION=remote/ssh;;
-    esac
+  case $(ps -o comm= -p $PPID) in
+    sshd|*/sshd) REMOTE_SESSION=remote/ssh;;
+  esac
 fi
 
 #
@@ -42,9 +42,9 @@ done
 
 # TODO double check if conditional TERM is still applicable
 # if [ -n "$REMOTE_SESSION" ]; then
-  # export TERM='xterm-256color'
+# export TERM='xterm-256color'
 # else
-  # export TERM='screen-256color'
+# export TERM='screen-256color'
 # fi
 export TERM='xterm-256color'
 
@@ -178,4 +178,4 @@ random_splash
 #     # reuse the same session
 #   fi
 # fi
-# vim: set ai tw=79 sw=2:
+# vim: set ai ts=2 sw=2 tw=79:
