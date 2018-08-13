@@ -118,7 +118,7 @@ set tabstop=2                       " Number of spaces that a <Tab> in the file 
 set tags=./.tags,./tags,.tags,tags; " Use hidden tags files
 set undodir=~/.vim/undo/            " Persistent undo directory
 set undofile                        " Persistent undo
-set updatetime=1000                 " Make update related events slightly faster
+set updatetime=300                  " Make update related events slightly faster
 let &showbreak='↪ '                 " Make soft wrap visually appealing
 
 " TODO verify airline symbol display with Fantastique Sans Mono on different
