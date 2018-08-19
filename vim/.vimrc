@@ -91,7 +91,7 @@ scriptencoding utf-8
 set autowrite                       " Save changes before switching buffers
 set completeopt-=preview            " Get rid of the annoying preview window on autocomplete
 set expandtab                       " Expand tabs to spaces
-set fillchars+=vert:\               " Make vertical split bar prettier
+set fillchars+=vert:│               " Make vertical split bar prettier
 set guicursor=                      " Seems buggy? Have to unset to mitigate junk chars
 set ignorecase                      " Make search case-insensitive
 set list                            " Enable whitespace characters' display
