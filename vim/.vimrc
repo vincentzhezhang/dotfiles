@@ -330,16 +330,20 @@ function! ColorSchemeTweaks()
   "TODO get color from ALE?
   " let [l:guibg, l:guifg, l:ctermbg, l:ctermfg] = s:get_highlight('SignColumn')
 
-  highlight ALEErrorSign          guifg=#ff3300 guibg=NONE
-  highlight ALEWarningSign        guifg=#ff9900 guibg=NONE
-  highlight GitGutterAdd          guifg=#98C379 guibg=NONE ctermbg=NONE
-  highlight GitGutterChange       guifg=#fabd2f guibg=NONE ctermbg=NONE
-  highlight GitGutterChangeDelete guifg=#fb4934 guibg=NONE ctermbg=NONE
-  highlight GitGutterDelete       guifg=#fb4934 guibg=NONE ctermbg=NONE
-  highlight SignColumn            guibg=NONE
+  highlight ALEErrorSign          guifg=#FF3300 guibg=NONE
+  highlight ALEWarningSign        guifg=#FF9900 guibg=NONE
 
-  " HACK make vertical split sign invisible
-  highlight VertSplit gui=NONE guifg=NONE guibg=NONE
+  highlight GitGutterAdd          guifg=#98C379 guibg=NONE ctermbg=NONE
+  highlight GitGutterChange       guifg=#FABD2F guibg=NONE ctermbg=NONE
+  " a changed line followed by at least one removed line
+  highlight GitGutterChangeDelete guifg=#2C323B guibg=NONE ctermbg=NONE
+  highlight GitGutterDelete       guifg=#FB4934 guibg=NONE ctermbg=NONE
+
+  highlight SignColumn            guibg=NONE
+  highlight VertSplit             guibg=NONE guifg=#666666
+
+  " vim-better-whitespace
+  highlight link ExtraWhitespace DiffDelete
 endfunction
 
 " Adapt sign color upon color theme change
