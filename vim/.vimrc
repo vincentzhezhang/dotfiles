@@ -260,19 +260,28 @@ let g:tmux_navigator_no_mappings = 1
 "
 "    	      0	1	2	3	4	5	6	7	8	9	A	B	C	D	E	F
 "   U+250x	─	━	│	┃	┄	┅	┆	┇	┈	┉	┊	┋	┌	┍	┎	┏
+"
 "   U+251x	┐	┑	┒	┓	└	┕	┖	┗	┘	┙	┚	┛	├	┝	┞	┟
+"
 "   U+252x	┠	┡	┢	┣	┤	┥	┦	┧	┨	┩	┪	┫	┬	┭	┮	┯
+"
 "   U+253x	┰	┱	┲	┳	┴	┵	┶	┷	┸	┹	┺	┻	┼	┽	┾	┿
+"
 "   U+254x	╀	╁	╂	╃	╄	╅	╆	╇	╈	╉	╊	╋	╌	╍	╎	╏
+"
 "   U+255x	═	║	╒	╓	╔	╕	╖	╗	╘	╙	╚	╛	╜	╝	╞	╟
+"
 "   U+256x	╠	╡	╢	╣	╤	╥	╦	╧	╨	╩	╪	╫	╬	╭	╮	╯
+"
 "   U+257x	╰	╱	╲	╳	╴	╵	╶	╷	╸	╹	╺	╻	╼	╽	╾	╿
 "
 " - block elements (as of Unicode version 11.0)
 "
 "         	0	1	2	3	4	5	6	7	8	9	A	B	C	D	E	F
 "   U+258x	▀	▁	▂	▃	▄	▅	▆	▇	█	▉	▊	▋	▌	▍	▎	▏
+"
 "   U+259x	▐	░	▒	▓	▔	▕	▖	▗	▘	▙	▚	▛	▜	▝	▞	▟
+"
 
 let g:ale_sign_error = ' ■'
 let g:ale_sign_warning = ' ■'
@@ -283,11 +292,11 @@ let g:ale_sign_column_always = 1
 "
 let g:gitgutter_map_keys = 0 " no need of mapping, visual clue only
 let g:gitgutter_override_sign_column_highlight = 0
-let g:gitgutter_sign_added = '▍ '
-let g:gitgutter_sign_modified = '▍ '
-let g:gitgutter_sign_removed = '▍ '
-let g:gitgutter_sign_removed_first_line = '▍ '
-let g:gitgutter_sign_modified_removed = '▍ '
+let g:gitgutter_sign_added = '┃ '
+let g:gitgutter_sign_modified = '┃ '
+let g:gitgutter_sign_removed = '┃ '
+let g:gitgutter_sign_removed_first_line = '┃ '
+let g:gitgutter_sign_modified_removed = '┃ '
 
 
 "
