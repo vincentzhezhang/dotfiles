@@ -169,7 +169,7 @@ augroup general_enhancements
   " autocmd BufWritePre * StripWhitespace " strip whitespaces on save
 
   autocmd VimResized * wincmd =  " make panes responsive
-  autocmd WinEnter * checktime % " make autoread behave intuitively
+  autocmd FocusGained,BufEnter * checktime " make autoread behave intuitively
 augroup END
 
 " should add proper ability detection
