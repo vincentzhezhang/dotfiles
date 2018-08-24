@@ -32,6 +32,7 @@
   birth-info = log --diff-filter=A --
   review = "!f(){ git branch -f \"review/$1\" \"origin/$1\" && git checkout -f \"review/$1\"; }; f"
   finish-review = !bash -c 'git checkout -f master && git branch --no-color | cut -c 3- | grep "^review/" | xargs -r git branch -D'
+  patch = !git --no-pager diff --no-color
 [user]
   name = Vincent Zhang
   email = vincent.zhang@akunacapital.com
