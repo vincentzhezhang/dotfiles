@@ -56,3 +56,4 @@ tags
 # project related
 node_modules/
 package-lock.json
+.mypy_cache
