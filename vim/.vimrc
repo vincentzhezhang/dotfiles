@@ -216,6 +216,9 @@ let g:NERDTrimTrailingWhitespace = 1
 nnoremap <C-_> :call NERDComment('n', 'toggle')<CR>
 xnoremap <C-_> :call NERDComment('x', 'toggle')<CR>
 
+" better find and replace
+vnoremap <C-r> "hy:%s/<C-r>h//c<left><left>
+
 " NerdTree git plugin
 " TODO: find better icons, the previous one looks too bulky and not
 " consistent, thus replaced by ascii characters
