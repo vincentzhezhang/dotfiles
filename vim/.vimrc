@@ -16,16 +16,6 @@ source ~/.vim/functions.vim
 " temporary workaround for editorconfig-vim slowness
 let g:EditorConfig_core_mode = 'external_command'
 
-" TODO try to make a vim plugin to add descriptions for pluggins
-" TODO custom gx command for plugin source:
-"
-" The gx mapping is calling netrw#BrowseX(), so you could call that at the end
-" of your function, passing in the l:site variable you've constructed:
-"
-" call netrw#BrowseX(l:site, netrw#CheckIfRemote())
-" I would also suggest that instead of getline('.'), you use
-" expand('<cfile>'), which evaluates to the filename under the cursor. This
-" will work when the URL is on a line containing other content as well.
 call SetupVimPlug() " in case vim-plug is missing
 call plug#begin('~/.vim/plugged')
 Plug 'airblade/vim-gitgutter'
@@ -170,6 +160,23 @@ function! SetUpBuffer()
     setlocal signcolumn=yes
   endif
 endfunction
+
+" https://vi.stackexchange.com/questions/744/can-i-pass-a-custom-string-to-the-gx-command/751
+function! EnhancedBrowseX()
+  let l:keyword = expand('<cfile>')
+  let l:line = getline('.')
+
+  " add support for go to Github for Plug plugins
+  if l:line =~? '\v^Plug ([''"])[a-zA-Z0-9-_./]*\1'
+    let l:keyword = 'https://github.com/' . l:keyword
+  endif
+
+  call netrw#BrowseX(l:keyword, netrw#CheckIfRemote())
+endfunction
+
+nnoremap gx :call EnhancedBrowseX()<CR>
+xnoremap gx :call EnhancedBrowseX()<CR>
+
 "
 " auto commands that make your life easier
 "
