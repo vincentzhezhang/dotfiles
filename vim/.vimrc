@@ -131,15 +131,33 @@ let g:airline#extensions#tabline#enabled        = 1
 let g:airline#extensions#whitespace#enabled     = 0
 let g:airline_detect_spell                      = 0
 let g:airline_inactive_collapse                 = 1
-let g:airline_left_alt_sep                      = '│'
+let g:airline_left_alt_sep                      = '┃'
 let g:airline_left_sep                          = ''
 let g:airline_powerline_fonts                   = 1
-let g:airline_right_alt_sep                     = '│'
+let g:airline_right_alt_sep                     = '┃'
 let g:airline_right_sep                         = ''
 let g:airline_section_b                         = ''
 let g:airline_section_x                         = ''
 let g:airline#parts#ffenc#skip_expected_string  = 'utf-8[unix]'
 let g:airline#extensions#tabline#tab_nr_type    = 2
+if !exists('g:airline_symbols')
+  let g:airline_symbols = {}
+endif
+let g:airline_symbols.paste = 'P'
+let g:airline_mode_map = {
+    \ '__' : '-',
+    \ 'n'  : 'N',
+    \ 'i'  : 'I',
+    \ 'R'  : 'R',
+    \ 'c'  : 'C',
+    \ 'v'  : 'V',
+    \ 'V'  : 'V',
+    \ '' : 'V',
+    \ 's'  : 'S',
+    \ 'S'  : 'S',
+    \ '' : 'S',
+    \ 't'  : 'T',
+    \ }
 
 " make some commands case-insensitive
 command! Q q
