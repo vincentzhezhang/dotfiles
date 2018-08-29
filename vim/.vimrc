@@ -29,7 +29,6 @@ Plug 'ap/vim-css-color', { 'for': ['css', 'sass', 'scss'] }
 Plug 'junegunn/fzf', { 'dir': '~/.config/fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'junegunn/vim-easy-align'
-Plug 'kewah/vim-stylefmt'
 Plug 'Lokaltog/vim-easymotion'
 Plug 'majutsushi/tagbar'
 Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
