@@ -1,5 +1,10 @@
 #! /usr/bin/env bash
 
+join_by()
+{
+  local d=$1; shift; echo -n "$1"; shift; printf "%s" "${@/#/$d}";
+}
+
 pg()
 {
   ps -eo user,pid,ppid,bsdstart,etime,cmd --sort etime |\
@@ -59,11 +64,13 @@ fs() {
   find "$dir" -maxdepth 1 -type f -exec wc -l {} \; | column -t | sort -n
 }
 
-clean_up_history() {
+history_magic() {
   #
-  # remove ignored, duplicates, and invalid commands from bash history
-  # this is very useful when you have multiple terminal sharing the same
-  # history
+  # bash history with multiple sessions are screwed, let's manually
+  # manage it, this function will be trigger on bash exit, and:
+  # - filter out entries from $HISTIGNORE
+  # - remove duplicates while keep order
+  # - optionally show stats if running manually with verbose tag
   #
   local lines_before
   local lines_after
@@ -76,19 +83,13 @@ clean_up_history() {
   tmp_file="/tmp/bash_history_tmp_$(date +'%N')"
   lines_before=$(wc -l "$src_file")
 
-  # remove anything ignored in HISTIGNORE
-  for str in $HISTIGNORE; do
-    sed -i "/^${str}/d" "$src_file"
-  done
-
-  # FIXME the order is actually screwed
-  # remove duplicates while keep the order
-  tac "$src_file" | sort -u -i -r -f >| "$tmp_file"
+  regex="${HISTIGNORE//\*\:/|}"
+  sed "/^($regex)/d" "$src_file" | awk '!seen[$0]++' > "$tmp_file"
 
   mv -f "$tmp_file" "$src_file"
 
   if [[ ! $verbose ]]; then
-    exit 0
+    return 0
   fi
 
   lines_after=$(wc -l "$src_file")

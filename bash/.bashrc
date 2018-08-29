@@ -57,7 +57,6 @@ shopt -s dirspell
 #
 # history settings
 #
-function join_by { local d=$1; shift; echo -n "$1"; shift; printf "%s" "${@/#/$d}"; }
 hist_ignore=(
 clear
 exit
@@ -71,7 +70,7 @@ HISTCONTROL=ignoreboth:erasedups
 HISTSIZE=9999       # maximum entries allowed in current history
 HISTFILESIZE=9999   # maximum lines allowed in history file
 HISTIGNORE="$(join_by '*:' "${hist_ignore[@]}")"
-trap clean_up_history EXIT
+trap history_magic EXIT
 
 #
 # default editor
