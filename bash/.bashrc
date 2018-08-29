@@ -40,13 +40,11 @@ for s in "${BASH_SCRIPTS[@]}"; do
   [ -f ~/.bash_"${s}" ] && . ~/.bash_"${s}"
 done
 
-# TODO double check if conditional TERM is still applicable
-# if [ -n "$REMOTE_SESSION" ]; then
-# export TERM='xterm-256color'
-# else
-# export TERM='screen-256color'
-# fi
-export TERM='xterm-256color'
+if [[ -n "$TMUX" ]]; then
+  export TERM='screen-256color'
+else
+  export TERM='xterm-256color'
+fi
 
 # update window size after every command
 shopt -s checkwinsize
