@@ -22,6 +22,10 @@ Plug 'airblade/vim-gitgutter'
 Plug 'airblade/vim-rooter'
 Plug 'ajmwagar/vim-deus'
 Plug 'AndrewRadev/splitjoin.vim'
+" TODO far.vim
+" - customization
+" - compare preview feature with fzf ag preview: https://github.com/junegunn/fzf.vim/blob/master/README.md#advanced-customization
+Plug 'brooth/far.vim'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'flazz/vim-colorschemes'
