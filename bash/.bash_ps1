@@ -1,6 +1,22 @@
 #! /usr/bin/env bash
 
 #
+# basic setups
+#
+
+# show last command execution result intuitively
+if [[ -z "$EMOJI_SUPPORT" ]]; then
+    if [[ $OSTYPE == darwin* || $(($(lsb_release -rs | tr -d '.'))) -ge 1804 ]]; then
+      EMOJI_SUPPORT=1
+    else
+      EMOJI_SUPPORT=0
+    fi
+fi
+
+PS1_UPDATE_THRESHOLD=300
+PS1_INDICATOR="${BASE0}~>${COFF} "
+
+#
 # git prompt snippet, use plumbing commands for reliable states parsing
 #
 git_prompt()
@@ -103,7 +119,6 @@ git_prompt()
       if [ "$local_rev" = "$remote_rev" ]; then
         repo_state="${GREEN}[√]${COFF}"
       elif [ "$local_rev" = "$base_rev" ]; then
-
         repo_state="${YELLOW}↓$(git rev-list "$base_rev..$remote_rev" --count)${COFF}"
       elif [ "$remote_rev" = "$base_rev" ]; then
         repo_state="${YELLOW}↑$(git rev-list "$base_rev..$local_rev" --count)${COFF}"
@@ -139,15 +154,7 @@ v_env_conda() {
   echo -n "\\[\\e[0m\\]"
 }
 
-# FIXME length calculation of full-width character is broken
-prettify_prompt() {
-    # show last command execution result intuitively
-    if [[ $? == 0 ]]; then
-        last_state=$([[ $OSTYPE == darwin* ]] && echo '😃 ' || echo "${BGREEN}:) ${COFF}")
-    else
-        last_state=$([[ $OSTYPE == darwin* ]] && echo '😡 ' || echo "${BRED}:( ${COFF}")
-    fi
-
+generate_status_line() {
     # create a dash line which has a length of the current terminal columns minus
     # user@hostname, time string and padding spaces
     local host_str
@@ -174,15 +181,45 @@ prettify_prompt() {
         ((dash_line_width-=1))
     done
 
-    local indicator="${BASE0}~>${COFF} "
+    echo "${BASE00}${host_str}${pwd_str} ${dash_line} ${time_str}${COFF}"
+}
 
+should_prevent_ps1_update()
+{
+    local now
+    local last_update="$PS1_LAST_UPDATED_AT"
+    now=$(($(date +%s%3N)))
+    PS1_LAST_UPDATED_AT=$now
+
+    [[ $((now - last_update)) -lt $PS1_UPDATE_THRESHOLD ]]
+}
+
+generate_last_state()
+{
+    local last_exit_code=$?
+
+    if [[ $last_exit_code -eq 0 ]]; then
+        [[ $EMOJI_SUPPORT -eq 1 ]] && echo '😃 ' || echo "${BGREEN}:) ${COFF}"
+    else
+        [[ $EMOJI_SUPPORT -eq 1 ]] && echo '😡 ' || echo "${BRED}:( ${COFF}"
+    fi
+}
+
+# FIXME length calculation of full-width character is broken
+prettify_prompt() {
+    last_state="$(generate_last_state)"
+
+    if should_prevent_ps1_update; then
+      return
+    fi
+
+    status_line="$(generate_status_line)"
     git_str="$(git_prompt)"
     v_env_str="$(v_env_conda)"
 
-    status_line="${BASE00}${host_str}${pwd_str} ${dash_line} ${time_str}${COFF}"
-    old_ps1="${last_state}${git_str}${v_env_str}${indicator}"
+    prompt_line="${last_state}${git_str}${v_env_str}${PS1_INDICATOR}"
 
-    PS1="$status_line\\n$old_ps1"
+    PS1="$status_line\\n$prompt_line"
 }
 
 PROMPT_COMMAND="prettify_prompt; $PROMPT_COMMAND"
