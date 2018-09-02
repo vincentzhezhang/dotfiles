@@ -22,6 +22,7 @@ Plug 'airblade/vim-gitgutter'
 Plug 'airblade/vim-rooter'
 Plug 'ajmwagar/vim-deus'
 Plug 'AndrewRadev/splitjoin.vim'
+Plug 'ap/vim-css-color', { 'for': ['css', 'sass', 'scss'] }
 " TODO far.vim
 " - customization
 " - compare preview feature with fzf ag preview: https://github.com/junegunn/fzf.vim/blob/master/README.md#advanced-customization
@@ -29,7 +30,6 @@ Plug 'brooth/far.vim'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'flazz/vim-colorschemes'
-Plug 'ap/vim-css-color', { 'for': ['css', 'sass', 'scss'] }
 Plug 'honza/vim-snippets'
 Plug 'jiangmiao/auto-pairs'
 Plug 'junegunn/fzf', { 'dir': '~/.config/fzf', 'do': './install --all' }
