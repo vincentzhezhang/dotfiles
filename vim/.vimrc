@@ -365,6 +365,8 @@ let g:gitgutter_sign_removed = '┃ '
 let g:gitgutter_sign_removed_first_line = '┃ '
 let g:gitgutter_sign_modified_removed = '┃ '
 
+let g:ycm_error_symbol = ' ■'
+let g:ycm_warning_symbol = ' ■'
 
 "
 " color tweaks
@@ -406,11 +408,14 @@ function! ColorSchemeTweaks()
   "TODO get color from ALE?
   " let [l:guibg, l:guifg, l:ctermbg, l:ctermfg] = s:get_highlight('SignColumn')
 
-  highlight ALEErrorSign          guifg=#FF3300 guibg=NONE
+  highlight ALEErrorSign          guifg=#FB4934 guibg=NONE
   highlight ALEWarningSign        guifg=#FF9900 guibg=NONE
 
+  highlight YcmErrorSign          guifg=#FB4934 guibg=NONE
+  highlight YcmWarningSign        guifg=#FF9900 guibg=NONE
+
   highlight GitGutterAdd          guifg=#98C379 guibg=NONE ctermbg=NONE
-  highlight GitGutterChange       guifg=#FABD2F guibg=NONE ctermbg=NONE
+  highlight GitGutterChange       guifg=#FF9900 guibg=NONE ctermbg=NONE
   " a changed line followed by at least one removed line
   highlight GitGutterChangeDelete guifg=#2C323B guibg=NONE ctermbg=NONE
   highlight GitGutterDelete       guifg=#FB4934 guibg=NONE ctermbg=NONE
