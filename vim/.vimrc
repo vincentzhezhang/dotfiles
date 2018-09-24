@@ -573,6 +573,16 @@ nnoremap <silent> <leader>B :Buffers<CR>
 nnoremap <silent> <leader>b :b#<CR>
 nnoremap <silent> <leader>L :Lines<CR>
 
+"
+" fzf tweaks
+
+" fzf#ag#vim with preview
+command! -bang -nargs=* Ag
+  \ call fzf#vim#ag(<q-args>,
+  \                 <bang>0 ? fzf#vim#with_preview('up:70%')
+  \                         : fzf#vim#with_preview('right:50%:hidden', '?'),
+  \                 <bang>0)
+
 " Tmux/Vim seamless navigation
 nnoremap <silent> <A-h> :TmuxNavigateLeft<CR>
 nnoremap <silent> <A-j> :TmuxNavigateDown<CR>
