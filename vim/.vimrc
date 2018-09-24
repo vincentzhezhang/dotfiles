@@ -545,12 +545,24 @@ nnoremap <silent> <leader>AG :Ag <C-R><C-A><CR>
 xnoremap <silent> <leader>rw y:Ag <C-R>"<CR>
 
 " Fzf bindings
-function! FindFilesInCurrentProject()
-  let l:args = FindRootDirectory()
-  let l:cmd = 'git ls-files --cached --others --exclude-standard '
-  call fzf#run(fzf#wrap({'source': l:cmd . l:args}))
+function! SmartFindFiles()
+  let l:dir = FindRootDirectory()
+
+  if empty(l:dir)
+    let l:cmd = "find -maxdepth 1 -type f -printf '%P\n'"
+  else
+    let l:cmd = 'git -C ' . l:dir . ' ls-files --cached --others --exclude-standard '
+
+    if l:dir != getcwd()
+      let l:cmd = l:cmd . " | awk '$0=\"" . l:dir . "/\"$0'"
+    endif
+  endif
+
+  echom l:cmd
+  call fzf#run(fzf#wrap({'source': l:cmd}))
 endfunction
-nnoremap <silent> <leader>f :call FindFilesInCurrentProject()<CR>
+
+nnoremap <silent> <leader>f :call SmartFindFiles()<CR>
 nnoremap <silent> <leader>B :Buffers<CR>
 " fast switch with previous buffer
 nnoremap <silent> <leader>b :b#<CR>
