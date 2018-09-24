@@ -499,6 +499,8 @@ nnoremap <silent> <CR> :nohlsearch<CR><CR>
 nnoremap <silent> * *zz
 nnoremap <silent> # #zz
 nnoremap <silent> gg ggzz
+nnoremap <A-]> :GitGutterNextHunk<CR>
+nnoremap <A-[> :GitGutterPrevHunk<CR>
 
 "
 " more intuitive next/prev result keymapping
