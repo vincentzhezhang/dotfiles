@@ -181,7 +181,7 @@ generate_status_line() {
         ((dash_line_width-=1))
     done
 
-    echo "${BASE00}${host_str}${pwd_str} ${dash_line} ${time_str}${COFF}"
+    echo "${BASE00}${host_str}${pwd_str} ${dash_line} ${time_str}${COFF}\\n"
 }
 
 should_prevent_ps1_update()
@@ -217,9 +217,15 @@ prettify_prompt() {
     git_str="$(git_prompt)"
     v_env_str="$(v_env_conda)"
 
-    prompt_line="${last_state}${git_str}${v_env_str}${PS1_INDICATOR}"
+    env_line="${git_str}${v_env_str}"
 
-    PS1="$status_line\\n$prompt_line"
+    if [[ -n "$env_line" ]]; then
+      env_line="$env_line\\n"
+    fi
+
+    prompt_line="${last_state}${PS1_INDICATOR}"
+
+    PS1="$status_line$env_line$prompt_line"
 }
 
 PROMPT_COMMAND="prettify_prompt; $PROMPT_COMMAND"
