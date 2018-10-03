@@ -1,7 +1,6 @@
 " TODO: add contional loading for pluggins
 " TODO: make use of prettier, yapf, and other fixers with ALE
 " TODO: fix cursorline caused slowness, in fast scroll and gblame
-" TODO: use
 "
 " Make use of bash utilities in vim
 let $BASH_ENV = '~/.bash_utilities'
@@ -16,6 +15,20 @@ source ~/.vim/functions.vim
 " temporary workaround for editorconfig-vim slowness
 let g:EditorConfig_core_mode = 'external_command'
 
+" {{{ Plugins
+"
+"
+" TODO
+" - learn far.vim
+" - compare preview feature with fzf ag preview: https://github.com/junegunn/fzf.vim/blob/master/README.md#advanced-customization
+" - checkout defx.nvim as an alternative to nerdtree
+" - remove vim-jsx-typescript after vim-polyglot added support
+" - try ncm2 as an alternative to YCM
+" - think about the colorscheme crap
+"
+" FIXME
+" - this is too buggy but the idea is great: Plug 'jiangmiao/auto-pairs'
+"
 call SetupVimPlug() " in case vim-plug is missing
 call plug#begin('~/.vim/plugged')
 Plug 'airblade/vim-gitgutter'
@@ -23,15 +36,11 @@ Plug 'airblade/vim-rooter'
 Plug 'ajmwagar/vim-deus'
 Plug 'AndrewRadev/splitjoin.vim'
 Plug 'ap/vim-css-color', { 'for': ['css', 'sass', 'scss'] }
-" TODO far.vim
-" - customization
-" - compare preview feature with fzf ag preview: https://github.com/junegunn/fzf.vim/blob/master/README.md#advanced-customization
 Plug 'brooth/far.vim'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'flazz/vim-colorschemes'
 Plug 'honza/vim-snippets'
-Plug 'jiangmiao/auto-pairs'
 Plug 'jreybert/vimagit'
 Plug 'junegunn/fzf', { 'dir': '~/.config/fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
@@ -40,14 +49,14 @@ Plug 'Lokaltog/vim-easymotion'
 Plug 'majutsushi/tagbar'
 Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
 Plug 'mhinz/vim-startify'
-Plug 'moll/vim-node'
 Plug 'ntpeters/vim-better-whitespace'
+Plug 'peitalin/vim-jsx-typescript', { 'for': ['ts', 'tsx'] }
+Plug 'Raimondi/delimitMate'
 Plug 'romainl/flattened'
 Plug 'scrooloose/nerdcommenter'
 Plug 'scrooloose/nerdtree'
-Plug 'sheerun/vim-polyglot'
+Plug 'sheerun/vim-polyglot', { 'for': ['jsx'] }
 Plug 'SirVer/ultisnips'
-Plug 'peitalin/vim-jsx-typescript' " TODO remove after polyglot added support
 Plug 'terryma/vim-multiple-cursors'
 Plug 'tmux-plugins/vim-tmux-focus-events'
 Plug 'tpope/vim-endwise'
@@ -59,7 +68,10 @@ Plug 'vim-airline/vim-airline-themes'
 Plug 'w0rp/ale'
 Plug 'Xuyuanp/nerdtree-git-plugin'
 call plug#end()
+" }}}
 
+" {{{ Basic settings
+"
 if has('nvim')
   " Window related settings
   " mitigate ctrl-h mess within some terminal
@@ -88,13 +100,15 @@ set autowrite                       " Save changes before switching buffers
 set completeopt-=preview            " Get rid of the annoying preview window on autocomplete
 set expandtab                       " Expand tabs to spaces
 set fillchars+=vert:│               " Make vertical split bar prettier
-set guicursor=                      " Seems buggy? Have to unset to mitigate junk chars
+" set guicursor=                      " Seems buggy? Have to unset to mitigate junk chars
 set ignorecase                      " Make search case-insensitive
 set list                            " Enable whitespace characters' display
 set listchars=nbsp:¬,tab:»·,trail:· " Better whitespace symbols
 set mouse=a                         " Grab mouse event within tmux
+" set lazyredraw                      " FIXME mitigate with jsx until find a fix
 set nobackup                        " Be environment friendly
 set noshowmode                      " Hide the default mode text cause we have *whatever*line
+set noshowcmd                       " Hide the annoying command from bottom right
 set noswapfile                      " Get rid of the annoying .swp file
 set nowrap                          " Don't wrap on long lines
 set nowritebackup                   " Write file in place
@@ -115,30 +129,21 @@ set tabstop=2                       " Number of spaces that a <Tab> in the file 
 set tags=./.tags,./tags,.tags,tags; " Use hidden tags files
 set undodir=~/.vim/undo/            " Persistent undo directory
 set undofile                        " Persistent undo
-set updatetime=300                  " Make update related events slightly faster
+set updatetime=666                  " Make update related events slightly faster
 let &showbreak='↪ '                 " Make soft wrap visually appealing
+" }}}
 
-" TODO verify airline symbol display with Fantastique Sans Mono on different
-" screen/font-size/dpi combinations, see left/right_sep below
-" airline tweaks
-call airline#parts#define_accent('file', 'bold')
 
-let g:airline#extensions#tabline#enabled        = 1
-let g:airline#extensions#whitespace#enabled     = 0
-let g:airline_detect_spell                      = 0
-let g:airline_inactive_collapse                 = 1
-let g:airline_left_alt_sep                      = '│'
-let g:airline_left_sep                          = ''
-let g:airline_powerline_fonts                   = 1
-let g:airline_right_alt_sep                     = '│'
-let g:airline_right_sep                         = ''
-let g:airline_section_b                         = ''
-let g:airline_section_x                         = ''
-let g:airline#parts#ffenc#skip_expected_string  = 'utf-8[unix]'
-let g:airline#extensions#tabline#tab_nr_type    = 2
+" {{{ airline
+"
+
+" call airline#parts#define_accent('file', 'bold')
+
 if !exists('g:airline_symbols')
   let g:airline_symbols = {}
 endif
+let g:airline_symbols.linenr = ''
+let g:airline_symbols.maxlinenr = ''
 let g:airline_symbols.paste = 'P'
 let g:airline_mode_map = {
     \ '__' : '-',
@@ -155,10 +160,31 @@ let g:airline_mode_map = {
     \ 't'  : 'T',
     \ }
 
+let g:airline#extensions#branch#enabled = 0
+let g:airline#extensions#tabline#enabled        = 1
+let g:airline#extensions#tabline#tab_nr_type    = 2
+let g:airline#extensions#whitespace#enabled     = 0
+let g:airline#extensions#whitespace#enabled = 0
+let g:airline#parts#ffenc#skip_expected_string  = 'utf-8[unix]'
+let g:airline_detect_spell                      = 0
+let g:airline_inactive_collapse                 = 1
+let g:airline_left_alt_sep                      = '│'
+let g:airline_left_sep                          = ''
+let g:airline_powerline_fonts                   = 0
+let g:airline_right_alt_sep                     = '│'
+let g:airline_right_sep                         = ''
+let g:airline_section_b                         = ''
+let g:airline_section_x                         = ''
+let g:airline_section_z                         = airline#section#create(["%{line('.')}", 'maxlinenr'])
+let g:airline_symbols_ascii                     = 1
+" }}}
+
+
 " Trigger configuration. Do not use <tab> if you use https://github.com/Valloric/YouCompleteMe.
+" TODO get familiar with this
 let g:UltiSnipsExpandTrigger='<c-e>'
-let g:UltiSnipsJumpForwardTrigger="<c-f>"
-let g:UltiSnipsJumpBackwardTrigger="<c-b>"
+let g:UltiSnipsJumpForwardTrigger='<c-f>'
+let g:UltiSnipsJumpBackwardTrigger='<c-b>'
 
 " make some commands case-insensitive
 command! Q q
@@ -208,8 +234,9 @@ augroup general_enhancements
   autocmd FocusGained,BufEnter * checktime " make autoread behave intuitively
 augroup END
 
+
+" {{{ PlantUML enchancements
 "
-" PlantUML enchancements
 " dependencies:
 " - plantuml/plantuml-server docker image for set up the server
 " - npm package node-plantuml for encode the uml file
@@ -235,6 +262,7 @@ augroup plantuml_enchancements
   " maybe support tags grepping
   autocmd! BufWritePost *.uml call RenderPlantUML()
 augroup END
+" }}}
 
 " should add proper ability detection
 if empty($TERMINATOR_UUID) && empty($SESSION_TYPE)
@@ -261,13 +289,9 @@ let g:multi_cursor_quit_key            = '<Esc>'
 " use Python from virtual env
 let g:ycm_python_binary_path = 'python'
 
-" TODO make NERDCommenter smarter, i.e.
-" - [x] omni shortcut to toggle comment on/off
-" - [ ] detect mode automatically and apply corresponding style
-" - [ ] use comment line left align as default
-
-let g:NERDTreeWinSize = 30
 let g:NERDTreeMinimalUI = 1
+let g:NERDTreeStatusline = '%#NonText#'
+let g:NERDTreeWinSize = 30
 
 " color filename as well by file type in NERDTree
 let g:NERDTreeFileExtensionHighlightFullName = 1
@@ -298,6 +322,7 @@ let g:NERDTreeIndicatorMapCustom = {
     \ }
 
 " Customize fzf colors to match your color scheme
+" FIXME fix ag colour
 let g:fzf_colors =
 \ { 'fg':      ['fg', 'Normal'],
   \ 'bg':      ['bg', 'Normal'],
@@ -306,6 +331,7 @@ let g:fzf_colors =
   \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
   \ 'hl+':     ['fg', 'Statement'],
   \ 'info':    ['fg', 'PreProc'],
+  \ 'border':  ['fg', 'Ignore'],
   \ 'prompt':  ['fg', 'Conditional'],
   \ 'pointer': ['fg', 'Exception'],
   \ 'marker':  ['fg', 'Keyword'],
@@ -315,8 +341,7 @@ let g:fzf_colors =
 " seamless vim/tmux navigation
 let g:tmux_navigator_no_mappings = 1
 
-"
-" Sign Column Tweaks
+" {{{ Sign Column Tweaks
 "
 " handy selection of symbols
 " - poker suits:    ♠ ♥ ♣ ♦
@@ -350,20 +375,21 @@ let g:tmux_navigator_no_mappings = 1
 "   U+259x	▐	░	▒	▓	▔	▕	▖	▗	▘	▙	▚	▛	▜	▝	▞	▟
 "
 
+" let g:ale_completion_enabled = 1 FIXME still buggy now check again on Nov
+let g:ale_lint_on_enter = 0
+let g:ale_lint_delay = 666
+let g:ale_linters = {'javascript': ['eslint', 'tsserver']}
+let g:ale_sign_column_always = 1
 let g:ale_sign_error = ' ■'
 let g:ale_sign_warning = ' ■'
-let g:ale_sign_column_always = 1
-" FIXME This seems problematic, it raises CssSyntaxError on the first line
-" let g:ale_linters = {'jsx': ['stylelint', 'eslint']}
-" let g:ale_linter_aliases = {'jsx': 'css'}
-"
+
 let g:gitgutter_map_keys = 0 " no need of mapping, visual clue only
 let g:gitgutter_override_sign_column_highlight = 0
 let g:gitgutter_sign_added = '┃ '
 let g:gitgutter_sign_modified = '┃ '
+let g:gitgutter_sign_modified_removed = '┃ '
 let g:gitgutter_sign_removed = '┃ '
 let g:gitgutter_sign_removed_first_line = '┃ '
-let g:gitgutter_sign_modified_removed = '┃ '
 
 let g:ycm_error_symbol = ' ■'
 let g:ycm_warning_symbol = ' ■'
@@ -423,6 +449,11 @@ function! ColorSchemeTweaks()
   highlight SignColumn            guibg=NONE
   highlight VertSplit             guibg=NONE guifg=#666666
 
+  " TODO use colour blend function instead of hard-code
+  highlight Pmenu      guibg=#ebdab2 guifg=#333333
+  highlight PmenuSel   guibg=#98C379 guifg=#333333
+
+
   " vim-better-whitespace
   highlight link ExtraWhitespace DiffDelete
 endfunction
@@ -432,6 +463,7 @@ augroup colorscheme_tweaks
   autocmd!
   autocmd ColorScheme * call ColorSchemeTweaks()
 augroup END
+" }}}
 
 "
 " smarter project root by vim-rooter, very useful when combined with fzf below
@@ -496,8 +528,6 @@ nnoremap <F6> :!%:p<Enter>
 " Centralized movement
 "
 nnoremap <silent> <CR> :nohlsearch<CR><CR>
-nnoremap <silent> * *zz
-nnoremap <silent> # #zz
 nnoremap <silent> gg ggzz
 nnoremap <A-]> :GitGutterNextHunk<CR>
 nnoremap <A-[> :GitGutterPrevHunk<CR>
@@ -505,14 +535,15 @@ nnoremap <A-[> :GitGutterPrevHunk<CR>
 "
 " more intuitive next/prev result keymapping
 "
+nnoremap <silent> * *N <Bar> zz
+nnoremap <silent> # #N <Bar> zz
 nnoremap <expr> n (v:searchforward ? 'nzz' : 'Nzz')
 nnoremap <expr> N (v:searchforward ? 'Nzz' : 'nzz')
 
-
-" Quick jump between recent two buffers
-
 " Quick switch between numbers ruler
 nnoremap <silent> <F12> :set number!<CR>
+nnoremap <silent> <F8> :execute ':silent !google-chrome %'<CR>
+nnoremap <silent> <F4> :set ts=4 sw=4<CR>
 
 " Tagbar Toggle
 nnoremap <silent> <C-t> :TagbarToggle<CR>
@@ -602,8 +633,7 @@ if !empty(glob('~/.vimrc.after'))
   source ~/.vimrc.after
 end
 
-"
-" Initialization
+" {{{ Initialization
 "
 augroup welcome
   autocmd VimEnter *
@@ -613,3 +643,6 @@ augroup welcome
               \ |   wincmd w
               \ | endif
 augroup END
+" }}}
+
+" vim: set ai tw=119 foldmethod=marker :

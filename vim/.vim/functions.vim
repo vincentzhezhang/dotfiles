@@ -27,22 +27,22 @@ augroup END
 
 " Use local node binaries if possible, with fallback to global binaries
 " Currently just for eslint, will add other stuff
-" TODO
+" FIXME neomake is deprecated by ale, need to update accordingly
 " - make it path agnostic
-function! PreferLocalNodeBinaries()
-  let l:local_eslint = $PWD . '/node_modules/.bin/eslint'
-  let l:global_eslint = system('which eslint')
-
-  if executable(l:local_eslint)
-    let g:neomake_javascript_eslint_exe = l:local_eslint
-  elseif executable(l:global_eslint)
-    let g:neomake_javascript_eslint_exe = l:global_eslint
-  endif
-endfunction
-
-augroup node_path_hack
-  autocmd BufEnter *.js* call PreferLocalNodeBinaries()
-augroup END
+" function! PreferLocalNodeBinaries()
+"   let l:local_eslint = $PWD . '/node_modules/.bin/eslint'
+"   let l:global_eslint = system('which eslint')
+" 
+"   if executable(l:local_eslint)
+"     let g:neomake_javascript_eslint_exe = l:local_eslint
+"   elseif executable(l:global_eslint)
+"     let g:neomake_javascript_eslint_exe = l:global_eslint
+"   endif
+" endfunction
+" 
+" augroup node_path_hack
+"   autocmd BufEnter *.js* call PreferLocalNodeBinaries()
+" augroup END
 
 "
 " Vim Plug callback functions
@@ -56,7 +56,7 @@ function! BuildYCM(...)
   " build YouCompleteMe using the same Python3 as used by
   " g:ycm_server_python_interpreter
   if a:0 < 1 || a:1.status ==? 'installed' || a:1.status ==? 'updated' || a:1.force
-    execute '!' . g:ycm_server_python_interpreter . ' install.py --clang-completer --tern-completer'
+    execute '!' . g:ycm_server_python_interpreter . ' install.py --clang-completer'
   endif
 endfunction
 
