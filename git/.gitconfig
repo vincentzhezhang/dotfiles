@@ -32,7 +32,7 @@
   birth-info = log --diff-filter=A --
   review = "!f(){ git branch -f \"review/$1/$2\" \"$2\" && git checkout -f \"review/$1/$2\"; }; f"
   finish-review = !bash -c 'git checkout -f master && git branch --no-color | cut -c 3- | grep "^review/" | xargs -r git branch -D'
-  patch = !git --no-pager diff --no-color
+  patch = "!f(){ git --no-pager diff --no-color | xsel -ib; xsel -ob; echo \"has been copied to clipboard!\"; }; f"
   rank = shortlog --summary -n --max-count=100
 [user]
   name = Vincent Zhang
