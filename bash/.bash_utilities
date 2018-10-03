@@ -1,5 +1,22 @@
 #! /usr/bin/env bash
 
+far() {
+  if [[ -z $1 || -z $2 ]]; then
+    echo 'Usage: far find_parttern replace_parttern'
+    return 1
+  fi
+
+  if [[ ! -x $(which ag) ]]; then
+    echo 'ag is missing, please install it first.'
+  fi
+
+  if [[ ! -x $(which sed) ]]; then
+    echo 'sed is missing, please install it first.'
+  fi
+
+  ag -Q "$1" -l | xargs sed -i "s|$1|$2|g"
+}
+
 split_pdf()
 {
   convert -density 150 -quality 90 "$1" page-%0d.jpg
