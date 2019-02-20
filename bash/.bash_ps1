@@ -215,7 +215,7 @@ generate_status_line() {
   local dash_line_width=0
   local dash_color="$BASE00"
 
-  if [[ -n "$REMOTE_bESSION" ]]; then
+  if [[ -n "$REMOTE_SESSION" ]]; then
     dash_color="$BYELLOW"
     host_str="$(hostname):"
   fi
