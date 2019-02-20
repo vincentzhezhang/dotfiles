@@ -213,13 +213,17 @@ generate_status_line() {
   local dash_line
   local dash_line_padding=2 # spaces before and after the dash line
   local dash_line_width=0
+  local dash_color="$BASE00"
 
-  host_str="$(hostname):"
+  if [[ -n "$REMOTE_bESSION" ]]; then
+    dash_color="$BYELLOW"
+    host_str="$(hostname):"
+  fi
 
   pwd_str=$(readlink -f "$PWD")
 
   if [[ ${#pwd_str} -gt $(( 2 * COLUMNS / 3 )) ]]; then
-    echo "${BASE00}$(basename "$PWD")${COFF}\\n"
+    echo "${dash_color}$(basename "$PWD")${COFF}\\n"
     return 0
   elif [[ ${#pwd_str} -gt $(( COLUMNS / 2)) ]]; then
     pwd_str="$(sed "s:\\([^/]\\)[^/]*/:\\1/:g" <<< "$pwd_str")"
@@ -235,7 +239,7 @@ generate_status_line() {
     ((dash_line_width-=1))
   done
 
-  echo "${BASE00}${host_str}${pwd_str} ${dash_line} ${time_str}${COFF}\\n"
+  echo "${dash_color}${host_str}${pwd_str} ${dash_line} ${time_str}${COFF}\\n"
 }
 
 someone_goes_nuts()
