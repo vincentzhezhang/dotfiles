@@ -56,7 +56,7 @@ function! BuildYCM(...)
   " build YouCompleteMe using the same Python3 as used by
   " g:ycm_server_python_interpreter
   if a:0 < 1 || a:1.status ==? 'installed' || a:1.status ==? 'updated' || a:1.force
-    execute '!' . g:ycm_server_python_interpreter . ' install.py --clang-completer'
+    execute '!' . g:ycm_server_python_interpreter . ' install.py --all'
   endif
 endfunction
 

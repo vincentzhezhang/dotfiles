@@ -13,6 +13,11 @@ esac
 # handy injection before load the main script
 [ -f ~/.bashrc.before ] && . ~/.bashrc.before
 
+#
+# external dependencies
+#
+[ -f ~/.fzf.bash ] && . ~/.fzf.bash
+
 # common non-interactive shells including:
 # - vi visual mode for long commands in shell
 # - other app started shell
@@ -112,12 +117,23 @@ unset color_prompt force_color_prompt
 
 [ -f ~/.git-completion.bash ] && . ~/.git-completion.bash
 
-# handy injection after load the main script
-[ -f ~/.bashrc.after ] && . ~/.bashrc.after
+# TODO
+# - smart scope, e.g. use current directory or git root depends on the context
+read -r -d '' GIT_DEFAULT_LS_COMMAND <<BASH
+  git ls-files --cached --others --exclude-standard
+BASH
+export GIT_DEFAULT_LS_COMMAND
 
 #
 # fzf tweaks
 #
+
+read -r -d '' FZF_DEFAULT_COMMAND <<BASH
+  ($GIT_DEFAULT_LS_COMMAND ||
+   find . -path "*/\.*" -prune -o -type f -print -o -type l -print |
+      sed s/^..//) 2> /dev/null
+BASH
+export FZF_DEFAULT_COMMAND
 
 # let __fzf_cd__ ignore node_modules and static directories
 read -r -d '' FZF_ALT_C_COMMAND <<BASH
@@ -130,35 +146,31 @@ command find -L . -mindepth 1 \
     -fstype 'devfs' -o \
     -fstype 'devtmpfs' -o \
     -fstype 'proc' \
-  \\) -prune -o -type d -print 2> /dev/null | cut -b3-
+  \\) -prune -o -type d -print 2> /dev/null | sed 's/^.\///'
 BASH
 export FZF_ALT_C_COMMAND
 
 # let __fzf_select__ ignore node_modules and static directories
+# TODO
+# - determine symbolic link type and add trailing slash if applicable
 read -r -d '' FZF_CTRL_T_COMMAND <<BASH
-command find -L . -mindepth 1 \
-  \\(\
-      -path '*/\\.*' -o \
-      -path '*/node_modules' -o \
-      -path '*/static' -o \
-      -fstype 'sysfs' -o \
-      -fstype 'devfs' -o \
-      -fstype 'devtmpfs' -o \
-      -fstype 'proc' \
-  \\) -prune -o \
-  -type f -print -o \
-  -type d -print -o \
-  -type l -print 2> /dev/null | cut -b3-
+  ($GIT_DEFAULT_LS_COMMAND ||
+    command find -L . -mindepth 1 \
+      \\(\
+          -path '*/\\.*' -o \
+          -path '*/node_modules' -o \
+          -path '*/static' -o \
+          -fstype 'sysfs' -o \
+          -fstype 'devfs' -o \
+          -fstype 'devtmpfs' -o \
+          -fstype 'proc' \
+      \\) -prune -o \
+      -type f -print -o \
+      -type d -printf '%p/\n' -o \
+      -type l -print \
+  ) 2> /dev/null | sed 's/^.\///'
 BASH
 export FZF_CTRL_T_COMMAND
-[ -f ~/.fzf.bash ] && . ~/.fzf.bash
-
-# FIXME proper fix to eliminate the possibility of duplicates
-# remove duplicates from $PATH
-PATH=$(echo -n "$PATH" | awk -v RS=: -v ORS=: '!x[$0]++' | sed "s/\(.*\).\{1\}/\1/")
-
-# just for fun
-random_splash
 
 # Automatic TMUX
 # if [ -z "$REMOTE_SESSION" ] && [ -z "$TMUX" ] && [ -x "$(command -v tmux)" ]; then
@@ -176,3 +188,16 @@ random_splash
 #   fi
 # fi
 # vim: set ai ts=2 sw=2 tw=79:
+
+# handy injection after load the main script
+[ -f ~/.bashrc.after ] && . ~/.bashrc.after
+# FIXME decouple fzf with other bash scripts
+[ -f ~/.fzf.bash ] && . ~/.fzf.bash
+
+# FIXME proper fix to eliminate the possibility of duplicates
+# remove duplicates from $PATH
+PATH=$(echo -n "$PATH" | awk -v RS=: -v ORS=: '!x[$0]++' | sed "s/\(.*\).\{1\}/\1/")
+
+# just for fun
+random_splash
+

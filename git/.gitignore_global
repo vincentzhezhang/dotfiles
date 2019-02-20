@@ -49,11 +49,8 @@ tags
 *.jpeg
 *.gif
 
-# audio files
-*.mp3
-*.wav
-
 # project related
 node_modules/
-package-lock.json
 .mypy_cache
+coverage/
+.coverage/

@@ -1,7 +1,20 @@
-" TODO: add contional loading for pluggins
-" TODO: make use of prettier, yapf, and other fixers with ALE
-" TODO: fix cursorline caused slowness, in fast scroll and gblame
+" TODO
+" - function for setting correct python path if a venv is available
+" - add contional loading for pluggins
+" - make use of prettier, yapf, and other fixers with ALE
+" - check if there is a way to only highlight search keywords in current buffer
+" - learn far.vim
+" - compare preview feature with fzf ag preview: https://github.com/junegunn/fzf.vim/blob/master/README.md#advanced-customization
+" - checkout defx.nvim as an alternative to nerdtree
+" - remove vim-jsx-typescript after vim-polyglot added support | not ready 23, Nov 2018
+" - try ncm2 as an alternative to YCM
+" - think about the colorscheme crap
 "
+" FIXME
+" - colorscheme load is delay when open multiple files
+" - fix cursorline caused slowness, in fast scroll and gblame
+" - this is too buggy but the idea is great: Plug 'jiangmiao/auto-pairs'
+
 " Make use of bash utilities in vim
 let $BASH_ENV = '~/.bash_utilities'
 
@@ -16,19 +29,6 @@ source ~/.vim/functions.vim
 let g:EditorConfig_core_mode = 'external_command'
 
 " {{{ Plugins
-"
-"
-" TODO
-" - learn far.vim
-" - compare preview feature with fzf ag preview: https://github.com/junegunn/fzf.vim/blob/master/README.md#advanced-customization
-" - checkout defx.nvim as an alternative to nerdtree
-" - remove vim-jsx-typescript after vim-polyglot added support
-" - try ncm2 as an alternative to YCM
-" - think about the colorscheme crap
-"
-" FIXME
-" - this is too buggy but the idea is great: Plug 'jiangmiao/auto-pairs'
-"
 call SetupVimPlug() " in case vim-plug is missing
 call plug#begin('~/.vim/plugged')
 Plug 'airblade/vim-gitgutter'
@@ -72,11 +72,7 @@ call plug#end()
 
 " {{{ Basic settings
 "
-if has('nvim')
-  " Window related settings
-  " mitigate ctrl-h mess within some terminal
-  nmap <BS> <C-W>h
-else
+if !has('nvim')
   " TODO check out VIM8 see if any default option values been changed
   " Backwards compatibility for Vim, most of them are set by default in NeoVim
   " vint: -ProhibitSetNoCompatible
@@ -130,7 +126,7 @@ set tags=./.tags,./tags,.tags,tags; " Use hidden tags files
 set undodir=~/.vim/undo/            " Persistent undo directory
 set undofile                        " Persistent undo
 set updatetime=666                  " Make update related events slightly faster
-let &showbreak='↪ '                 " Make soft wrap visually appealing
+let &showbreak='↪ '                 " Make soft wrap visually appealing FIXME not showing up?
 " }}}
 
 
@@ -217,13 +213,17 @@ xnoremap gx :call EnhancedBrowseX()<CR>
 "
 " auto commands that make your life easier
 "
+" XXX no space is allowed between events
 augroup general_enhancements
   autocmd!
   autocmd BufCreate * call SetUpBuffer()
   autocmd BufEnter *.log set nospell "no spell check for log files
-  autocmd BufEnter *.md set wrap
+  autocmd BufEnter *.md set nowrap
   autocmd BufEnter,InsertLeave * set cursorline
   autocmd BufLeave,InsertEnter * set nocursorline
+
+  " FIXME temporary workaround for Docker issue
+  autocmd BufEnter *Dockerfile set ft=dockerfile
 
   " FIXME use filetype to disable cursorline within fugitiveblame
 
@@ -243,7 +243,7 @@ augroup END
 "
 " the prototype will try to encode the uml file upon save, and communicate
 " with the server, then open a viewer if it's not opened yet
-" TODO need to make this asynchronous
+" TODO need to make this asynchronous, checkout jobstart
 "
 function! RenderPlantUML()
   echo 'generating PlantUML diagram...'
@@ -286,8 +286,25 @@ let g:multi_cursor_prev_key            = '<C-p>'
 let g:multi_cursor_skip_key            = '<C-x>'
 let g:multi_cursor_quit_key            = '<Esc>'
 
+"
+" Smart Python env finder
+"
+function! s:match_highlight(highlight, pattern) abort
+  let matches = matchlist(a:highlight, a:pattern)
+  if len(matches) == 0
+    return 'NONE'
+  endif
+  return matches[1]
+endfunction
+
 " use Python from virtual env
 let g:ycm_python_binary_path = 'python'
+
+" typescript setup for YCM
+if !exists('g:ycm_semantic_triggers')
+  let g:ycm_semantic_triggers = {}
+endif
+let g:ycm_semantic_triggers['typescript'] = ['.']
 
 let g:NERDTreeMinimalUI = 1
 let g:NERDTreeStatusline = '%#NonText#'
@@ -306,6 +323,8 @@ xnoremap <C-_> :call NERDComment('x', 'toggle')<CR>
 
 " better find and replace
 vnoremap <C-r> "hy:%s/<C-r>h//c<left><left>
+
+vnoremap <C-s> :<C-r>0<Home><right>
 
 " NerdTree git plugin
 " TODO: find better icons, the previous one looks too bulky and not
@@ -350,38 +369,42 @@ let g:tmux_navigator_no_mappings = 1
 "
 " - Box Drawing Characters table (as of Unicode version 11.0)
 "
-"    	      0	1	2	3	4	5	6	7	8	9	A	B	C	D	E	F
-"   U+250x	─	━	│	┃	┄	┅	┆	┇	┈	┉	┊	┋	┌	┍	┎	┏
+"           0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F
+"   U+250x  ─  ━  │  ┃  ┄  ┅  ┆  ┇  ┈  ┉  ┊  ┋  ┌  ┍  ┎  ┏
 "
-"   U+251x	┐	┑	┒	┓	└	┕	┖	┗	┘	┙	┚	┛	├	┝	┞	┟
+"   U+251x  ┐  ┑  ┒  ┓  └  ┕  ┖  ┗  ┘  ┙  ┚  ┛  ├  ┝  ┞  ┟
 "
-"   U+252x	┠	┡	┢	┣	┤	┥	┦	┧	┨	┩	┪	┫	┬	┭	┮	┯
+"   U+252x  ┠  ┡  ┢  ┣  ┤  ┥  ┦  ┧  ┨  ┩  ┪  ┫  ┬  ┭  ┮  ┯
 "
-"   U+253x	┰	┱	┲	┳	┴	┵	┶	┷	┸	┹	┺	┻	┼	┽	┾	┿
+"   U+253x  ┰  ┱  ┲  ┳  ┴  ┵  ┶  ┷  ┸  ┹  ┺  ┻  ┼  ┽  ┾  ┿
 "
-"   U+254x	╀	╁	╂	╃	╄	╅	╆	╇	╈	╉	╊	╋	╌	╍	╎	╏
+"   U+254x  ╀  ╁  ╂  ╃  ╄  ╅  ╆  ╇  ╈  ╉  ╊  ╋  ╌  ╍  ╎  ╏
 "
-"   U+255x	═	║	╒	╓	╔	╕	╖	╗	╘	╙	╚	╛	╜	╝	╞	╟
+"   U+255x  ═  ║  ╒  ╓  ╔  ╕  ╖  ╗  ╘  ╙  ╚  ╛  ╜  ╝  ╞  ╟
 "
-"   U+256x	╠	╡	╢	╣	╤	╥	╦	╧	╨	╩	╪	╫	╬	╭	╮	╯
+"   U+256x  ╠  ╡  ╢  ╣  ╤  ╥  ╦  ╧  ╨  ╩  ╪  ╫  ╬  ╭  ╮  ╯
 "
-"   U+257x	╰	╱	╲	╳	╴	╵	╶	╷	╸	╹	╺	╻	╼	╽	╾	╿
+"   U+257x  ╰  ╱  ╲  ╳  ╴  ╵  ╶  ╷  ╸  ╹  ╺  ╻  ╼  ╽  ╾  ╿
 "
 " - block elements (as of Unicode version 11.0)
 "
-"         	0	1	2	3	4	5	6	7	8	9	A	B	C	D	E	F
-"   U+258x	▀	▁	▂	▃	▄	▅	▆	▇	█	▉	▊	▋	▌	▍	▎	▏
+"           0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F
+"   U+258x  ▀  ▁  ▂  ▃  ▄  ▅  ▆  ▇  █  ▉  ▊  ▋  ▌  ▍  ▎  ▏
 "
-"   U+259x	▐	░	▒	▓	▔	▕	▖	▗	▘	▙	▚	▛	▜	▝	▞	▟
+"   U+259x  ▐  ░  ▒  ▓  ▔  ▕  ▖  ▗  ▘  ▙  ▚  ▛  ▜  ▝  ▞  ▟
 "
 
-" let g:ale_completion_enabled = 1 FIXME still buggy now check again on Nov
-let g:ale_lint_on_enter = 0
+" FIXME still buggy 23 Nov, now check again 2019
+" let g:ale_completion_enabled = 1
 let g:ale_lint_delay = 666
 let g:ale_linters = {'javascript': ['eslint', 'tsserver']}
 let g:ale_sign_column_always = 1
 let g:ale_sign_error = ' ■'
 let g:ale_sign_warning = ' ■'
+
+" FIXME temporary workaround for neovim ALE issue, see:
+" https://github.com/neovim/neovim/issues/9388
+let g:ale_sign_offset = 1000
 
 let g:gitgutter_map_keys = 0 " no need of mapping, visual clue only
 let g:gitgutter_override_sign_column_highlight = 0
@@ -522,7 +545,37 @@ xmap ga <Plug>(EasyAlign)
 noremap <space>c ea<C-x><C-s>
 
 " Run the current script according to shebang!
-nnoremap <F6> :!%:p<Enter>
+nnoremap <leader>r :!%:p<CR><CR>
+
+function EchoOutput(job_id, data, event)
+  if a:data == 0
+    echom 'compiled!'
+    !notify-send 'compiled'
+  else
+    echom 'failed!'
+    !notify-send 'failed'
+  endif
+endfunction
+
+" FIXME shouldn't really use this but wth
+function! NpmCompile()
+  let l:ext = expand('%:e')
+  if l:ext ==? 'scss'
+    echom 'compiling css...'
+    let l:job="npm run css:dev >/dev/null 2>&1"
+    call jobstart(l:job, { 'on_exit': function('EchoOutput') })
+  elseif l:ext ==? 'js' || l:ext ==? 'jsx'
+    echom 'compiling js...'
+    let l:job="npm run js:dev >/dev/null 2>&1"
+    call jobstart(l:job, { 'on_exit': function('EchoOutput') })
+  else
+    echom 'huh?'
+  endif
+  if v:shell_error == 0
+
+  endif
+endfunction
+nnoremap <leader>n :call NpmCompile()<CR>
 
 "
 " Centralized movement
@@ -531,6 +584,8 @@ nnoremap <silent> <CR> :nohlsearch<CR><CR>
 nnoremap <silent> gg ggzz
 nnoremap <A-]> :GitGutterNextHunk<CR>
 nnoremap <A-[> :GitGutterPrevHunk<CR>
+" nmap <silent> <A-[> <Plug>(ale_previous_wrap)
+" nmap <silent> <A-]> <Plug>(ale_next_wrap)
 
 "
 " more intuitive next/prev result keymapping
@@ -558,20 +613,22 @@ nnoremap <leader>V :e $MYVIMRC<CR>
 nnoremap <leader>j i<return><esc>
 
 " NERDTree
-map <C-\> :NERDTreeFind<CR> | wincmd p
+map <C-\> :NERDTreeFind <Bar> wincmd =<CR>
 
 " FIXME this only works with Python (hopefully), will need a proper
 " implementation
 map <F10> :!ctags -R -f ./tags `python -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())"`<CR>
 
+" TODO
+" - add more precise ext based matching instead of the naïve one below
+" - let sink command go to the matching line, see: https://github.com/junegunn/fzf/wiki/Examples-(vim)#jump-to-tags
 function! FindReferenceOfCurrentFile()
-  " call fzf#vim#ag(expand('%:t:r'))
-  let l:root = FindRootDirectory()
-  let l:extension = strpart(expand('%:e'), 0, 2)
+  let l:dir = FindRootDirectory()
   let l:filename = expand('%:t:r')
-  let l:search = 'ag --color --nogroup --word-regexp --' . l:extension . ' ' . l:filename
-  echo l:search
-  call fzf#run(fzf#wrap({ 'source': l:search }))
+  let l:extension = strpart(expand('%:e'), 0, 2)
+  let l:search = 'ag --no-color --nogroup --word-regexp -G .' . l:extension . '* ' . l:filename . ' | column -s: -t'
+  call fzf#run(fzf#wrap({'source': l:search, 'dir': l:dir }))
+  echo 'finding referece of ' . l:filename . '...'
 endfunction
 nnoremap <silent> <leader>rf :call FindReferenceOfCurrentFile()<CR>
 
@@ -584,22 +641,32 @@ xnoremap <silent> <leader>rw y:Ag <C-R>"<CR>
 
 " Fzf bindings
 function! SmartFindFiles()
+  " FindRootDirectory from vim-rooter
   let l:dir = FindRootDirectory()
+  let l:cwd = getcwd()
 
   if empty(l:dir)
-    let l:cmd = "find -maxdepth 1 -type f -printf '%P\n'"
+    let l:dir = l:cwd
+    let l:cmd = 'ag --nocolor -l'
   else
-    let l:cmd = 'git -C ' . l:dir . ' ls-files --cached --others --exclude-standard '
+    let l:cmd = $GIT_DEFAULT_LS_COMMAND
 
-    if l:dir != getcwd()
+    if empty(l:cmd)
+      let l:cmd = 'git ls-files --cached --others --exclude-standard'
+      echo '$GIT_DEFAULT_LS_COMMAND is not set'
+      return
+    endif
+
+    if l:cwd !~? l:dir " remove leading path that duplicates with cwd
       let l:cmd = l:cmd . " | awk '$0=\"" . l:dir . "/\"$0'"
     endif
   endif
 
-  echom l:cmd
-  call fzf#run(fzf#wrap({'source': l:cmd}))
+  echo 'searching using "' . l:cmd . '" ...'
+  call fzf#run(fzf#wrap({'source': l:cmd, 'dir': l:dir, 'down': '~18'}))
 endfunction
 
+" FIXME why the hell the results does not show immediately after trigger?
 nnoremap <silent> <leader>f :call SmartFindFiles()<CR>
 nnoremap <silent> <leader>B :Buffers<CR>
 " fast switch with previous buffer

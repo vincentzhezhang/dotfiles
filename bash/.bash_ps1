@@ -1,20 +1,25 @@
 #! /usr/bin/env bash
+# TODO
+# - multiple remote support for git_prompt
+#
 
 #
 # basic setups
 #
 
 # show last command execution result intuitively
-if [[ -z "$EMOJI_SUPPORT" ]]; then
-    if [[ $OSTYPE == darwin* || $(($(lsb_release -rs | tr -d '.'))) -ge 1804 ]]; then
-      EMOJI_SUPPORT=1
-    else
-      EMOJI_SUPPORT=0
-    fi
+# turn on emoji support for Mac and Ubuntu >= 18.04 for non-remote sessions
+if [[ -z "$EMOJI_SUPPORT" && -z "$REMOTE_SESSION" ]]; then
+  if [[ $OSTYPE == darwin* || $(($(lsb_release -rs | tr -d '.'))) -ge 1804 ]]; then
+    EMOJI_SUPPORT=1
+  else
+    EMOJI_SUPPORT=0
+  fi
 fi
 
-PS1_UPDATE_THRESHOLD=300
+PS1_UPDATE_THRESHOLD=167
 PS1_INDICATOR="${BASE0}~>${COFF} "
+PS1_MINIMUM_COLUMN_WIDTH=60
 
 #
 # git prompt snippet, use plumbing commands for reliable states parsing
@@ -22,120 +27,152 @@ PS1_INDICATOR="${BASE0}~>${COFF} "
 git_prompt()
 {
   # check if current working directory is a git tracked directory
-  if (git rev-parse --git-dir &> /dev/null); then
-    git_dir="$(git rev-parse --git-dir)"
-    current_branch="$(git symbolic-ref --short HEAD 2> /dev/null)"
-    current_status="$(git status --porcelain 2> /dev/null)"
+  git_dir="$(git rev-parse --git-dir 2> /dev/null)"
 
-    if [[ -f "$git_dir/REBASE_HEAD" ]]; then
-      echo "${BRED}[-R-]${COFF}"
-      return
-    fi
-
-    if [[ -f "$git_dir/MERGE_HEAD" ]]; then
-      echo "${BRED}[-M-]${COFF}"
-      return
-    fi
-
-    if [[ -z $current_status ]]; then
-      unset dirty_state
-    else
-      local dirty_state=''
-      #
-      # NOTE: for matching patterns, please refer to git status manual
-      #
-      # stats for files not staged
-      local unstaged_state=''
-      modified_count=$(echo "$current_status" | grep -E '^.M' --count)
-      deleted_count=$(echo "$current_status" | grep -E '^.D' --count)
-      type_changed_count=$(echo "$current_status" | grep -E '^.T' --count)
-      untracked_files_count=$(echo "$current_status" | grep -E '^\?\? ' --count)
-
-      if [[ $modified_count -gt 0 ]]; then
-        unstaged_state+="${BLUE}m${modified_count}${COFF}"
-      fi
-
-      if [[ $deleted_count -gt 0 ]]; then
-        unstaged_state+="${RED}d${deleted_count}${COFF}"
-      fi
-
-      if [[ $type_changed_count -gt 0 ]]; then
-        unstaged_state+="${YELLOW}t${type_changed_count}${COFF}"
-      fi
-
-      if [[ $untracked_files_count -gt 0 ]]; then
-        unstaged_state+="${BASE1}u${untracked_files_count}${COFF}"
-      fi
-
-      # stats for staged files
-      local staged_state=''
-      staged_new_count=$(echo "$current_status" | grep -E '^A' --count)
-      staged_modified_count=$(echo "$current_status" | grep -E '^M' --count)
-      staged_type_changed_count=$(echo "$current_status" | grep -E '^T' --count)
-      staged_deleted_count=$(echo "$current_status" | grep -E '^D' --count)
-      staged_renamed_files_count=$(echo "$current_status" | grep -E '^R ' --count)
-
-      if [[ $staged_new_count -gt 0 ]]; then
-        staged_state+="${BGREEN}A${staged_new_count}${COFF}"
-      fi
-
-      if [[ $staged_modified_count -gt 0 ]]; then
-        staged_state+="${BBLUE}M${staged_modified_count}${COFF}"
-      fi
-
-      if [[ $staged_deleted_count -gt 0 ]]; then
-        staged_state+="${BRED}D${staged_deleted_count}${COFF}"
-      fi
-
-      if [[ $staged_type_changed_count -gt 0 ]]; then
-        staged_state+="${BYELLOW}T${staged_type_changed_count}${COFF}"
-      fi
-
-      if [[ $staged_renamed_files_count -gt 0 ]]; then
-        staged_state+="${BCYAN}R${staged_renamed_files_count}${COFF}"
-      fi
-
-      if [[ -n "$unstaged_state" ]]; then
-        dirty_state+="$unstaged_state"
-      fi
-
-      if [[ -n "$unstaged_state" && -n "$staged_state" ]]; then
-        dirty_state+="${YELLOW}|${COFF}"
-      fi
-
-      if [[ -n "$staged_state" ]]; then
-        dirty_state+="$staged_state"
-      fi
-
-      dirty_state="${YELLOW}*[${COFF}${dirty_state}${YELLOW}]${COFF}"
-    fi
-
-    # only check status against tracking upstream when it exists
-    if (git branch -r | grep -q "/$current_branch$"); then
-      local_rev=$(git rev-parse @)
-      remote_rev=$(git rev-parse '@{u}')
-      base_rev=$(git merge-base @ '@{u}')
-
-      if [ "$local_rev" = "$remote_rev" ]; then
-        repo_state="${GREEN}[√]${COFF}"
-      elif [ "$local_rev" = "$base_rev" ]; then
-        repo_state="${YELLOW}↓$(git rev-list "$base_rev..$remote_rev" --count)${COFF}"
-      elif [ "$remote_rev" = "$base_rev" ]; then
-        repo_state="${YELLOW}↑$(git rev-list "$base_rev..$local_rev" --count)${COFF}"
-      else
-        repo_state="${BRED}↑$(git rev-list "$base_rev..$local_rev" --count)${COFF}"
-        repo_state+="${BRED}↓$(git rev-list "$base_rev..$remote_rev" --count)${COFF}"
-      fi
-    else
-      repo_state="${BLUE}[?]${COFF}"
-    fi
-
-    branch_prompt="${BYELLOW}@${COFF}${CYAN}${current_branch}${COFF}"
-    git_str="${branch_prompt}${repo_state}${dirty_state}"
-    echo "$git_str"
-  else
+  if [[ -z $git_dir ]]; then
     return 2
   fi
+
+  raw_status="$(git status --branch --porcelain 2> /dev/null)"
+  branch_info=$(echo "$raw_status" | head -1)
+  change_info=$(echo "$raw_status" | tail -n +2)
+
+  if [[ -f "$git_dir/REBASE_HEAD" ]]; then
+    echo "${BRED}[-R-]${COFF}"
+    return
+  fi
+
+  if [[ -f "$git_dir/MERGE_HEAD" ]]; then
+    echo "${BRED}[-M-]${COFF}"
+    return
+  fi
+
+  local dirty_state
+
+  if [[ -n $change_info ]]; then
+    #
+    # NOTE: for matching patterns, please refer to git status manual
+    #
+    # stats for files not staged
+    local unstaged_state=''
+    modified_count=$(echo "$change_info" | grep -E '^.M' --count)
+    deleted_count=$(echo "$change_info" | grep -E '^.D' --count)
+    type_changed_count=$(echo "$change_info" | grep -E '^.T' --count)
+    untracked_files_count=$(echo "$change_info" | grep -E '^\?\? ' --count)
+
+    if [[ $modified_count -gt 0 ]]; then
+      unstaged_state+="${BLUE}m${modified_count}${COFF}"
+    fi
+
+    if [[ $deleted_count -gt 0 ]]; then
+      unstaged_state+="${RED}d${deleted_count}${COFF}"
+    fi
+
+    if [[ $type_changed_count -gt 0 ]]; then
+      unstaged_state+="${YELLOW}t${type_changed_count}${COFF}"
+    fi
+
+    if [[ $untracked_files_count -gt 0 ]]; then
+      unstaged_state+="${BASE1}u${untracked_files_count}${COFF}"
+    fi
+
+    # stats for staged files
+    local staged_state=''
+    staged_new_count=$(echo "$change_info" | grep -E '^A' --count)
+    staged_modified_count=$(echo "$change_info" | grep -E '^M' --count)
+    staged_type_changed_count=$(echo "$change_info" | grep -E '^T' --count)
+    staged_deleted_count=$(echo "$change_info" | grep -E '^D' --count)
+    staged_renamed_files_count=$(echo "$change_info" | grep -E '^R ' --count)
+
+    if [[ $staged_new_count -gt 0 ]]; then
+      staged_state+="${BGREEN}A${staged_new_count}${COFF}"
+    fi
+
+    if [[ $staged_modified_count -gt 0 ]]; then
+      staged_state+="${BBLUE}M${staged_modified_count}${COFF}"
+    fi
+
+    if [[ $staged_deleted_count -gt 0 ]]; then
+      staged_state+="${BRED}D${staged_deleted_count}${COFF}"
+    fi
+
+    if [[ $staged_type_changed_count -gt 0 ]]; then
+      staged_state+="${BYELLOW}T${staged_type_changed_count}${COFF}"
+    fi
+
+    if [[ $staged_renamed_files_count -gt 0 ]]; then
+      staged_state+="${BCYAN}R${staged_renamed_files_count}${COFF}"
+    fi
+
+    if [[ -n "$unstaged_state" ]]; then
+      dirty_state+="$unstaged_state"
+    fi
+
+    if [[ -n "$unstaged_state" && -n "$staged_state" ]]; then
+      dirty_state+="${YELLOW}|${COFF}"
+    fi
+
+    if [[ -n "$staged_state" ]]; then
+      dirty_state+="$staged_state"
+    fi
+
+    dirty_state="${CYAN}(${COFF}${dirty_state}${CYAN})${COFF}"
+  fi
+
+  # only check status against tracking upstream when it exists and not gone
+  local local_prompt
+  local tracking_state
+  local remote_prompt
+
+  # XXX may break if branch name contains "." (dot)
+  current_branch=$(echo "$branch_info" | grep -oP '^## (\K[^.]+)')
+  # current_branch=$(echo "$branch_info" | grep -oP '(?<=## )(\K.+)(?=(\.\.\.|$))')
+
+  local_prompt="${CYAN}${current_branch}${COFF}"
+
+
+  tracking_branch=$(echo "$branch_info" | grep -oP '\.{3}(\K[^ ]+)')
+  branch_meta=$(echo "$branch_info" | grep -oP '(\[[^]]+\])')
+
+  if [[ -n "$tracking_branch" ]]; then
+    remote_name=${tracking_branch%"/$current_branch"}
+
+    gone=$(echo "$branch_meta" | grep gone)
+    ahead=$(echo "$branch_meta" | grep -oP 'ahead (\K[0-9]+)')
+    behind=$(echo "$branch_meta" | grep -oP 'behind (\K[0-9]+)')
+
+    if [[ -n "$gone" ]]; then
+      remote_name+="[gone]"
+    fi
+
+    # ↑↓
+    if [[ -n "$ahead" ]]; then
+      tracking_state+="${CYAN}${ahead}↑${COFF}"
+    fi
+
+    if [[ -n "$behind" ]]; then
+      tracking_state+="${MAGENTA}${behind}↓${COFF}"
+    fi
+  else
+    tracking_state="${BLUE}?${COFF}"
+  fi
+
+  # »«
+  if [[ -n "$remote_name" ]]; then
+    remote_prompt="${BYELLOW} » ${COFF}${MAGENTA}${remote_name}${COFF}"
+  fi
+
+  if [[ -n "$tracking_state" ]]; then
+    tracking_state="${tracking_state}"
+  fi
+
+  diff="${tracking_state}${dirty_state}"
+
+  if [[ -n "$diff" ]]; then
+    diff=" ${BYELLOW}*${COFF} ${diff}"
+  fi
+
+  echo "${local_prompt}${remote_prompt}${diff}"
 }
 
 # TODO this is just a temporary solution that sufficient enough for current works, should add
@@ -143,89 +180,109 @@ git_prompt()
 # - ruby version detection
 # - use named color codes instead of explicit numbers
 v_env_conda() {
-  if [[ -z "${__python_venv_name:-}" ]] || [[ -z "${__python_venv_version:-}" ]]; then
+  local current_py_env
+
+  current_py_env=$(grep -oP 'conda/envs/(\K\w+)' <<< "$PATH")
+
+  if [[ -z "$current_py_env" ]]; then
+    unset __python_venv_name
+    unset __python_venv_version
     exit 0
   fi
 
-  echo -n "\\[\\e[07;32;1;64m\\]"
+  if [[ "$current_py_env" != "$__python_venv_name" ]]; then
+    __python_venv_name="$current_py_env"
+    __python_venv_version="$(python --version 2>&1 | cut -d ' ' -f 2)"
+  fi
+
+  echo -n "${GREEN} # ${COFF}"
+  echo -n "\\[\\e[07;32;1;64m\\] "
   echo -n "$__python_venv_name"
   echo -n "|"
   echo -n "${__python_venv_version}"
-  echo -n "\\[\\e[0m\\]"
+  echo -n " \\[\\e[0m\\]"
 }
 
 generate_status_line() {
-    # create a dash line which has a length of the current terminal columns minus
-    # user@hostname, time string and padding spaces
-    local host_str
-    local time_str
-    local dash_line
-    local dash_line_padding=2 # spaces before and after the dash line
-    local dash_line_width=0
+  # TODO fit paths as much as possible before abbreviate it
+  # e.g. /s/v/workspace/webapp/vol_tracker instead of /s/v/w/vol_tracker
+  # create a dash line which has a length of the current terminal columns minus
+  # user@hostname, time string and padding spaces
+  local host_str
+  local time_str
+  local dash_line
+  local dash_line_padding=2 # spaces before and after the dash line
+  local dash_line_width=0
 
-    host_str="$(hostname):"
+  host_str="$(hostname):"
 
-    pwd_str=$(readlink -f "$PWD")
+  pwd_str=$(readlink -f "$PWD")
 
-    if [[ ${#pwd_str} -gt $(( COLUMNS / 3)) ]]; then
-      pwd_str="$(sed "s:\\([^/]\\)[^/]*/:\\1/:g" <<< "$pwd_str")"
-    fi
+  if [[ ${#pwd_str} -gt $(( 2 * COLUMNS / 3 )) ]]; then
+    echo "${BASE00}$(basename "$PWD")${COFF}\\n"
+    return 0
+  elif [[ ${#pwd_str} -gt $(( COLUMNS / 2)) ]]; then
+    pwd_str="$(sed "s:\\([^/]\\)[^/]*/:\\1/:g" <<< "$pwd_str")"
+  fi
 
-    time_str="$(date +'%H:%M:%S')"
+  time_str="$(date +'%H:%M:%S')"
 
-    dash_line_width=$((COLUMNS - ${#host_str} - ${#pwd_str} - ${#time_str} - dash_line_padding))
+  dash_line_width=$((COLUMNS - ${#host_str} - ${#pwd_str} - ${#time_str} - dash_line_padding))
 
-    while [[ $dash_line_width -gt 0 ]]
-    do
-        dash_line="-${dash_line}"
-        ((dash_line_width-=1))
-    done
+  while [[ $dash_line_width -gt 0 ]]
+  do
+    dash_line="-${dash_line}"
+    ((dash_line_width-=1))
+  done
 
-    echo "${BASE00}${host_str}${pwd_str} ${dash_line} ${time_str}${COFF}\\n"
+  echo "${BASE00}${host_str}${pwd_str} ${dash_line} ${time_str}${COFF}\\n"
 }
 
-should_prevent_ps1_update()
+someone_goes_nuts()
 {
-    local now
-    local last_update="$PS1_LAST_UPDATED_AT"
-    now=$(($(date +%s%3N)))
-    PS1_LAST_UPDATED_AT=$now
+  local now
+  local last_update="$PS1_LAST_UPDATED_AT"
+  now=$(($(date +%s%3N)))
+  PS1_LAST_UPDATED_AT=$now
 
-    [[ $((now - last_update)) -lt $PS1_UPDATE_THRESHOLD ]]
+  [[ $((now - last_update)) -lt $PS1_UPDATE_THRESHOLD ]]
 }
 
 generate_last_state()
 {
-    local last_exit_code=$?
+  local last_exit_code=$1
 
-    if [[ $last_exit_code -eq 0 ]]; then
-        [[ $EMOJI_SUPPORT -eq 1 ]] && echo '😃 ' || echo "${BGREEN}:) ${COFF}"
-    else
-        [[ $EMOJI_SUPPORT -eq 1 ]] && echo '😡 ' || echo "${BRED}:( ${COFF}"
-    fi
+  if [[ $last_exit_code -eq 0 ]]; then
+    [[ $EMOJI_SUPPORT -eq 1 ]] && echo '😃 ' || echo "${BGREEN}:) ${COFF}"
+  else
+    [[ $EMOJI_SUPPORT -eq 1 ]] && echo '😡 ' || echo "${BRED}:( ${COFF}"
+  fi
 }
 
 # FIXME length calculation of full-width character is broken
 prettify_prompt() {
-    last_state="$(generate_last_state)"
+  local last_exit_code=$?
 
-    if should_prevent_ps1_update; then
-      return
-    fi
+  if someone_goes_nuts; then
+    return
+  fi
 
+  last_state="$(generate_last_state $last_exit_code)"
+
+  if [[ $COLUMNS -ge $PS1_MINIMUM_COLUMN_WIDTH ]]; then
     status_line="$(generate_status_line)"
     git_str="$(git_prompt)"
     v_env_str="$(v_env_conda)"
 
     env_line="${git_str}${v_env_str}"
-
     if [[ -n "$env_line" ]]; then
       env_line="$env_line\\n"
     fi
+  fi
 
-    prompt_line="${last_state}${PS1_INDICATOR}"
+  prompt_line="${last_state}${PS1_INDICATOR}"
 
-    PS1="$status_line$env_line$prompt_line"
+  PS1="$status_line$env_line$prompt_line"
 }
 
 PROMPT_COMMAND="prettify_prompt; $PROMPT_COMMAND"

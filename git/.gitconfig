@@ -4,7 +4,6 @@
   st = status -sb
   br = branch -vv
   brr = "!f(){ \
-    unbuffer \
     git for-each-ref \
     --sort='-committerdate' refs/heads/ \
     --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset)|\
@@ -32,8 +31,17 @@
   birth-info = log --diff-filter=A --
   review = "!f(){ git branch -f \"review/$1/$2\" \"$2\" && git checkout -f \"review/$1/$2\"; }; f"
   finish-review = !bash -c 'git checkout -f master && git branch --no-color | cut -c 3- | grep "^review/" | xargs -r git branch -D'
-  patch = "!f(){ git --no-pager diff --no-color | xsel -ib; xsel -ob; echo \"has been copied to clipboard!\"; }; f"
-  rank = shortlog --summary -n --max-count=100
+  patch = "!f(){ \
+    echo '-----------------------------------------------'; \
+    git --no-pager diff --cached --no-color $@ |\
+    xsel -ib;\
+    xsel -ob;\
+    echo '-----------------------------------------------'; \
+    echo \"has been copied to clipboard!\";\
+  };\
+  f"
+  maintainers = shortlog --summary -n
+  active-maintainers = shortlog --summary -n --max-count=100 --since=1.year
 [user]
   name = Vincent Zhang
   email = vincent.zhang@akunacapital.com
@@ -42,28 +50,30 @@
 [gui]
   editor = gedit
   historybrowser = gitk
-  diffcontext = 6
+	diffcontext = 10
 [core]
   editor = nvim
   autocrlf = input
   excludesfile = ~/.gitignore_global
 [color]
-  ui = auto
+	ui = true
 [color "branch"]
   current = cyan reverse
   local = cyan
   remote = magenta
 [color "diff"]
-  meta = yellow bold
-  frag = magenta bold
-  old = red bold
-  new = green bold
+	meta = yellow
+	frag = magenta bold
+	old = red bold
+	new = green bold
+	commit = yellow bold
+	whitespace = red reverse
 [color "status"]
   added = yellow
   changed = green
   untracked = cyan
 [credential]
-  helper = cache --timeout=604800
+  helper = cache --timeout=2592000
 [diff]
   tool = meld
 [merge]
@@ -81,15 +91,20 @@
   blameviewer = git gui blame
   spellcheck = true
 	expandtab = true
+	safemode = true
 [filter "lfs"]
   clean = git-lfs clean %f
   smudge = git-lfs smudge %f
   required = true
 [pager]
+  ; FIXME apply pattern on empty diff results in bad UX
+  ; diff = diff-so-fancy | less --tabs=4 -RFX --pattern '^(Date|added|deleted|modified): '
+  ; show = diff-so-fancy | less --tabs=4 -RFX --pattern '^(Date|added|deleted|modified): '
   diff = diff-so-fancy | less --tabs=4 -RFX
   show = diff-so-fancy | less --tabs=4 -RFX
-[merge "tool"]
-  path = nvim
+  tag = fzf
+[mergetool]
+  cmd = nvim -f -c \"Gdiff\" \"$MERGED\"
 [log]
   mailmap = true
 [pull]
@@ -98,3 +113,8 @@
   sslVerify = false
 [submodule]
 	recurse = true
+[color "diff-highlight"]
+	oldNormal = red bold
+	oldHighlight = red bold 52
+	newNormal = green bold
+	newHighlight = green bold 22

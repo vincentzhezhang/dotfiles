@@ -1,4 +1,7 @@
 #! /usr/bin/env bash
+# FIXME long broken
+echo 'FIXME long broken'
+exit 1
 echo 'Installing generic configuration...'
 stow -v2 -t ~ bash
 stow -v2 -t ~ git
