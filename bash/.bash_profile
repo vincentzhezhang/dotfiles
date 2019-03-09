@@ -1,3 +1,4 @@
+# allow per box customizations
 if [[ -f "$HOME/.bashrc.local" ]]; then
   source "$HOME/.bashrc.local"
   return

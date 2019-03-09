@@ -29,7 +29,10 @@
     --use-mailmap; \
   }; f"
   birth-info = log --diff-filter=A --
-  review = "!f(){ git branch -f \"review/$1/$2\" \"$2\" && git checkout -f \"review/$1/$2\"; }; f"
+  review = "!f(){ \
+    git branch -f \"review/$1/$2\" \"$2\" && git checkout -f \"review/$1/$2\";\
+  };\
+  f"
   finish-review = !bash -c 'git checkout -f master && git branch --no-color | cut -c 3- | grep "^review/" | xargs -r git branch -D'
   patch = "!f(){ \
     echo '-----------------------------------------------'; \
