@@ -5,3 +5,5 @@ if [[ -f "$HOME/.bashrc.local" ]]; then
 fi
 
 [[ -f "$HOME/.bashrc" ]] && source "$HOME/.bashrc"
+
+export PATH="$HOME/.cargo/bin:$PATH"

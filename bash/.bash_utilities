@@ -3,7 +3,12 @@ if command -v fzf > /dev/null 2>&1; then
   gg()
   {
     if git rev-parse --show-toplevel > /dev/null 2>&1; then
-      git branch -a | sed -r 's/remotes\/\w+\///g' | tr -d ' ' | sort -u | fzf --height=50% | xargs -r git checkout
+      git branch -a |\
+        sed -r 's/remotes\/\w+\///g' |\
+        tr -d ' ' |\
+        sort -u |\
+        fzf --height=50% --reverse |\
+        xargs -r git checkout
     else
       echo >&2 'not a git repository!'
       return 1
@@ -143,25 +148,28 @@ history_magic() {
 
 #
 # easy extract
+# make sure we output to a dir to avoid surprises
+# TODO
+# - double check if cmds other than tar extract to directly
 #
 extract () {
   if [ -f "$1" ] ; then
     case "$1" in
-      *.tar.bz2)   tar xvjf "$1"    ;;
-      *.tar.gz)    tar xvzf "$1"    ;;
-      *.tar)       tar xvf "$1"     ;;
-      *.tbz2)      tar xvjf "$1"    ;;
-      *.tgz)       tar xvzf "$1"    ;;
-      *.Z)         uncompress "$1"  ;;
-      *.bz2)       bunzip2 "$1"     ;;
-      *.gz)        gunzip "$1"      ;;
-      *.zip)       unzip "$1"       ;;
-      *.7z)        7z x "$1"        ;;
-      *.rar)       rar x "$1"       ;;
-      *)           echo "don't know how to extract $1..." ;;
+      *.tar.bz2)  mkdir -p "${1::-8}";  tar xvjf  "$1" -C "${1::-8}"    ;;
+      *.tar.gz)   mkdir -p "${1::-7}";  tar xvzf  "$1" -C "${1::-7}"    ;;
+      *.tar)      mkdir -p "${1::-4}";  tar xvf   "$1" -C "${1::-4}"    ;;
+      *.tbz2)     mkdir -p "${1::-5}";  tar xvjf  "$1" -C "${1::-5}"    ;;
+      *.tgz)      mkdir -p "${1::-4}";  tar xvzf  "$1" -C "${1::-4}"    ;;
+      *.Z)        uncompress "$1"  ;;
+      *.bz2)      bunzip2 "$1"     ;;
+      *.gz)       gunzip "$1"      ;;
+      *.zip)      unzip "$1"       ;;
+      *.7z)       7z x "$1"        ;;
+      *.rar)      rar x "$1"       ;;
+      *)          echo "don't know how to extract $1..." ;;
     esac
   else
-    echo "$1 is not a valid file!"
+    echo "$1 not found!"
   fi
 }
 

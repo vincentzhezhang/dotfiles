@@ -56,7 +56,7 @@ alias ......="cd ../../../../.."
 
 ## Dir shortcuts
 alias localhost='cd /var/www'
-
+alias find_broken_symlink='find -L . -maxdepth 1 -type l'
 
 # NeoVim for the win
 alias vi='nvim'

@@ -11,7 +11,7 @@
 " - think about the colorscheme crap
 "
 " FIXME
-" - colorscheme load is delay when open multiple files
+" - colorscheme load is delayed when open multiple files
 " - fix cursorline caused slowness, in fast scroll and gblame
 " - this is too buggy but the idea is great: Plug 'jiangmiao/auto-pairs'
 
@@ -156,23 +156,23 @@ let g:airline_mode_map = {
     \ 't'  : 'T',
     \ }
 
-let g:airline#extensions#branch#enabled = 0
-let g:airline#extensions#tabline#enabled        = 1
-let g:airline#extensions#tabline#tab_nr_type    = 2
-let g:airline#extensions#whitespace#enabled     = 0
-let g:airline#extensions#whitespace#enabled = 0
-let g:airline#parts#ffenc#skip_expected_string  = 'utf-8[unix]'
-let g:airline_detect_spell                      = 0
-let g:airline_inactive_collapse                 = 1
-let g:airline_left_alt_sep                      = '│'
-let g:airline_left_sep                          = ''
-let g:airline_powerline_fonts                   = 0
-let g:airline_right_alt_sep                     = '│'
-let g:airline_right_sep                         = ''
-let g:airline_section_b                         = ''
-let g:airline_section_x                         = ''
-let g:airline_section_z                         = airline#section#create(["%{line('.')}", 'maxlinenr'])
-let g:airline_symbols_ascii                     = 1
+let g:airline#extensions#branch#enabled        = 0
+let g:airline#extensions#tabline#enabled       = 1
+let g:airline#extensions#tabline#tab_nr_type   = 2
+let g:airline#extensions#whitespace#enabled    = 0
+let g:airline#extensions#whitespace#enabled    = 0
+let g:airline#parts#ffenc#skip_expected_string = 'utf-8[unix]'
+let g:airline_detect_spell                     = 0
+let g:airline_inactive_collapse                = 1
+let g:airline_left_alt_sep                     = '│'
+let g:airline_left_sep                         = ''
+let g:airline_powerline_fonts                  = 0
+let g:airline_right_alt_sep                    = '│'
+let g:airline_right_sep                        = ''
+let g:airline_section_b                        = ''
+let g:airline_section_x                        = ''
+let g:airline_section_z                        = airline#section#create(["%{col('.')}:%{line('.')}"])
+let g:airline_symbols_ascii                    = 1
 " }}}
 
 
@@ -239,7 +239,9 @@ augroup END
 "
 " dependencies:
 " - plantuml/plantuml-server docker image for set up the server
+"   docker run -d -p 8080:8080 plantuml/plantuml-server
 " - npm package node-plantuml for encode the uml file
+"   npm i -g node-plantuml
 "
 " the prototype will try to encode the uml file upon save, and communicate
 " with the server, then open a viewer if it's not opened yet
@@ -260,7 +262,7 @@ endfunction
 
 augroup plantuml_enchancements
   " maybe support tags grepping
-  autocmd! BufWritePost *.uml call RenderPlantUML()
+  autocmd! BufWritePost *.*uml call RenderPlantUML()
 augroup END
 " }}}
 
@@ -394,13 +396,21 @@ let g:tmux_navigator_no_mappings = 1
 "   U+259x  ▐  ░  ▒  ▓  ▔  ▕  ▖  ▗  ▘  ▙  ▚  ▛  ▜  ▝  ▞  ▟
 "
 
+" let g:ale_sign_error = ' ■' " good on fantasque mono
+" TODO
+" not sure if this is feasible but if we can merge linter symbols
+" and git status symbols it will look great!
+" let g:linter_sign = '┃•' " good on Ubuntu mono
+let g:linter_sign = ' •'   " good on Ubuntu mono
+let g:git_sign = '┃ '      " good on Ubuntu mono
+
 " FIXME still buggy 23 Nov, now check again 2019
 " let g:ale_completion_enabled = 1
 let g:ale_lint_delay = 666
 let g:ale_linters = {'javascript': ['eslint', 'tsserver']}
 let g:ale_sign_column_always = 1
-let g:ale_sign_error = ' ■'
-let g:ale_sign_warning = ' ■'
+let g:ale_sign_error = g:linter_sign
+let g:ale_sign_warning = g:linter_sign
 
 " FIXME temporary workaround for neovim ALE issue, see:
 " https://github.com/neovim/neovim/issues/9388
@@ -408,14 +418,14 @@ let g:ale_sign_offset = 1000
 
 let g:gitgutter_map_keys = 0 " no need of mapping, visual clue only
 let g:gitgutter_override_sign_column_highlight = 0
-let g:gitgutter_sign_added = '┃ '
-let g:gitgutter_sign_modified = '┃ '
-let g:gitgutter_sign_modified_removed = '┃ '
-let g:gitgutter_sign_removed = '┃ '
-let g:gitgutter_sign_removed_first_line = '┃ '
+let g:gitgutter_sign_added = g:git_sign
+let g:gitgutter_sign_modified = g:git_sign
+let g:gitgutter_sign_modified_removed = g:git_sign
+let g:gitgutter_sign_removed = g:git_sign
+let g:gitgutter_sign_removed_first_line = g:git_sign
 
-let g:ycm_error_symbol = ' ■'
-let g:ycm_warning_symbol = ' ■'
+let g:ycm_error_symbol = g:linter_sign
+let g:ycm_warning_symbol = g:linter_sign
 
 "
 " color tweaks

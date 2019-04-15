@@ -1,21 +1,12 @@
 #! /usr/bin/env bash
 # TODO
-# - multiple remote support for git_prompt
+# - fix branch name detection with dot
+# - fix git status detection after rebase
 #
 
 #
 # basic setups
 #
-
-# show last command execution result intuitively
-# turn on emoji support for Mac and Ubuntu >= 18.04 for non-remote sessions
-if [[ -z "$EMOJI_SUPPORT" && -z "$REMOTE_SESSION" ]]; then
-  if [[ $OSTYPE == darwin* || $(($(lsb_release -rs | tr -d '.'))) -ge 1804 ]]; then
-    EMOJI_SUPPORT=1
-  else
-    EMOJI_SUPPORT=0
-  fi
-fi
 
 PS1_UPDATE_THRESHOLD=167
 PS1_INDICATOR="${BASE0}~>${COFF} "
@@ -191,6 +182,9 @@ v_env_conda() {
   fi
 
   if [[ "$current_py_env" != "$__python_venv_name" ]]; then
+    # >&2 echo "current_py_env: $current_py_env"
+    # >&2 echo "__python_venv_name: $__python_venv_name"
+    # >&2 echo "__python_venv_version: $__python_venv_version"
     __python_venv_name="$current_py_env"
     __python_venv_version="$(python --version 2>&1 | cut -d ' ' -f 2)"
   fi
@@ -223,7 +217,7 @@ generate_status_line() {
   pwd_str=$(readlink -f "$PWD")
 
   if [[ ${#pwd_str} -gt $(( 2 * COLUMNS / 3 )) ]]; then
-    echo "${dash_color}$(basename "$PWD")${COFF}\\n"
+    echo "${dash_color}.../$(basename "$PWD")${COFF}\\n"
     return 0
   elif [[ ${#pwd_str} -gt $(( COLUMNS / 2)) ]]; then
     pwd_str="$(sed "s:\\([^/]\\)[^/]*/:\\1/:g" <<< "$pwd_str")"
@@ -255,12 +249,7 @@ someone_goes_nuts()
 generate_last_state()
 {
   local last_exit_code=$1
-
-  if [[ $last_exit_code -eq 0 ]]; then
-    [[ $EMOJI_SUPPORT -eq 1 ]] && echo '😃 ' || echo "${BGREEN}:) ${COFF}"
-  else
-    [[ $EMOJI_SUPPORT -eq 1 ]] && echo '😡 ' || echo "${BRED}:( ${COFF}"
-  fi
+  [[ $last_exit_code -eq 0 ]] && echo "${BGREEN}:) ${COFF}" || echo "${BRED}:( ${COFF}"
 }
 
 # FIXME length calculation of full-width character is broken

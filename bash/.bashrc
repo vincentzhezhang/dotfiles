@@ -200,4 +200,3 @@ PATH=$(echo -n "$PATH" | awk -v RS=: -v ORS=: '!x[$0]++' | sed "s/\(.*\).\{1\}/\
 
 # just for fun
 random_splash
-
