@@ -1,0 +1,51 @@
+diff --git a/bash/.bash_ps1 b/bash/.bash_ps1
+index 44342e2..9ac6359 100644
+--- a/bash/.bash_ps1
++++ b/bash/.bash_ps1
+@@ -123,19 +123,29 @@ git_prompt()
+   local local_prompt
+   local tracking_state
+   local remote_prompt
++  local current_branch
++  local tracking_branch
+ 
+   # XXX may break if branch name contains "." (dot)
+-  current_branch=$(echo "$branch_info" | grep -oP '^## (\K[^.]+)')
+-  # current_branch=$(echo "$branch_info" | grep -oP '(?<=## )(\K.+)(?=(\.\.\.|$))')
+-
+-  local_prompt="${CYAN}${current_branch}${COFF}"
++  # typical cases for branch_info:
++  # - ## develop...origin/develop
++  # - ## dangling_branch          (repo not tracked in remote)
++  # - ## No commits yet on master (branch new repo)
++  # - ## HEAD (no branch)
++  # - ## QTR-168...origin/QTR-168 [gone] (remote is gone)
++
++  has_remote=$(echo "$branch_info" | grep -q '\.\.\.')
++
++  if [[ $has_remote -eq 0 ]]; then
++    branch_meta=$(echo "$branch_info" | grep -oP '(\[[^]]+\])')
++    branch_info=$(echo "$branch_info" | grep -oP '(\[^\]]+')
++    branch_info=${branch_info/.../ }
++    current_branch=$(echo "$branch_info" | awk '{ print $1 }')
++    tracking_branch=$(echo "$branch_info" | awk '{ print $NF}')
++    remote_name=${tracking_branch%"/$current_branch"}
+ 
++    local_prompt="${CYAN}${current_branch}${COFF}"
+ 
+-  tracking_branch=$(echo "$branch_info" | grep -oP '\.{3}(\K[^ ]+)')
+-  branch_meta=$(echo "$branch_info" | grep -oP '(\[[^]]+\])')
+-
+-  if [[ -n "$tracking_branch" ]]; then
+-    remote_name=${tracking_branch%"/$current_branch"}
+ 
+     gone=$(echo "$branch_meta" | grep gone)
+     ahead=$(echo "$branch_meta" | grep -oP 'ahead (\K[0-9]+)')
+@@ -153,6 +163,7 @@ git_prompt()
+     if [[ -n "$behind" ]]; then
+       tracking_state+="${MAGENTA}${behind}↓${COFF}"
+     fi
++
+   else
+     tracking_state="${BLUE}?${COFF}"
+   fi

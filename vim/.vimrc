@@ -300,7 +300,14 @@ function! s:match_highlight(highlight, pattern) abort
 endfunction
 
 " use Python from virtual env
-let g:ycm_python_binary_path = 'python'
+let g:ycm_python_binary_path = system('clever_conda_path')
+if empty(g:ycm_python_binary_path)
+  let g:ycm_python_binary_path = 'python'
+else
+  let g:ycm_python_binary_path = g:ycm_python_binary_path . '/bin/python'
+endif
+
+echom g:ycm_python_binary_path
 
 " typescript setup for YCM
 if !exists('g:ycm_semantic_triggers')
@@ -402,7 +409,8 @@ let g:tmux_navigator_no_mappings = 1
 " and git status symbols it will look great!
 " let g:linter_sign = '┃•' " good on Ubuntu mono
 let g:linter_sign = ' •'   " good on Ubuntu mono
-let g:git_sign = '┃ '      " good on Ubuntu mono
+" let g:git_sign = '┃ '      " good on Ubuntu mono
+let g:git_sign = '│ '      " good on Ubuntu mono
 
 " FIXME still buggy 23 Nov, now check again 2019
 " let g:ale_completion_enabled = 1

@@ -8,7 +8,7 @@ if command -v fzf > /dev/null 2>&1; then
         tr -d ' ' |\
         sort -u |\
         fzf --height=50% --reverse |\
-        xargs -r git checkout
+        xargs -r --no-run-if-empty git checkout
     else
       echo >&2 'not a git repository!'
       return 1
@@ -350,6 +350,28 @@ git_dir_stats () {
     git shortlog --summary "$dir" | sort -nr;
     printf '\n'
   done
+}
+
+clever_conda_path()
+{
+  if ! command -v conda > /dev/null 2>&1; then
+    return 1
+  fi
+
+  if ! git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
+    return 1
+  fi
+
+  git_root=$(git rev-parse --show-toplevel)
+  pkg_dir="$(echo "${PWD/$git_root}" | cut -d '/' -f 2)"
+
+  conda_env_dir="$CONDA_ROOT/envs/$pkg_dir"
+
+  if [[ ! -f "$conda_env_dir/bin/python" ]]; then
+    return 1
+  fi
+
+  echo -n "$conda_env_dir"
 }
 
 ###-begin-npm-completion-###
