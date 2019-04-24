@@ -300,14 +300,16 @@ function! s:match_highlight(highlight, pattern) abort
 endfunction
 
 " use Python from virtual env
-let g:ycm_python_binary_path = system('clever_conda_path')
+let g:ycm_python_binary_path = system('clever_conda_path' . ' ' . expand('%'))
 if empty(g:ycm_python_binary_path)
   let g:ycm_python_binary_path = 'python'
 else
   let g:ycm_python_binary_path = g:ycm_python_binary_path . '/bin/python'
 endif
 
-echom g:ycm_python_binary_path
+if g:ycm_python_binary_path !=# 'python'
+  echom 'Loading virtual env: ' . g:ycm_python_binary_path
+endif
 
 " typescript setup for YCM
 if !exists('g:ycm_semantic_triggers')

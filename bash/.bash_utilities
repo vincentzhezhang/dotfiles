@@ -358,13 +358,21 @@ clever_conda_path()
     return 1
   fi
 
-  if ! git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
+  path=$(readlink -f "${1:-$PWD}")
+
+  if [[ -d "$path" ]]; then
+    dir="$path"
+  else
+    dir="$(dirname "$path")"
+  fi
+
+  git_root=$(git -C "$dir" rev-parse --show-toplevel 2>/dev/null)
+
+  if [[ -z "$git_root" ]]; then
     return 1
   fi
 
-  git_root=$(git rev-parse --show-toplevel)
-  pkg_dir="$(echo "${PWD/$git_root}" | cut -d '/' -f 2)"
-
+  pkg_dir="$(echo "${path/$git_root}" | cut -d '/' -f 2)"
   conda_env_dir="$CONDA_ROOT/envs/$pkg_dir"
 
   if [[ ! -f "$conda_env_dir/bin/python" ]]; then
