@@ -29,6 +29,7 @@
     --use-mailmap; \
   }; f"
   birth-info = log --diff-filter=A --
+  root = rev-parse --show-toplevel
   review = "!f(){ \
     git branch -f \"review/$1/$2\" \"$2\" && git checkout -f \"review/$1/$2\";\
   };\
