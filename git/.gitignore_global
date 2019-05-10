@@ -54,3 +54,4 @@ node_modules/
 .mypy_cache
 coverage/
 .coverage/
+static/

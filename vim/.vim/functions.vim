@@ -141,3 +141,26 @@ endfunction
 function Z(...)
   Plug(a:000)
 endfunction
+
+" file type detection for templates
+function PolyFT()
+  let l:first_line = getline(1)
+
+  if l:first_line =~# '^{'
+    set filetype=json.mako
+  elseif l:first_line =~# '[^:]:\s\=$' || l:first_line =~# '---\s\=$'
+    set filetype=yaml.mako
+  elseif l:first_line =~# 'html>$'
+    set filetype=html.mako
+  elseif l:first_line =~# '^<[^>]*>\s\=$'
+    set filetype=xml.mako
+  else
+    set filetype=mako
+    echo "don't know what the heck is this!"
+  endif
+endfunction
+
+" TODO add more template extension if needed
+augroup poly_file_type
+  autocmd BufEnter *.mako call PolyFT()
+augroup END

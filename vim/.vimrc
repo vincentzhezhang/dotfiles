@@ -14,6 +14,37 @@
 " - colorscheme load is delayed when open multiple files
 " - fix cursorline caused slowness, in fast scroll and gblame
 " - this is too buggy but the idea is great: Plug 'jiangmiao/auto-pairs'
+"
+" handy selection of symbols
+" - poker suits:    ♠ ♥ ♣ ♦
+" - common symbols: •
+" - white space:    ] [(em) XXX needed as leading whitespace in sign column
+"
+" - Box Drawing Characters table (as of Unicode version 11.0)
+"
+"           0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F
+"   U+250x  ─  ━  │  ┃  ┄  ┅  ┆  ┇  ┈  ┉  ┊  ┋  ┌  ┍  ┎  ┏
+"
+"   U+251x  ┐  ┑  ┒  ┓  └  ┕  ┖  ┗  ┘  ┙  ┚  ┛  ├  ┝  ┞  ┟
+"
+"   U+252x  ┠  ┡  ┢  ┣  ┤  ┥  ┦  ┧  ┨  ┩  ┪  ┫  ┬  ┭  ┮  ┯
+"
+"   U+253x  ┰  ┱  ┲  ┳  ┴  ┵  ┶  ┷  ┸  ┹  ┺  ┻  ┼  ┽  ┾  ┿
+"
+"   U+254x  ╀  ╁  ╂  ╃  ╄  ╅  ╆  ╇  ╈  ╉  ╊  ╋  ╌  ╍  ╎  ╏
+"
+"   U+255x  ═  ║  ╒  ╓  ╔  ╕  ╖  ╗  ╘  ╙  ╚  ╛  ╜  ╝  ╞  ╟
+"
+"   U+256x  ╠  ╡  ╢  ╣  ╤  ╥  ╦  ╧  ╨  ╩  ╪  ╫  ╬  ╭  ╮  ╯
+"
+"   U+257x  ╰  ╱  ╲  ╳  ╴  ╵  ╶  ╷  ╸  ╹  ╺  ╻  ╼  ╽  ╾  ╿
+"
+" - block elements (as of Unicode version 11.0)
+"
+"           0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F
+"   U+258x  ▀  ▁  ▂  ▃  ▄  ▅  ▆  ▇  █  ▉  ▊  ▋  ▌  ▍  ▎  ▏
+"
+"   U+259x  ▐  ░  ▒  ▓  ▔  ▕  ▖  ▗  ▘  ▙  ▚  ▛  ▜  ▝  ▞  ▟
 
 " Make use of bash utilities in vim
 let $BASH_ENV = '~/.bash_utilities'
@@ -41,6 +72,7 @@ Plug 'christoomey/vim-tmux-navigator'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'flazz/vim-colorschemes'
 Plug 'honza/vim-snippets'
+Plug 'jparise/vim-graphql' " TODO this is removed from vim-polyglot for now
 Plug 'jreybert/vimagit'
 Plug 'junegunn/fzf', { 'dir': '~/.config/fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
@@ -103,6 +135,7 @@ set listchars=nbsp:¬,tab:»·,trail:· " Better whitespace symbols
 set mouse=a                         " Grab mouse event within tmux
 " set lazyredraw                      " FIXME mitigate with jsx until find a fix
 set nobackup                        " Be environment friendly
+set backupcopy=no                   " Be environment friendly
 set noshowmode                      " Hide the default mode text cause we have *whatever*line
 set noshowcmd                       " Hide the annoying command from bottom right
 set noswapfile                      " Get rid of the annoying .swp file
@@ -113,10 +146,10 @@ set pastetoggle=<F2>                " bind paste mode for ease of use
 set scrolloff=6                     " Have some context around the current line always on screen
 set signcolumn=yes                  " always display the sign column to avoid content flickering
 set shiftwidth=2                    " Number of spaces to use for each step of (auto)indent
-set showtabline=2                   " Always display the tabline, even if there is only one tab
+set showtabline=0                   " Don't need the tab line man
 set smartcase                       " Make search case-insensitive smart!
 set smartindent                     " Do smart auto indenting when starting a new line
-set spell                           " Enable spell check
+set nospell                         " Don't check spell by default
 set spelllang=en_us                 " Use en_us for better collaboration, sorry en_gb
 set splitbelow                      " Intuitively split to below when doing horizontal split
 set splitright                      " Split to right when doing vertical split
@@ -143,33 +176,65 @@ let g:airline_symbols.maxlinenr = ''
 let g:airline_symbols.paste = 'P'
 let g:airline_mode_map = {
     \ '__' : '-',
-    \ 'n'  : 'N',
-    \ 'i'  : 'I',
+    \ 'n'  : '',
+    \ 'i'  : '',
     \ 'R'  : 'R',
     \ 'c'  : 'C',
-    \ 'v'  : 'V',
-    \ 'V'  : 'V',
-    \ '' : 'V',
+    \ 'v'  : '',
+    \ 'V'  : '',
+    \ '' : '',
     \ 's'  : 'S',
     \ 'S'  : 'S',
     \ '' : 'S',
     \ 't'  : 'T',
     \ }
 
+" handy selection of symbols
+" - poker suits:    ♠ ♥ ♣ ♦
+" - common symbols: •
+" - white space:    ] [(em) XXX needed as leading whitespace in sign column
+"
+" - Box Drawing Characters table (as of Unicode version 11.0)
+"
+"           0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F
+"   U+250x  ─  ━  │  ┃  ┄  ┅  ┆  ┇  ┈  ┉  ┊  ┋  ┌  ┍  ┎  ┏
+"
+"   U+251x  ┐  ┑  ┒  ┓  └  ┕  ┖  ┗  ┘  ┙  ┚  ┛  ├  ┝  ┞  ┟
+"
+"   U+252x  ┠  ┡  ┢  ┣  ┤  ┥  ┦  ┧  ┨  ┩  ┪  ┫  ┬  ┭  ┮  ┯
+"
+"   U+253x  ┰  ┱  ┲  ┳  ┴  ┵  ┶  ┷  ┸  ┹  ┺  ┻  ┼  ┽  ┾  ┿
+"
+"   U+254x  ╀  ╁  ╂  ╃  ╄  ╅  ╆  ╇  ╈  ╉  ╊  ╋  ╌  ╍  ╎  ╏
+"
+"   U+255x  ═  ║  ╒  ╓  ╔  ╕  ╖  ╗  ╘  ╙  ╚  ╛  ╜  ╝  ╞  ╟
+"
+"   U+256x  ╠  ╡  ╢  ╣  ╤  ╥  ╦  ╧  ╨  ╩  ╪  ╫  ╬  ╭  ╮  ╯
+"
+"   U+257x  ╰  ╱  ╲  ╳  ╴  ╵  ╶  ╷  ╸  ╹  ╺  ╻  ╼  ╽  ╾  ╿
+"
+" - block elements (as of Unicode version 11.0)
+"
+"           0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F
+"   U+258x  ▀  ▁  ▂  ▃  ▄  ▅  ▆  ▇  █  ▉  ▊  ▋  ▌  ▍  ▎  ▏
+"
+"   U+259x  ▐  ░  ▒  ▓  ▔  ▕  ▖  ▗  ▘  ▙  ▚  ▛  ▜  ▝  ▞  ▟
+"
 let g:airline#extensions#branch#enabled        = 0
-let g:airline#extensions#tabline#enabled       = 1
+let g:airline#extensions#tabline#enabled       = 0
 let g:airline#extensions#tabline#tab_nr_type   = 2
-let g:airline#extensions#whitespace#enabled    = 0
 let g:airline#extensions#whitespace#enabled    = 0
 let g:airline#parts#ffenc#skip_expected_string = 'utf-8[unix]'
 let g:airline_detect_spell                     = 0
 let g:airline_inactive_collapse                = 1
-let g:airline_left_alt_sep                     = '│'
+let g:airline_left_alt_sep                     = ''
 let g:airline_left_sep                         = ''
 let g:airline_powerline_fonts                  = 0
-let g:airline_right_alt_sep                    = '│'
+let g:airline_right_alt_sep                    = ''
 let g:airline_right_sep                        = ''
+let g:airline_section_a                        = ''
 let g:airline_section_b                        = ''
+" let g:airline_section_c                        = ''
 let g:airline_section_x                        = ''
 let g:airline_section_z                        = airline#section#create(["%{col('.')}:%{line('.')}"])
 let g:airline_symbols_ascii                    = 1
@@ -217,8 +282,9 @@ xnoremap gx :call EnhancedBrowseX()<CR>
 augroup general_enhancements
   autocmd!
   autocmd BufCreate * call SetUpBuffer()
-  autocmd BufEnter *.log set nospell "no spell check for log files
+  autocmd BufEnter *.log set nospell " no spell check for log files
   autocmd BufEnter *.md set nowrap
+  autocmd BufEnter *.md,*.txt,*.doc,*.rst set spell " only check spell on docs
   autocmd BufEnter,InsertLeave * set cursorline
   autocmd BufLeave,InsertEnter * set nocursorline
 
@@ -300,16 +366,25 @@ function! s:match_highlight(highlight, pattern) abort
 endfunction
 
 " use Python from virtual env
-let g:ycm_python_binary_path = system('clever_conda_path' . ' ' . expand('%'))
-if empty(g:ycm_python_binary_path)
+let g:conda_venv_dir = system('clever_conda_path' . ' ' . expand('%'))
+if empty(g:conda_venv_dir)
   let g:ycm_python_binary_path = 'python'
 else
-  let g:ycm_python_binary_path = g:ycm_python_binary_path . '/bin/python'
+  let g:ycm_python_binary_path = g:conda_venv_dir . '/bin/python'
+  let g:ale_virtualenv_dir_names = [g:conda_venv_dir]
 endif
 
-if g:ycm_python_binary_path !=# 'python'
-  echom 'Loading virtual env: ' . g:ycm_python_binary_path
-endif
+function! ShowPythonPath()
+  if !empty(g:conda_venv_dir)
+    echohl Question " pity that there isn't an appropriate hi group
+    echo 'Found and loaded Python virtual env from: ' . g:conda_venv_dir
+    echohl None
+  endif
+endfunction
+
+augroup tmp
+  autocmd VimEnter * call ShowPythonPath()
+augroup END
 
 " typescript setup for YCM
 if !exists('g:ycm_semantic_triggers')
@@ -373,36 +448,6 @@ let g:tmux_navigator_no_mappings = 1
 
 " {{{ Sign Column Tweaks
 "
-" handy selection of symbols
-" - poker suits:    ♠ ♥ ♣ ♦
-" - common symbols: •
-" - white space:    ] [(em) XXX needed as leading whitespace in sign column
-"
-" - Box Drawing Characters table (as of Unicode version 11.0)
-"
-"           0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F
-"   U+250x  ─  ━  │  ┃  ┄  ┅  ┆  ┇  ┈  ┉  ┊  ┋  ┌  ┍  ┎  ┏
-"
-"   U+251x  ┐  ┑  ┒  ┓  └  ┕  ┖  ┗  ┘  ┙  ┚  ┛  ├  ┝  ┞  ┟
-"
-"   U+252x  ┠  ┡  ┢  ┣  ┤  ┥  ┦  ┧  ┨  ┩  ┪  ┫  ┬  ┭  ┮  ┯
-"
-"   U+253x  ┰  ┱  ┲  ┳  ┴  ┵  ┶  ┷  ┸  ┹  ┺  ┻  ┼  ┽  ┾  ┿
-"
-"   U+254x  ╀  ╁  ╂  ╃  ╄  ╅  ╆  ╇  ╈  ╉  ╊  ╋  ╌  ╍  ╎  ╏
-"
-"   U+255x  ═  ║  ╒  ╓  ╔  ╕  ╖  ╗  ╘  ╙  ╚  ╛  ╜  ╝  ╞  ╟
-"
-"   U+256x  ╠  ╡  ╢  ╣  ╤  ╥  ╦  ╧  ╨  ╩  ╪  ╫  ╬  ╭  ╮  ╯
-"
-"   U+257x  ╰  ╱  ╲  ╳  ╴  ╵  ╶  ╷  ╸  ╹  ╺  ╻  ╼  ╽  ╾  ╿
-"
-" - block elements (as of Unicode version 11.0)
-"
-"           0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F
-"   U+258x  ▀  ▁  ▂  ▃  ▄  ▅  ▆  ▇  █  ▉  ▊  ▋  ▌  ▍  ▎  ▏
-"
-"   U+259x  ▐  ░  ▒  ▓  ▔  ▕  ▖  ▗  ▘  ▙  ▚  ▛  ▜  ▝  ▞  ▟
 "
 
 " let g:ale_sign_error = ' ■' " good on fantasque mono
@@ -499,6 +544,10 @@ function! ColorSchemeTweaks()
 
   " vim-better-whitespace
   highlight link ExtraWhitespace DiffDelete
+
+  " FIXME ts highlighting is doing this seems?
+  set colorcolumn=0                   " Should be the job of linters
+
 endfunction
 
 " Adapt sign color upon color theme change
@@ -565,6 +614,10 @@ xmap ga <Plug>(EasyAlign)
 noremap <space>c ea<C-x><C-s>
 
 " Run the current script according to shebang!
+" TODO extend this to be intelligent run current file, e.g.
+" - open up preview for markdown files
+" - render plantuml for puml files
+" - run the file if it's executable and has shebang set
 nnoremap <leader>r :!%:p<CR><CR>
 
 function EchoOutput(job_id, data, event)
@@ -576,26 +629,6 @@ function EchoOutput(job_id, data, event)
     !notify-send 'failed'
   endif
 endfunction
-
-" FIXME shouldn't really use this but wth
-function! NpmCompile()
-  let l:ext = expand('%:e')
-  if l:ext ==? 'scss'
-    echom 'compiling css...'
-    let l:job="npm run css:dev >/dev/null 2>&1"
-    call jobstart(l:job, { 'on_exit': function('EchoOutput') })
-  elseif l:ext ==? 'js' || l:ext ==? 'jsx'
-    echom 'compiling js...'
-    let l:job="npm run js:dev >/dev/null 2>&1"
-    call jobstart(l:job, { 'on_exit': function('EchoOutput') })
-  else
-    echom 'huh?'
-  endif
-  if v:shell_error == 0
-
-  endif
-endfunction
-nnoremap <leader>n :call NpmCompile()<CR>
 
 "
 " Centralized movement
@@ -715,6 +748,9 @@ nnoremap <silent> <A-,> :TmuxNavigatePrevious<CR>
 " nnoremap <silent> <C-j> :res +5<CR>
 " nnoremap <silent> <C-k> :res -5<CR>
 " nnoremap <silent> <C-l> :vertical res -10<CR>
+
+" FIXME default colour setting of deusBg2 is too dark
+highlight! link NonText deusBg3
 
 if !empty(glob('~/.vimrc.after'))
   source ~/.vimrc.after

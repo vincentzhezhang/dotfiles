@@ -12,6 +12,15 @@ PS1_UPDATE_THRESHOLD=167
 PS1_INDICATOR="${BASE0}~>${COFF} "
 PS1_MINIMUM_COLUMN_WIDTH=60
 
+# SSH detection, courtesy https://unix.stackexchange.com/a/9607
+if [[ -n "$SSH_CLIENT" ]] || [[ -n "$SSH_TTY" ]]; then
+  PS1_REMOTE_SESSION=remote/ssh
+else
+  case $(ps -o comm= -p $PPID) in
+    sshd|*/sshd) PS1_REMOTE_SESSION=remote/ssh;;
+  esac
+fi
+
 #
 # git prompt snippet, use plumbing commands for reliable states parsing
 #
@@ -172,29 +181,43 @@ git_prompt()
 # - use named color codes instead of explicit numbers
 v_env_conda() {
   local current_py_env
+  local detected_conda_env
 
+  detected_conda_env=$(clever_conda_path | xargs --no-run-if-empty basename)
+  # (>&2 echo "detected: $detected_conda_env")
   current_py_env=$(grep -oP 'conda/envs/(\K\w+)' <<< "$PATH")
+  # (>&2 echo "current: $current_py_env")
 
-  if [[ -z "$current_py_env" ]]; then
+  if [[ -z "$detected_conda_env" ]] && [[ -z "$current_py_env" ]]; then
     unset __python_venv_name
-    unset __python_venv_version
     exit 0
   fi
 
   if [[ "$current_py_env" != "$__python_venv_name" ]]; then
-    # >&2 echo "current_py_env: $current_py_env"
-    # >&2 echo "__python_venv_name: $__python_venv_name"
-    # >&2 echo "__python_venv_version: $__python_venv_version"
+    # (>&2 echo "current_py_env: $current_py_env")
+    # (>&2 echo "__python_venv_name: $__python_venv_name")
     __python_venv_name="$current_py_env"
-    __python_venv_version="$(python --version 2>&1 | cut -d ' ' -f 2)"
   fi
 
-  echo -n "${GREEN} # ${COFF}"
-  echo -n "\\[\\e[07;32;1;64m\\] "
-  echo -n "$__python_venv_name"
-  echo -n "|"
-  echo -n "${__python_venv_version}"
-  echo -n " \\[\\e[0m\\]"
+  if [[ -n "$current_py_env" ]]; then
+    echo -n "\\[\\e[0;38;5;2m\\]"
+    echo -n ' # '
+
+    if [[ -n "$detected_conda_env" ]] && [[ "$detected_conda_env" != "$current_py_env" ]]; then
+      echo -n "\\[\\e[2;38;5;2m\\]"
+      echo -n "$detected_conda_env"
+      echo -n "\\[\\e[0m\\] "
+    fi
+
+    echo -n "\\[\\e[0;38;5;2m\\]"
+    echo -n "$__python_venv_name"
+    echo -n "\\[\\e[0m\\] "
+  else
+    echo -n "\\[\\e[2;38;5;2m\\]"
+    echo -n ' # '
+    echo -n "$detected_conda_env"
+    echo -n "\\[\\e[0m\\] "
+  fi
 }
 
 generate_status_line() {
@@ -209,7 +232,7 @@ generate_status_line() {
   local dash_line_width=0
   local dash_color="$BASE00"
 
-  if [[ -n "$REMOTE_SESSION" ]]; then
+  if [[ -n "$PS1_REMOTE_SESSION" ]]; then
     dash_color="$BYELLOW"
     host_str="$(hostname):"
   fi
@@ -262,6 +285,7 @@ prettify_prompt() {
 
   last_state="$(generate_last_state $last_exit_code)"
 
+  # FIXME use join_by to add delimiters nicely
   if [[ $COLUMNS -ge $PS1_MINIMUM_COLUMN_WIDTH ]]; then
     status_line="$(generate_status_line)"
     git_str="$(git_prompt)"
