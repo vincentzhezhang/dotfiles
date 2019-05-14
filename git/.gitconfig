@@ -1,3 +1,5 @@
+# TODO
+# - extract bash functions to namespaced functions in a dedicate file instead of cluttering here
 [alias]
   ci = commit -v
   co = checkout
@@ -54,24 +56,24 @@
 [gui]
   editor = gedit
   historybrowser = gitk
-	diffcontext = 10
+  diffcontext = 10
 [core]
   editor = nvim
   autocrlf = input
   excludesfile = ~/.gitignore_global
 [color]
-	ui = true
+  ui = true
 [color "branch"]
   current = cyan reverse
   local = cyan
   remote = magenta
 [color "diff"]
-	meta = yellow
-	frag = magenta bold
-	old = red bold
-	new = green bold
-	commit = yellow bold
-	whitespace = red reverse
+  meta = yellow
+  frag = magenta bold
+  old = red bold
+  new = green bold
+  commit = yellow bold
+  whitespace = red reverse
 [color "status"]
   added = yellow
   changed = green
@@ -87,23 +89,20 @@
 [push]
   default = simple
 [cola]
-	fontdiff = Fantasque Sans Mono,10,-1,5,50,0,0,0,0,0
+  fontdiff = Fantasque Sans Mono,10,-1,5,50,0,0,0,0,0
   tabwidth = 2
   textwidth = 80
   boldheaders = true
   savewindowsettings = true
   blameviewer = git gui blame
   spellcheck = true
-	expandtab = true
-	safemode = true
+  expandtab = true
+  safemode = true
 [filter "lfs"]
   clean = git-lfs clean %f
   smudge = git-lfs smudge %f
   required = true
 [pager]
-  ; FIXME apply pattern on empty diff results in bad UX
-  ; diff = diff-so-fancy | less --tabs=4 -RFX --pattern '^(Date|added|deleted|modified): '
-  ; show = diff-so-fancy | less --tabs=4 -RFX --pattern '^(Date|added|deleted|modified): '
   diff = diff-so-fancy | less --tabs=4 -RFX
   show = diff-so-fancy | less --tabs=4 -RFX
   tag = fzf
@@ -116,9 +115,9 @@
 [http]
   sslVerify = false
 [submodule]
-	recurse = true
+  recurse = true
 [color "diff-highlight"]
-	oldNormal = red bold
-	oldHighlight = red bold 52
-	newNormal = green bold
-	newHighlight = green bold 22
+  oldNormal = red bold
+  oldHighlight = red bold 52
+  newNormal = green bold
+  newHighlight = green bold 22
