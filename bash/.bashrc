@@ -32,7 +32,6 @@ for s in "${BASH_SCRIPTS[@]}"; do
   [[ -f ~/.bash_"${s}" ]] && . ~/.bash_"${s}"
 done
 
-
 shopt -s cdspell
 shopt -s checkwinsize # update window size after every command
 shopt -s cmdhist      # force multi-line histories format in a single line

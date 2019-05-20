@@ -66,11 +66,13 @@ Plug 'airblade/vim-gitgutter'
 Plug 'airblade/vim-rooter'
 Plug 'ajmwagar/vim-deus'
 Plug 'AndrewRadev/splitjoin.vim'
+Plug 'arcticicestudio/nord-vim'
 Plug 'ap/vim-css-color', { 'for': ['css', 'sass', 'scss'] }
 Plug 'brooth/far.vim'
 Plug 'christoomey/vim-tmux-navigator'
+Plug 'cocopon/iceberg.vim'
 Plug 'editorconfig/editorconfig-vim'
-Plug 'flazz/vim-colorschemes'
+" Plug 'flazz/vim-colorschemes'
 Plug 'honza/vim-snippets'
 Plug 'jparise/vim-graphql' " TODO this is removed from vim-polyglot for now
 Plug 'jreybert/vimagit'
@@ -87,7 +89,7 @@ Plug 'Raimondi/delimitMate'
 Plug 'romainl/flattened'
 Plug 'scrooloose/nerdcommenter'
 Plug 'scrooloose/nerdtree'
-Plug 'sheerun/vim-polyglot', { 'for': ['jsx'] }
+" Plug 'sheerun/vim-polyglot', { 'for': ['jsx'] }
 Plug 'SirVer/ultisnips'
 Plug 'terryma/vim-multiple-cursors'
 Plug 'tmux-plugins/vim-tmux-focus-events'
@@ -293,6 +295,14 @@ function! TextMagic()
 endfunction
 
 "
+" Custom Highlight rules
+" XXX note vim-better-whitespace does not deal with leading tabs
+"
+function! CustomHighlights()
+  syntax match PeskyTabs /\v\t+/
+endfunction
+
+"
 " auto commands that make your life easier
 "
 " XXX no space is allowed between events
@@ -304,6 +314,7 @@ augroup general_enhancements
   autocmd BufEnter *.md,*.txt,*.doc,*.rst call TextMagic()
   autocmd BufEnter,InsertLeave * set cursorline
   autocmd BufLeave,InsertEnter * set nocursorline
+  autocmd BufEnter * call CustomHighlights()
 
   " FIXME temporary workaround for Docker issue
   autocmd BufEnter *Dockerfile set ft=dockerfile
@@ -560,13 +571,17 @@ function! ColorSchemeTweaks()
   highlight PmenuSel   guibg=#98C379 guifg=#333333
 
 
-  " vim-better-whitespace
-  highlight link ExtraWhitespace DiffDelete
 
   " FIXME ts highlighting is doing this seems?
-  set colorcolumn=0                   " Should be the job of linters
+  " Should be the job of linters
+  set colorcolumn=0
+  " vim-better-whitespace
+  highlight link ExtraWhitespace WarningMsg
+  highlight link PeskyTabs WarningMsg
+  highlight SpellBad cterm=underline gui=undercurl
 
 endfunction
+let g:show_spaces_that_precede_tabs=1
 
 " Adapt sign color upon color theme change
 augroup colorscheme_tweaks
@@ -760,6 +775,7 @@ nnoremap <silent> <A-j> :TmuxNavigateDown<CR>
 nnoremap <silent> <A-k> :TmuxNavigateUp<CR>
 nnoremap <silent> <A-l> :TmuxNavigateRight<CR>
 nnoremap <silent> <A-,> :TmuxNavigatePrevious<CR>
+
 
 " FIXME need to have a second thought on this
 " nnoremap <silent> <C-h> :vertical res +10<CR>

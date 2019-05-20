@@ -63,6 +63,7 @@ alias vi='nvim'
 alias vim='nvim'
 alias emacs='nvim'
 alias nano='nvim'
+alias vimdiff='nvim -d'
 
 ## App-specific
 alias ftp='ncftp Personal'

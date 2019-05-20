@@ -29,3 +29,5 @@ set wildignore+=*.swp,*~,._*
 
 " Disable osx index files
 set wildignore+=.DS_Store
+
+let g:dues_italic = 1

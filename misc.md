@@ -10,7 +10,6 @@ Miscellaneous notes about ricing and hacking!
 - run update-desktop-database
 - ENJOY!
 
-
 ## curated list of linters
 
 ### markdown

@@ -4,41 +4,42 @@
 # - for better function reuse, split the functions below to make them work for
 # nicely for both interactive and noninteractive shells
 
-if ! command -v fzf > /dev/null 2>&1; then
-  >&2 echo 'fzf is not installed!'
-else
-  gg()
-  {
-    if git rev-parse --show-toplevel > /dev/null 2>&1; then
-      current_branch=$(git rev-parse --abbrev-ref HEAD)
-      branch_name=$(
-        git branch --no-color -a |\
-        grep -v "$current_branch" |\
-        sed -r 's/^\s+//g' |\
-        fzf --height=50% --reverse
-      )
+gg()
+{
+  if [[ ! -x $(which fzf) ]]; then
+    echo 'fzf is missing, please install it first.'
+    return 1
+  fi
 
-      if [[ -z "$branch_name" ]]; then
-        >&2 echo 'no branch chosen!'
-        return 1
-      fi
+  if git rev-parse --show-toplevel > /dev/null 2>&1; then
+    current_branch=$(git rev-parse --abbrev-ref HEAD)
+    branch_name=$(
+      git branch --no-color -a |\
+      grep -v "$current_branch" |\
+      sed -r 's/^\s+//g' |\
+      fzf --height=50% --reverse
+    )
 
-      if [[ "$branch_name" == 'remotes'* ]]; then
-        local_brach_name=$(echo "$branch_name" | cut -d '/' -f 3-)
-        git checkout -B "$local_brach_name" -t "$branch_name"
-      else
-        git checkout "$branch_name"
-      fi
-    else
-      >&2 echo 'not a git repository!'
+    if [[ -z "$branch_name" ]]; then
+      >&2 echo 'no branch chosen!'
       return 1
     fi
-  }
-fi
+
+    if [[ "$branch_name" == 'remotes'* ]]; then
+      local_brach_name=$(echo "$branch_name" | cut -d '/' -f 3-)
+      git checkout -B "$local_brach_name" -t "$branch_name"
+    else
+      git checkout "$branch_name"
+    fi
+  else
+    >&2 echo 'not a git repository!'
+    return 1
+  fi
+}
 
 far() {
   if [[ -z $1 || -z $2 ]]; then
-    echo 'Usage: far find_parttern replace_parttern'
+    echo 'Usage: far find_pattern replace_pattern'
     return 1
   fi
 
@@ -104,6 +105,38 @@ get_luminance() {
   fi
 }
 
+get_dpi()
+{
+  display_info="$(xrandr | grep -w connected)"
+
+  resolution=$(grep -oP '\d{4}x\d{4}' <<<"$display_info")
+  r_x=$(cut -d 'x' -f 1 <<< "$resolution")
+  r_y=$(cut -d 'x' -f 2 <<< "$resolution")
+
+  (>&2 echo "r_x: $r_x")
+  (>&2 echo "r_y: $r_y")
+
+  ! read -r -d "\n" s_x s_y <<< "$(grep -oP '\d{3,4}mm' <<< "$display_info")"
+  s_x=${s_x::-2}
+  s_y=${s_y::-2}
+
+  (>&2 echo "s_x: $s_x")
+  (>&2 echo "s_y: $s_y")
+
+  dpi=$(echo "sqrt( ($r_x * $r_y) / (($s_x / 25.4) * ($s_y / 25.4)) )" | bc -l)
+  dpi=$(printf "%.0f" "$dpi")
+  echo "$dpi"
+}
+
+get_font_size_by_dpi()
+{
+  dpi=$(get_dpi)
+  font_size=$(echo "$dpi / 14" | bc -l | xargs printf "%.0f")
+  (>&2 echo "dpi: $dpi")
+  echo "$font_size"
+}
+
+export DEFAULT_TERM_FS=$(get_font_size_by_dpi)
 
 #
 # Greeting message
@@ -480,5 +513,6 @@ whereisf()
 {
   shopt -s extdebug; declare -F "$1"
 }
+
 
 # vim: set ai ts=2 tw=79:
