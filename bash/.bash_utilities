@@ -1,4 +1,9 @@
 #! /usr/bin/env bash
+#
+# TODO
+# - for better function reuse, split the functions below to make them work for
+# nicely for both interactive and noninteractive shells
+
 if ! command -v fzf > /dev/null 2>&1; then
   >&2 echo 'fzf is not installed!'
 else
@@ -127,6 +132,8 @@ history_magic() {
   # - remove duplicates while keep order
   # - optionally show stats if running manually with verbose tag
   #
+  echo 'doing history magic...'
+  time_start=$(date +%s)
   local lines_before
   local lines_after
   local lines_removed
@@ -144,6 +151,9 @@ history_magic() {
   mv -f "$tmp_file" "$src_file"
 
   if [[ ! $verbose ]]; then
+    time_ends=$(date +%s)
+    secs=$(((time_ends - time_start) / 1000))
+    echo "Nothing changed! $secs s"
     return 0
   fi
 
@@ -157,7 +167,16 @@ history_magic() {
   else
     echo "removed ${lines_removed} lines from history!"
   fi
+  time_ends=$(date +%s)
+  secs=$(((time_ends - time_start) / 1000))
+  sleep 5
+  echo "Finished in $secs s"
 }
+# only do this for interactive shell
+# referred in Vim
+case $- in
+  *i*) trap history_magic EXIT;;
+esac
 
 #
 # easy extract
@@ -385,6 +404,7 @@ clever_conda_path()
     return 1
   fi
 
+  # FIXME this is broken with worktree
   pkg_dir="$(echo "${path/$git_root}" | cut -d '/' -f 2)"
   conda_env_dir="$CONDA_ROOT/envs/$pkg_dir"
 

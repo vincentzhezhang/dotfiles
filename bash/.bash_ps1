@@ -9,7 +9,6 @@
 #
 
 PS1_UPDATE_THRESHOLD=167
-PS1_INDICATOR="${BASE0}~>${COFF} "
 PS1_MINIMUM_COLUMN_WIDTH=60
 
 # SSH detection, courtesy https://unix.stackexchange.com/a/9607
@@ -24,6 +23,8 @@ fi
 #
 # git prompt snippet, use plumbing commands for reliable states parsing
 #
+# TODO this worth a rework, should be able to make it much simpler without
+# using anything else other than bash & git
 git_prompt()
 {
   # check if current working directory is a git tracked directory
@@ -125,13 +126,11 @@ git_prompt()
   local remote_prompt
 
   # XXX may break if branch name contains "." (dot)
-  current_branch=$(echo "$branch_info" | grep -oP '^## (\K[^.]+)')
-  # current_branch=$(echo "$branch_info" | grep -oP '(?<=## )(\K.+)(?=(\.\.\.|$))')
+  current_branch=$(git rev-parse --abbrev-ref HEAD)
 
   local_prompt="${CYAN}${current_branch}${COFF}"
 
-
-  tracking_branch=$(echo "$branch_info" | grep -oP '\.{3}(\K[^ ]+)')
+  tracking_branch=$(2> /dev/null git rev-parse --abbrev-ref --symbolic-full-name '@{u}')
   branch_meta=$(echo "$branch_info" | grep -oP '(\[[^]]+\])')
 
   if [[ -n "$tracking_branch" ]]; then
@@ -172,7 +171,24 @@ git_prompt()
     diff=" ${BYELLOW}*${COFF} ${diff}"
   fi
 
-  echo "${local_prompt}${remote_prompt}${diff}"
+  git_dir=$(git rev-parse --git-dir)
+
+  fetch_head="$git_dir/FETCH_HEAD"
+  if [[ -f $fetch_head ]]; then
+    last_updated_at=$(stat -c %Y "$fetch_head")
+    now=$(date +%s)
+    seconds_elapsed=$((now - last_updated_at))
+
+    mins=$((seconds_elapsed / 60))
+    seconds_elapsed=$((seconds_elapsed % 60))
+
+    # TODO better name
+    bbq=" ${BASE0}$mins:$(printf "%02d" $seconds_elapsed)${COFF}"
+  else
+    bbq=''
+  fi
+
+  echo "${local_prompt}${remote_prompt}${diff}${bbq}"
 }
 
 # TODO this is just a temporary solution that sufficient enough for current works, should add
@@ -297,9 +313,7 @@ prettify_prompt() {
     fi
   fi
 
-  prompt_line="${last_state}${PS1_INDICATOR}"
-
-  PS1="$status_line$env_line$prompt_line"
+  PS1="$status_line$env_line$last_state"
 }
 
 PROMPT_COMMAND="prettify_prompt; $PROMPT_COMMAND"

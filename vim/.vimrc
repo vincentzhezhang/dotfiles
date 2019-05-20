@@ -133,7 +133,7 @@ set ignorecase                      " Make search case-insensitive
 set list                            " Enable whitespace characters' display
 set listchars=nbsp:¬,tab:»·,trail:· " Better whitespace symbols
 set mouse=a                         " Grab mouse event within tmux
-" set lazyredraw                      " FIXME mitigate with jsx until find a fix
+set lazyredraw                      " FIXME mitigate with jsx until find a fix
 set nobackup                        " Be environment friendly
 set backupcopy=no                   " Be environment friendly
 set noshowmode                      " Hide the default mode text cause we have *whatever*line
@@ -149,11 +149,11 @@ set shiftwidth=2                    " Number of spaces to use for each step of (
 set showtabline=0                   " Don't need the tab line man
 set smartcase                       " Make search case-insensitive smart!
 set smartindent                     " Do smart auto indenting when starting a new line
-set nospell                         " Don't check spell by default
+set spell                           " Check spell is good when we added all the keywords!
 set spelllang=en_us                 " Use en_us for better collaboration, sorry en_gb
 set splitbelow                      " Intuitively split to below when doing horizontal split
 set splitright                      " Split to right when doing vertical split
-set synmaxcol=256                   " Limit syntax color for long lines to improve rendering speed
+set synmaxcol=180                   " Limit syntax color for long lines to improve rendering speed
 set tabstop=2                       " Number of spaces that a <Tab> in the file counts for
 set tags=./.tags,./tags,.tags,tags; " Use hidden tags files
 set undodir=~/.vim/undo/            " Persistent undo directory
@@ -275,6 +275,23 @@ endfunction
 nnoremap gx :call EnhancedBrowseX()<CR>
 xnoremap gx :call EnhancedBrowseX()<CR>
 
+function! TextMagic()
+  set textwidth=0
+  set wrapmargin=0
+  set colorcolumn=79
+  " FIXME
+  " - this will get reset on window resize, need to prevent that
+  " - columns are buggy with multiple buffers
+  " set columns=100
+  set linebreak
+  set nolist
+  set wrap
+  nmap j gj
+  nmap k gk
+  " FIXME can't link to LineNr due to a bug
+  hi ColorColumn ctermbg=239 guibg=#242a32
+endfunction
+
 "
 " auto commands that make your life easier
 "
@@ -284,7 +301,7 @@ augroup general_enhancements
   autocmd BufCreate * call SetUpBuffer()
   autocmd BufEnter *.log set nospell " no spell check for log files
   autocmd BufEnter *.md set nowrap
-  autocmd BufEnter *.md,*.txt,*.doc,*.rst set spell " only check spell on docs
+  autocmd BufEnter *.md,*.txt,*.doc,*.rst call TextMagic()
   autocmd BufEnter,InsertLeave * set cursorline
   autocmd BufLeave,InsertEnter * set nocursorline
 
@@ -296,9 +313,10 @@ augroup general_enhancements
   " temporary disabled during the refactoring period
   " autocmd BufWritePre * StripWhitespace " strip whitespaces on save
 
-  autocmd VimResized * wincmd =  " make panes responsive
+  autocmd VimResized * wincmd =  " make panes responsive on window resize
   autocmd FocusGained,BufEnter * checktime " make autoread behave intuitively
 augroup END
+
 
 
 " {{{ PlantUML enchancements
@@ -450,7 +468,7 @@ let g:tmux_navigator_no_mappings = 1
 "
 "
 
-" let g:ale_sign_error = ' ■' " good on fantasque mono
+" let g:ale_sign_error = ' ■' " good on fantasque mono, but why it's so fucking huge in Ubuntu mono?
 " TODO
 " not sure if this is feasible but if we can merge linter symbols
 " and git status symbols it will look great!

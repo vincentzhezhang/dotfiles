@@ -49,14 +49,21 @@ hist_ignore=(
   history
 )
 
+# also see history_magic in .bash_ultilities
 unset HISTTIMEFORMAT
 HISTCONTROL=ignoreboth:erasedups
 HISTSIZE=9999       # maximum entries allowed in current history
 HISTFILESIZE=9999   # maximum lines allowed in history file
 HISTIGNORE="$(join_by '*:' "${hist_ignore[@]}")"
-trap history_magic EXIT
 
+# if [[ -n $TMUX ]]; then
+#   export TERM='tmux-256color'
+# else
+# fi
+# FIXME tmux-256color don't play well with many apps, e.g. git, less
 export TERM='xterm-256color'
+
+# FIXME italics are still not working properly, sad
 # export TERM_ITALICS=TRUE
 
 #
