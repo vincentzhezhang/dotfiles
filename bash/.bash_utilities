@@ -136,7 +136,7 @@ get_font_size_by_dpi()
   echo "$font_size"
 }
 
-export DEFAULT_TERM_FS=$(get_font_size_by_dpi)
+# export DEFAULT_TERM_FS=$(get_font_size_by_dpi)
 
 #
 # Greeting message
