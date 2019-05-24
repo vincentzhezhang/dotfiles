@@ -1,11 +1,6 @@
 #! /usr/bin/env bash
 shopt -s expand_aliases
 
-#
-# craps
-#
-alias weather='curl http://wttr.in/~shanghai,pudong,guozhan'
-
 # you can never been too lazy
 alias c='clear'
 

@@ -72,7 +72,7 @@ Plug 'brooth/far.vim'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'cocopon/iceberg.vim'
 Plug 'editorconfig/editorconfig-vim'
-" Plug 'flazz/vim-colorschemes'
+Plug 'flazz/vim-colorschemes'
 Plug 'honza/vim-snippets'
 Plug 'jparise/vim-graphql' " TODO this is removed from vim-polyglot for now
 Plug 'jreybert/vimagit'
@@ -89,7 +89,7 @@ Plug 'Raimondi/delimitMate'
 Plug 'romainl/flattened'
 Plug 'scrooloose/nerdcommenter'
 Plug 'scrooloose/nerdtree'
-" Plug 'sheerun/vim-polyglot', { 'for': ['jsx'] }
+Plug 'sheerun/vim-polyglot', { 'for': ['jsx'] }
 Plug 'SirVer/ultisnips'
 Plug 'terryma/vim-multiple-cursors'
 Plug 'tmux-plugins/vim-tmux-focus-events'
@@ -318,6 +318,7 @@ augroup general_enhancements
 
   " FIXME temporary workaround for Docker issue
   autocmd BufEnter *Dockerfile set ft=dockerfile
+  autocmd BufEnter Jenkinsfile set ft=groovy
 
   " FIXME use filetype to disable cursorline within fugitiveblame
 

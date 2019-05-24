@@ -1,76 +1,44 @@
 #! /usr/bin/env bash
 #
-# TODO
-# - for better function reuse, split the functions below to make them work for
-# nicely for both interactive and noninteractive shells
+# this file is normally sourced by .bashrc, however, some of the apps, e.g. vim
+# will also make use of this file so in that case, we don't want to source
+# everything
+#
 
-gg()
+export __conda_env_root=/sandbox/vincent.zhang/.conda/envs
+
+if [[ -n $__conda_env_root ]]; then
+  export __conda_envs=$(ls -1 $__conda_env_root)
+fi
+
+#
+# ubiquitous functions
+#
+clever_conda_path()
 {
-  if [[ ! -x $(which fzf) ]]; then
-    echo 'fzf is missing, please install it first.'
+  if [[ -z $__conda_envs ]]; then
     return 1
   fi
 
-  if git rev-parse --show-toplevel > /dev/null 2>&1; then
-    current_branch=$(git rev-parse --abbrev-ref HEAD)
-    branch_name=$(
-      git branch --no-color -a |\
-      grep -v "$current_branch" |\
-      sed -r 's/^\s+//g' |\
-      fzf --height=50% --reverse
-    )
+  local conda_env_name
+  local path
 
-    if [[ -z "$branch_name" ]]; then
-      >&2 echo 'no branch chosen!'
-      return 1
+  path=$(readlink -f "${1:-$PWD}")
+
+    # (>&2 echo "pkg_names via git: $pkg_names")
+
+  for name in $__conda_envs; do
+    if grep -qw "$name" <<<"$path"; then
+      conda_env_name=$name
+      break
     fi
+  done
 
-    if [[ "$branch_name" == 'remotes'* ]]; then
-      local_brach_name=$(echo "$branch_name" | cut -d '/' -f 3-)
-      git checkout -B "$local_brach_name" -t "$branch_name"
-    else
-      git checkout "$branch_name"
-    fi
-  else
-    >&2 echo 'not a git repository!'
-    return 1
-  fi
-}
-
-far() {
-  if [[ -z $1 || -z $2 ]]; then
-    echo 'Usage: far find_pattern replace_pattern'
+  if [[ -z $conda_env_name ]]; then
     return 1
   fi
 
-  if [[ ! -x $(which ag) ]]; then
-    echo 'ag is missing, please install it first.'
-    return 1
-  fi
-
-  if [[ ! -x $(which sed) ]]; then
-    echo 'sed is missing, please install it first.'
-    return 1
-  fi
-
-  ag -Q "$1" -l | xargs -r sed -i "s|$1|$2|g"
-}
-
-split_pdf()
-{
-  convert -density 150 -quality 90 "$1" page-%0d.jpg
-}
-
-join_by()
-{
-  local d=$1; shift; echo -n "$1"; shift; printf "%s" "${@/#/$d}";
-}
-
-pg()
-{
-  ps -eo user,pid,ppid,bsdstart,etime,cmd --sort etime |\
-    grep -v 'grep' |\
-    grep -E --color=auto "PID|$1"
+  echo -n "$__conda_env_root/$conda_env_name"
 }
 
 #
@@ -105,6 +73,111 @@ get_luminance() {
   fi
 }
 
+#
+# XXX hack to detect if this file is sourced by an interactive shell
+#
+sourced_directly=$([[ -z "${BASH_SOURCE[1]}" ]] && echo 1 || echo 0)
+if [[ "$sourced_directly" -eq 1 ]]; then
+  return 0
+fi
+
+#
+# interactive mode only functions
+#
+weather()
+{
+  place=${1:-'shanghai,pudong,guozhan'}
+  echo "loading weather for $place ..."
+  curl "http://wttr.in/~$place"
+}
+
+wtf()
+{
+  # [W]here is [T]he [F]unction
+  shopt -s extdebug; declare -F "$1" | awk '{ print $3" +"$2 }'
+}
+__complete_wtf()
+{
+  if [ "${#COMP_WORDS[@]}" != "2" ]; then
+    return
+  fi
+  mapfile -t COMPREPLY < <(declare -F | awk '{ print $NF }' | grep -oE "^${COMP_WORDS[1]}[0-9a-z_-]+" | sort)
+}
+complete -F __complete_wtf -o nospace wtf
+
+
+gg()
+{
+  #
+  # navigate and checkout to branches easily
+  #
+  if ! git rev-parse --show-toplevel > /dev/null 2>&1; then
+    >&2 echo 'not a git repository!'
+    return 1
+  fi
+
+  if [[ ! -x $(which fzf) ]]; then
+    >&2 echo 'fzf is missing, how can you miss that?'
+    return 1
+  fi
+
+  current_branch=$(git rev-parse --abbrev-ref HEAD)
+  branch_name=$(
+    git branch --no-color -a |\
+    grep -v "$current_branch" |\
+    sed -r 's/^\s+//g' |\
+    fzf --height=50% --reverse
+  )
+
+  if [[ -z "$branch_name" ]]; then
+    >&2 echo 'please pick a valid branch!'
+    return 1
+  fi
+
+  if [[ "$branch_name" == 'remotes'* ]]; then
+    local_brach_name=$(echo "$branch_name" | cut -d '/' -f 3-)
+    git checkout -B "$local_brach_name" -t "$branch_name"
+  else
+    git checkout "$branch_name"
+  fi
+}
+
+far() {
+  if [[ -z $1 || -z $2 ]]; then
+    >&2 echo 'Usage: far find_pattern replace_pattern'
+    return 1
+  fi
+
+  if [[ ! -x $(command -v ag) ]]; then
+    >&2 echo 'ag is missing, please install it first.'
+    return 1
+  fi
+
+  if [[ ! -x $(command -v sed) ]]; then
+    >&2 echo 'sed is missing, please install it first.'
+    return 1
+  fi
+
+  ag -Q "$1" -l | xargs -r sed -i "s|$1|$2|g"
+}
+
+split_pdf()
+{
+  convert -density 150 -quality 90 "$1" page-%0d.jpg
+}
+
+join_by()
+{
+  local d=$1; shift; echo -n "$1"; shift; printf "%s" "${@/#/$d}";
+}
+
+pg()
+{
+  ps -eo user,pid,ppid,bsdstart,etime,cmd --sort etime |\
+    grep -v 'grep' |\
+    grep -E --color=auto "PID|$1"
+}
+
 get_dpi()
 {
   display_info="$(xrandr | grep -w connected)"
@@ -113,15 +186,15 @@ get_dpi()
   r_x=$(cut -d 'x' -f 1 <<< "$resolution")
   r_y=$(cut -d 'x' -f 2 <<< "$resolution")
 
-  (>&2 echo "r_x: $r_x")
-  (>&2 echo "r_y: $r_y")
+  >&2 echo "r_x: $r_x"
+  >&2 echo "r_y: $r_y"
 
   ! read -r -d "\n" s_x s_y <<< "$(grep -oP '\d{3,4}mm' <<< "$display_info")"
   s_x=${s_x::-2}
   s_y=${s_y::-2}
 
-  (>&2 echo "s_x: $s_x")
-  (>&2 echo "s_y: $s_y")
+  >&2 echo "s_x: $s_x"
+  >&2 echo "s_y: $s_y"
 
   dpi=$(echo "sqrt( ($r_x * $r_y) / (($s_x / 25.4) * ($s_y / 25.4)) )" | bc -l)
   dpi=$(printf "%.0f" "$dpi")
@@ -384,68 +457,30 @@ bulltruth()
 random_splash()
 {
   magic_number=$RANDOM
+  local x
 
   if [[ $magic_number -gt 4096 ]]; then
     return
   fi
 
-  if [[ $COLUMNS -lt 96 ]] || [[ $LINES -lt 32 ]]; then
-    local x=1
-  elif [[ $COLUMNS -lt 128 ]] || [[ $LINES -lt 64 ]]; then
-    local x=2
+  if [[ $COLUMNS -lt 96 ]] || [[ $LINES -lt 16 ]]; then
+    x=2
+  elif [[ $COLUMNS -lt 128 ]] || [[ $LINES -lt 32 ]]; then
+    x=4
+  elif [[ $COLUMNS -lt 192 ]] || [[ $LINES -lt 48 ]]; then
+    x=5
   else
-    local x=4
+    x=9
   fi
 
   case $((magic_number % x)) in
-    0) bulltruth ;;
-    1) bullshit ;;
-    2) retrogame invaders ;;
-    3) retrogame pacman ;;
+    0) greeting ;;
+    1) bulltruth ;;
+    2) bullshit ;;
+    3) retrogame invaders ;;
+    4) retrogame pacman ;;
+    5) weather ;;
   esac
-}
-
-dusage() {
-  du -hs --threshold="$1" ./* | sort -hr
-}
-
-git_dir_stats () {
-  for dir in ./*; do
-    echo "$dir"
-    git shortlog --summary "$dir" | sort -nr;
-    printf '\n'
-  done
-}
-
-clever_conda_path()
-{
-  if ! command -v conda > /dev/null 2>&1; then
-    return 1
-  fi
-
-  path=$(readlink -f "${1:-$PWD}")
-
-  if [[ -d "$path" ]]; then
-    dir="$path"
-  else
-    dir="$(dirname "$path")"
-  fi
-
-  git_root=$(git -C "$dir" rev-parse --show-toplevel 2>/dev/null)
-
-  if [[ -z "$git_root" ]]; then
-    return 1
-  fi
-
-  # FIXME this is broken with worktree
-  pkg_dir="$(echo "${path/$git_root}" | cut -d '/' -f 2)"
-  conda_env_dir="$CONDA_ROOT/envs/$pkg_dir"
-
-  if [[ ! -f "$conda_env_dir/bin/python" ]]; then
-    return 1
-  fi
-
-  echo -n "$conda_env_dir"
 }
 
 ###-begin-npm-completion-###
@@ -508,11 +543,5 @@ elif type compctl &>/dev/null; then
   compctl -K _npm_completion npm
 fi
 ###-end-npm-completion-###
-
-whereisf()
-{
-  shopt -s extdebug; declare -F "$1"
-}
-
 
 # vim: set ai ts=2 tw=79:

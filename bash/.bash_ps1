@@ -1,4 +1,7 @@
 #! /usr/bin/env bash
+#
+# XXX no single function in this file can take more than 50ms to execute, that's the rule
+#
 # TODO
 # - fix branch name detection with dot
 # - fix git status detection after rebase
@@ -7,7 +10,6 @@
 #
 # basic setups
 #
-
 PS1_UPDATE_THRESHOLD=167
 PS1_MINIMUM_COLUMN_WIDTH=60
 
@@ -34,10 +36,6 @@ git_prompt()
     return 2
   fi
 
-  raw_status="$(git status --branch --porcelain 2> /dev/null)"
-  branch_info=$(echo "$raw_status" | head -1)
-  change_info=$(echo "$raw_status" | tail -n +2)
-
   if [[ -f "$git_dir/REBASE_HEAD" ]]; then
     echo "${BRED}[-R-]${COFF}"
     return
@@ -48,77 +46,142 @@ git_prompt()
     return
   fi
 
+  raw_status="$(git status --branch --porcelain 2> /dev/null)"
+  branch_info=$(echo "$raw_status" | head -1)
+  # change_info=$(echo "$raw_status" | tail -n +2)
+  simplified_change_info=$(echo "$raw_status" | tail -n +2 | cut -c -2)
+
   local dirty_state
+  local staged_state
 
-  if [[ -n $change_info ]]; then
-    #
-    # NOTE: for matching patterns, please refer to git status manual
-    #
-    # stats for files not staged
-    local unstaged_state=''
-    modified_count=$(echo "$change_info" | grep -E '^.M' --count)
-    deleted_count=$(echo "$change_info" | grep -E '^.D' --count)
-    type_changed_count=$(echo "$change_info" | grep -E '^.T' --count)
-    untracked_files_count=$(echo "$change_info" | grep -E '^\?\? ' --count)
+  local modified_count=0
+  local deleted_count=0
+  local type_changed_count=0
+  local untracked_files_count=0
+  local staged_new_count=0
+  local staged_modified_count=0
+  local staged_type_changed_count=0
+  local staged_deleted_count=0
+  local staged_renamed_files_count=0
 
-    if [[ $modified_count -gt 0 ]]; then
-      unstaged_state+="${BLUE}m${modified_count}${COFF}"
-    fi
+  # see:
+  # https://unix.stackexchange.com/questions/169716/why-is-using-a-shell-loop-to-process-text-considered-bad-practice
+  while IFS= read -r tag; do
+    if [[ "$tag" == *'M' ]]; then ((modified_count++));             fi
+    if [[ "$tag" == *'D' ]]; then ((deleted_count++));              fi
+    if [[ "$tag" == *'T' ]]; then ((type_changed_count++));         fi
+    if [[ "$tag" == '??' ]]; then ((untracked_files_count++));      fi
 
-    if [[ $deleted_count -gt 0 ]]; then
-      unstaged_state+="${RED}d${deleted_count}${COFF}"
-    fi
+    if [[ "$tag" == 'A'* ]]; then ((staged_new_count++));           fi
+    if [[ "$tag" == 'M'* ]]; then ((staged_modified_count++));      fi
+    if [[ "$tag" == 'T'* ]]; then ((staged_type_changed_count++));  fi
+    if [[ "$tag" == 'D'* ]]; then ((staged_deleted_count++));       fi
+    if [[ "$tag" == 'R'* ]]; then ((staged_renamed_files_count++)); fi
+  done <<<"$simplified_change_info"
 
-    if [[ $type_changed_count -gt 0 ]]; then
-      unstaged_state+="${YELLOW}t${type_changed_count}${COFF}"
-    fi
+  #   >&2 echo -n $modified_count-
+  #   >&2 echo -n $deleted_count-
+  #   >&2 echo -n $type_changed_count-
+  #   >&2 echo -n $untracked_files_count-
+  #   >&2 echo -n $staged_new_count-
+  #   >&2 echo -n $staged_modified_count-
+  #   >&2 echo -n $staged_type_changed_count-
+  #   >&2 echo -n $staged_deleted_count-
+  #   >&2 echo -n $staged_renamed_files_count-
+  #   >&2 echo
+  #
+  #   modified_count=0
+  #   deleted_count=0
+  #   type_changed_count=0
+  #   untracked_files_count=0
+  #   staged_new_count=0
+  #   staged_modified_count=0
+  #   staged_type_changed_count=0
+  #   staged_deleted_count=0
+  #   staged_renamed_files_count=0
+  #
+  #   if [[ -n $change_info ]]; then
+  #     #
+  #     # NOTE: for matching patterns, please refer to git status manual
+  #     #
+  #     # stats for files not staged
+  #     modified_count=$(echo "$change_info" | grep -E '^.M' --count)
+  #     deleted_count=$(echo "$change_info" | grep -E '^.D' --count)
+  #     type_changed_count=$(echo "$change_info" | grep -E '^.T' --count)
+  #     untracked_files_count=$(echo "$change_info" | grep -E '^\?\? ' --count)
+  #
+  #     # stats for staged files
+  #     local staged_state=''
+  #     staged_new_count=$(echo "$change_info" | grep -E '^A' --count)
+  #     staged_modified_count=$(echo "$change_info" | grep -E '^M' --count)
+  #     staged_type_changed_count=$(echo "$change_info" | grep -E '^T' --count)
+  #     staged_deleted_count=$(echo "$change_info" | grep -E '^D' --count)
+  #     staged_renamed_files_count=$(echo "$change_info" | grep -E '^R ' --count)
+  #   fi
+  #
+  #   >&2 echo -n $modified_count-
+  #   >&2 echo -n $deleted_count-
+  #   >&2 echo -n $type_changed_count-
+  #   >&2 echo -n $untracked_files_count-
+  #   >&2 echo -n $staged_new_count-
+  #   >&2 echo -n $staged_modified_count-
+  #   >&2 echo -n $staged_type_changed_count-
+  #   >&2 echo -n $staged_deleted_count-
+  #   >&2 echo -n $staged_renamed_files_count-
+  #   >&2 echo
 
-    if [[ $untracked_files_count -gt 0 ]]; then
-      unstaged_state+="${BASE1}u${untracked_files_count}${COFF}"
-    fi
 
-    # stats for staged files
-    local staged_state=''
-    staged_new_count=$(echo "$change_info" | grep -E '^A' --count)
-    staged_modified_count=$(echo "$change_info" | grep -E '^M' --count)
-    staged_type_changed_count=$(echo "$change_info" | grep -E '^T' --count)
-    staged_deleted_count=$(echo "$change_info" | grep -E '^D' --count)
-    staged_renamed_files_count=$(echo "$change_info" | grep -E '^R ' --count)
-
-    if [[ $staged_new_count -gt 0 ]]; then
-      staged_state+="${BGREEN}A${staged_new_count}${COFF}"
-    fi
-
-    if [[ $staged_modified_count -gt 0 ]]; then
-      staged_state+="${BBLUE}M${staged_modified_count}${COFF}"
-    fi
-
-    if [[ $staged_deleted_count -gt 0 ]]; then
-      staged_state+="${BRED}D${staged_deleted_count}${COFF}"
-    fi
-
-    if [[ $staged_type_changed_count -gt 0 ]]; then
-      staged_state+="${BYELLOW}T${staged_type_changed_count}${COFF}"
-    fi
-
-    if [[ $staged_renamed_files_count -gt 0 ]]; then
-      staged_state+="${BCYAN}R${staged_renamed_files_count}${COFF}"
-    fi
-
-    if [[ -n "$unstaged_state" ]]; then
-      dirty_state+="$unstaged_state"
-    fi
-
-    if [[ -n "$unstaged_state" && -n "$staged_state" ]]; then
-      dirty_state+="${YELLOW}|${COFF}"
-    fi
-
-    if [[ -n "$staged_state" ]]; then
-      dirty_state+="$staged_state"
-    fi
-
-    dirty_state="${CYAN}(${COFF}${dirty_state}${CYAN})${COFF}"
+  if [[ $modified_count -gt 0 ]]; then
+    unstaged_state+="${BLUE}m${modified_count}${COFF}"
   fi
+
+  if [[ $deleted_count -gt 0 ]]; then
+    unstaged_state+="${RED}d${deleted_count}${COFF}"
+  fi
+
+  if [[ $type_changed_count -gt 0 ]]; then
+    unstaged_state+="${YELLOW}t${type_changed_count}${COFF}"
+  fi
+
+  if [[ $untracked_files_count -gt 0 ]]; then
+    unstaged_state+="${BASE1}u${untracked_files_count}${COFF}"
+  fi
+
+  if [[ $staged_new_count -gt 0 ]]; then
+    staged_state+="${BGREEN}A${staged_new_count}${COFF}"
+  fi
+
+  if [[ $staged_modified_count -gt 0 ]]; then
+    staged_state+="${BBLUE}M${staged_modified_count}${COFF}"
+  fi
+
+  if [[ $staged_deleted_count -gt 0 ]]; then
+    staged_state+="${BRED}D${staged_deleted_count}${COFF}"
+  fi
+
+  if [[ $staged_type_changed_count -gt 0 ]]; then
+    staged_state+="${BYELLOW}T${staged_type_changed_count}${COFF}"
+  fi
+
+  if [[ $staged_renamed_files_count -gt 0 ]]; then
+    staged_state+="${BCYAN}R${staged_renamed_files_count}${COFF}"
+  fi
+
+  if [[ -n "$unstaged_state" ]]; then
+    dirty_state+="$unstaged_state"
+  fi
+
+  if [[ -n "$unstaged_state" && -n "$staged_state" ]]; then
+    dirty_state+="${YELLOW}|${COFF}"
+  fi
+
+  if [[ -n "$staged_state" ]]; then
+    dirty_state+="$staged_state"
+  fi
+
+  dirty_state="${CYAN}(${COFF}${dirty_state}${CYAN})${COFF}"
+
+  # XXX < 0.03s til here
 
   # only check status against tracking upstream when it exists and not gone
   local local_prompt
@@ -132,6 +195,8 @@ git_prompt()
 
   tracking_branch=$(2> /dev/null git rev-parse --abbrev-ref --symbolic-full-name '@{u}')
   branch_meta=$(echo "$branch_info" | grep -oP '(\[[^]]+\])')
+
+  # XXX < 0.035s til here
 
   if [[ -n "$tracking_branch" ]]; then
     remote_name=${tracking_branch%"/$current_branch"}
@@ -188,6 +253,7 @@ git_prompt()
     bbq=''
   fi
 
+  # XXX < 0.042s til here
   echo "${local_prompt}${remote_prompt}${diff}${bbq}"
 }
 
@@ -206,7 +272,7 @@ v_env_conda() {
 
   if [[ -z "$detected_conda_env" ]] && [[ -z "$current_py_env" ]]; then
     unset __python_venv_name
-    exit 0
+    return
   fi
 
   if [[ "$current_py_env" != "$__python_venv_name" ]]; then
@@ -256,7 +322,7 @@ generate_status_line() {
   pwd_str=$(readlink -f "$PWD")
 
   if [[ ${#pwd_str} -gt $(( 2 * COLUMNS / 3 )) ]]; then
-    echo "${dash_color}.../$(basename "$PWD")${COFF}\\n"
+    echo -e "${dash_color}.../$(basename "$PWD")${COFF}\\n"
     return 0
   elif [[ ${#pwd_str} -gt $(( COLUMNS / 2)) ]]; then
     pwd_str="$(sed "s:\\([^/]\\)[^/]*/:\\1/:g" <<< "$pwd_str")"
@@ -272,7 +338,7 @@ generate_status_line() {
     ((dash_line_width-=1))
   done
 
-  echo "${dash_color}${host_str}${pwd_str} ${dash_line} ${time_str}${COFF}\\n"
+  echo -e "${dash_color}${host_str}${pwd_str} ${dash_line} ${time_str}${COFF}\\n"
 }
 
 someone_goes_nuts()
@@ -291,7 +357,11 @@ generate_last_state()
   [[ $last_exit_code -eq 0 ]] && echo "${BGREEN}:) ${COFF}" || echo "${BRED}:( ${COFF}"
 }
 
-# FIXME length calculation of full-width character is broken
+# FIXME
+# - length calculation of full-width character is broken
+# - the aim is to keep this function runs under 50ms, which means:
+#   - TODO no single subroutine should exceed 50ms
+#   - TODO use async if possible
 prettify_prompt() {
   local last_exit_code=$?
 
@@ -301,17 +371,22 @@ prettify_prompt() {
 
   last_state="$(generate_last_state $last_exit_code)"
 
-  # FIXME use join_by to add delimiters nicely
-  if [[ $COLUMNS -ge $PS1_MINIMUM_COLUMN_WIDTH ]]; then
-    status_line="$(generate_status_line)"
-    git_str="$(git_prompt)"
-    v_env_str="$(v_env_conda)"
-
-    env_line="${git_str}${v_env_str}"
-    if [[ -n "$env_line" ]]; then
-      env_line="$env_line\\n"
-    fi
+  if [[ $COLUMNS -le $PS1_MINIMUM_COLUMN_WIDTH ]]; then
+    PS1="$last_state"
+    return
   fi
+
+  git_str="$(git_prompt)"
+  v_env_str="$(v_env_conda)"
+  status_line="$(generate_status_line)"
+  env_line="${git_str}${v_env_str}"
+
+
+  # FIXME use join_by to add delimiters nicely
+  if [[ -n "$env_line" ]]; then
+    env_line="$env_line\\n"
+  fi
+
 
   PS1="$status_line$env_line$last_state"
 }

@@ -13,10 +13,8 @@ case $- in
   *) return;;
 esac
 
-
 # handy box specific injection before we load the main part
-[[ -f ~/.bashrc.before ]] && . ~/.bashrc.before
-
+[[ -f ~/.bashrc.before ]] && source ~/.bashrc.before
 
 #
 # load bash related script modules
@@ -29,7 +27,7 @@ BASH_SCRIPTS=(
 )
 
 for s in "${BASH_SCRIPTS[@]}"; do
-  [[ -f ~/.bash_"${s}" ]] && . ~/.bash_"${s}"
+  [[ -f ~/.bash_"${s}" ]] && source ~/.bash_"${s}"
 done
 
 shopt -s cdspell
@@ -48,7 +46,7 @@ hist_ignore=(
   history
 )
 
-# also see history_magic in .bash_ultilities
+# also see history_magic in .bash_utilities
 unset HISTTIMEFORMAT
 HISTCONTROL=ignoreboth:erasedups
 HISTSIZE=9999       # maximum entries allowed in current history
@@ -93,8 +91,8 @@ if [[ -z "${debian_chroot:-}" ]] && [[ -r /etc/debian_chroot ]]; then
 fi
 
 BCMP_PATH=/usr/share/bash-completion/bash_completion
-[[ -f $BCMP_PATH ]] && . $BCMP_PATH
-[[ -f ~/.git-completion.bash ]] && . ~/.git-completion.bash
+[[ -f $BCMP_PATH ]] && source $BCMP_PATH
+[[ -f ~/.git-completion.bash ]] && source ~/.git-completion.bash
 
 # enable color support
 if [[ -x dircolors ]]; then
@@ -161,10 +159,10 @@ BASH
 export FZF_CTRL_T_COMMAND
 
 # FIXME decouple fzf with other bash scripts
-[[ -f ~/.fzf.bash ]] && . ~/.fzf.bash
+[[ -f ~/.fzf.bash ]] && source ~/.fzf.bash
 
 # handy box specific injection after we load the main part
-[[ -f ~/.bashrc.after ]] && . ~/.bashrc.after
+[[ -f ~/.bashrc.after ]] && source ~/.bashrc.after
 
 # FIXME proper fix to eliminate the possibility of duplicates
 # remove duplicates from $PATH
