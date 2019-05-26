@@ -4,8 +4,11 @@
 # will also make use of this file so in that case, we don't want to source
 # everything
 #
-
-export __conda_env_root=/sandbox/vincent.zhang/.conda/envs
+# set this in .bashrc.before to speed up loading
+if [[ -x $(command -v conda) ]] && [[ -z $__conda_env_root ]]; then
+  >&2 echo 'setting conda_env_root'
+  export __conda_env_root=$(conda info --root)
+fi
 
 if [[ -n $__conda_env_root ]]; then
   export __conda_envs=$(ls -1 $__conda_env_root)
