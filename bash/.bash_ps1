@@ -178,7 +178,9 @@ git_prompt()
     dirty_state+="$staged_state"
   fi
 
-  dirty_state="${CYAN}(${COFF}${dirty_state}${CYAN})${COFF}"
+  if [[ -n "$dirty_state" ]]; then
+    dirty_state="${CYAN}(${COFF}${dirty_state}${CYAN})${COFF}"
+  fi
 
   # XXX < 0.03s til here
 
