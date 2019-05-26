@@ -29,7 +29,6 @@ fi
 # using anything else other than bash & git
 git_prompt()
 {
-  # check if current working directory is a git tracked directory
   git_dir="$(git rev-parse --git-dir 2> /dev/null)"
 
   if [[ -z $git_dir ]]; then
@@ -188,19 +187,23 @@ git_prompt()
   local tracking_state
   local remote_prompt
 
-  # XXX may break if branch name contains "." (dot)
-  current_branch=$(git rev-parse --abbrev-ref HEAD)
+
+  if grep -q 'No commits yet' <<<"$branch_info"; then
+    current_branch='[new]'
+  else
+    current_branch=$(git rev-parse --abbrev-ref HEAD)
+  fi
 
   local_prompt="${CYAN}${current_branch}${COFF}"
 
   tracking_branch=$(2> /dev/null git rev-parse --abbrev-ref --symbolic-full-name '@{u}')
-  branch_meta=$(echo "$branch_info" | grep -oP '(\[[^]]+\])')
 
   # XXX < 0.035s til here
 
   if [[ -n "$tracking_branch" ]]; then
     remote_name=${tracking_branch%"/$current_branch"}
 
+    branch_meta=$(echo "$branch_info" | grep -oP '(\[[^]]+\])')
     gone=$(echo "$branch_meta" | grep gone)
     ahead=$(echo "$branch_meta" | grep -oP 'ahead (\K[0-9]+)')
     behind=$(echo "$branch_meta" | grep -oP 'behind (\K[0-9]+)')

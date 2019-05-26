@@ -580,7 +580,8 @@ function! ColorSchemeTweaks()
   highlight link ExtraWhitespace WarningMsg
   highlight link PeskyTabs WarningMsg
   highlight SpellBad cterm=underline gui=undercurl
-
+  " this is needed after switched colorscheme on the fly to trigger correct re-render
+  syntax on
 endfunction
 let g:show_spaces_that_precede_tabs=1
 
