@@ -112,8 +112,6 @@
   mailmap = true
 [pull]
   rebase = true
-[http]
-  sslVerify = false
 [submodule]
   recurse = true
 [color "diff-highlight"]

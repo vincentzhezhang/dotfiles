@@ -8,7 +8,11 @@
 # TODO
 # - add path to before hook directly with a info message
 if [[ -x $(command -v conda) ]] && [[ -z $__conda_env_root ]]; then
-  >&2 echo 'setting conda_env_root'
+  >&2 echo 'Setting conda_env_root...'
+  >&2 echo '-----------------------------------'
+  >&2 echo 'Pro-tip: Add'
+  >&2 echo 'export __conda_env_root=__PATH_TO_CONDA_ROOT__'
+  >&2 echo 'to .bashrc.before to speed things up!'
   export __conda_env_root=$(conda info --root)
 fi
 
