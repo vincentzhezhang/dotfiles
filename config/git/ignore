@@ -55,3 +55,4 @@ node_modules/
 coverage/
 .coverage/
 static/
+__pycache__

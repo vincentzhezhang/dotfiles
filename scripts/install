@@ -1,0 +1,146 @@
+#! /usr/bin/env bash
+if [[ "$SHIT_GOT_REAL" == 'x' ]]; then
+  TARGET_HOME="$HOME"
+else
+  TARGET_HOME="/tmp$HOME"
+  rm -rf "$TARGET_HOME"
+fi
+
+XDG_CONFIG_HOME="$TARGET_HOME/.config"
+mkdir -p "$XDG_CONFIG_HOME"
+
+here="$(dirname ${BASH_SOURCE[0]})"
+source_dir="$(readlink -f "$here/..")"
+
+echo ">>> source_dir: $source_dir"
+echo ">>> XDG_CONFIG_HOME: $XDG_CONFIG_HOME"
+
+echo 'Installing dot files...'
+stow --verbose=2 --no-fold --dir="$source_dir" --target="$XDG_CONFIG_HOME" config
+echo 'Installed dot files!'
+
+
+echo 'Hacking for non-standard apps'
+# XXX hack can be:
+# - use environment or variable to override the config loading path (prefered)
+# - link config file back to $HOME
+# - others?
+
+echo 'Hacking for bash...'
+ln -nsf "$XDG_CONFIG_HOME/bash/bashrc" "$TARGET_HOME/.bashrc"
+echo 'TODO: hacking for vim...'
+echo 'TODO: hacking for vim...'
+echo 'Hacked!'
+
+if [[ "$SHIT_GOT_REAL" == 'x' ]]; then
+  find "$TARGET_HOME" -maxdepth 3 -type l -mmin -5 | xargs stat --printf '%N\n' | sort | column -t
+else
+  tree -aCF "$(readlink -f "$TARGET_HOME/..")"
+fi
+
+exit 0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+cat << EOF
+
+ ██████╗  ██████╗ ███╗   ██╗███████╗
+ ██╔══██╗██╔═══██╗████╗  ██║██╔════╝
+ ██║  ██║██║   ██║██╔██╗ ██║█████╗
+ ██║  ██║██║   ██║██║╚██╗██║██╔══╝
+ ██████╔╝╚██████╔╝██║ ╚████║███████╗
+ ╚═════╝  ╚═════╝ ╚═╝  ╚═══╝╚══════╝
+
+EOF

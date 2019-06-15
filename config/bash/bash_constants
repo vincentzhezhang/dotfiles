@@ -1,4 +1,6 @@
 #! /usr/bin/env bash
+export INPUTRC="$XDG_CONFIG_HOME/readline/inputrc"
+export GEMRC="$XDG_CONFIG_HOME/ruby/gemrc"
 
 # TODO this kinda pollutes the environment variables, needs a better solution
 

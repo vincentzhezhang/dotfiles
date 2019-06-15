@@ -47,21 +47,27 @@
 "   U+259x  ▐  ░  ▒  ▓  ▔  ▕  ▖  ▗  ▘  ▙  ▚  ▛  ▜  ▝  ▞  ▟
 
 " Make use of bash utilities in vim
-let $BASH_ENV = '~/.bash_utilities'
+let $BASH_ENV = "$XDG_CONFIG_HOME/bash/bash_utilities"
+let g:before_hook = '$XDG_CONFIG_HOME/nvim/before.vim'
+let g:after_hook = '$XDG_CONFIG_HOME/nvim/after.vim'
 
-if !empty(glob('~/.vimrc.before'))
-  source ~/.vimrc.before
+if !empty(glob(g:before_hook))
+  source g:before_hook
 end
 
-source ~/.vim/variables.vim
-source ~/.vim/functions.vim
+source $XDG_CONFIG_HOME/nvim/variables.vim
+source $XDG_CONFIG_HOME/nvim/functions.vim
+
+for f in split(glob('$XDG_CONFIG_HOME/nvim/pluginrc.d/*.vim'), '\n')
+  exec 'source' f
+endfor
 
 " temporary workaround for editorconfig-vim slowness
 let g:EditorConfig_core_mode = 'external_command'
 
 " {{{ Plugins
 call SetupVimPlug() " in case vim-plug is missing
-call plug#begin('~/.vim/plugged')
+call plug#begin('$XDG_CONFIG_HOME/nvim/plugged')
 Plug 'airblade/vim-gitgutter'
 Plug 'airblade/vim-rooter'
 Plug 'ajmwagar/vim-deus'
@@ -77,7 +83,7 @@ Plug 'gyim/vim-boxdraw'
 Plug 'honza/vim-snippets'
 Plug 'jparise/vim-graphql' " TODO this is removed from vim-polyglot for now
 Plug 'jreybert/vimagit'
-Plug 'junegunn/fzf', { 'dir': '~/.config/fzf', 'do': './install --all' }
+Plug 'junegunn/fzf', { 'dir': '$XDG_CONFIG_HOME/fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'junegunn/vim-easy-align'
 Plug 'Lokaltog/vim-easymotion'
@@ -121,48 +127,48 @@ if !has('nvim')
   set smarttab
   set softtabstop=0              " moved up from below
   set ttyfast
-  syntax enable                  " Enable syntax highlight
+  syntax on                      " Enable syntax highlight
 end
 
 " force utf-8 encoding cause we have multi-bytes chars here
 scriptencoding utf-8
 
-set autowrite                       " Save changes before switching buffers
-set completeopt-=preview            " Get rid of the annoying preview window on autocomplete
-set expandtab                       " Expand tabs to spaces
-set fillchars+=vert:│               " Make vertical split bar prettier
-" set guicursor=                      " Seems buggy? Have to unset to mitigate junk chars
-set ignorecase                      " Make search case-insensitive
-set list                            " Enable whitespace characters' display
-set listchars=nbsp:¬,tab:»·,trail:· " Better whitespace symbols
-set mouse=a                         " Grab mouse event within tmux
-set lazyredraw                      " FIXME mitigate with jsx until find a fix
-set nobackup                        " Be environment friendly
-set backupcopy=no                   " Be environment friendly
-set noshowmode                      " Hide the default mode text cause we have *whatever*line
-set noshowcmd                       " Hide the annoying command from bottom right
-set noswapfile                      " Get rid of the annoying .swp file
-set nowrap                          " Don't wrap on long lines
-set nowritebackup                   " Write file in place
-set number                          " Display line numbers on the left
-set pastetoggle=<F2>                " bind paste mode for ease of use
-set scrolloff=6                     " Have some context around the current line always on screen
-set signcolumn=yes                  " always display the sign column to avoid content flickering
-set shiftwidth=2                    " Number of spaces to use for each step of (auto)indent
-set showtabline=0                   " Don't need the tab line man
-set smartcase                       " Make search case-insensitive smart!
-set smartindent                     " Do smart auto indenting when starting a new line
-set spell                           " Check spell is good when we added all the keywords!
-set spelllang=en_us                 " Use en_us for better collaboration, sorry en_gb
-set splitbelow                      " Intuitively split to below when doing horizontal split
-set splitright                      " Split to right when doing vertical split
-set synmaxcol=180                   " Limit syntax color for long lines to improve rendering speed
-set tabstop=2                       " Number of spaces that a <Tab> in the file counts for
-set tags=./.tags,./tags,.tags,tags; " Use hidden tags files
-set undodir=~/.vim/undo/            " Persistent undo directory
-set undofile                        " Persistent undo
-set updatetime=666                  " Make update related events slightly faster
-let &showbreak='↪ '                 " Make soft wrap visually appealing FIXME not showing up?
+set autowrite                             " Save changes before switching buffers
+set completeopt-=preview                  " Get rid of the annoying preview window on autocomplete
+set expandtab                             " Expand tabs to spaces
+set fillchars+=vert:│                     " Make vertical split bar prettier
+" set guicursor=                          " Seems buggy? Have to unset to mitigate junk chars
+set ignorecase                            " Make search case-insensitive
+set list                                  " Enable whitespace characters' display
+set listchars=nbsp:¬,tab:»·,trail:·       " Better whitespace symbols
+set mouse=a                               " Grab mouse event within tmux
+set lazyredraw                            " FIXME mitigate with jsx until find a fix
+set nobackup                              " Be environment friendly
+set backupcopy=no                         " Be environment friendly
+set noshowmode                            " Hide the default mode text cause we have *whatever*line
+set noshowcmd                             " Hide the annoying command from bottom right
+set noswapfile                            " Get rid of the annoying .swp file
+set nowrap                                " Don't wrap on long lines
+set nowritebackup                         " Write file in place
+set number                                " Display line numbers on the left
+set pastetoggle=<F2>                      " bind paste mode for ease of use
+set scrolloff=6                           " Have some context around the current line always on screen
+set signcolumn=yes                        " always display the sign column to avoid content flickering
+set shiftwidth=2                          " Number of spaces to use for each step of (auto)indent
+set showtabline=0                         " Don't need the tab line man
+set smartcase                             " Make search case-insensitive smart!
+set smartindent                           " Do smart auto indenting when starting a new line
+set spell                                 " Check spell is good when we added all the keywords!
+set spelllang=en_us                       " Use en_us for better collaboration, sorry en_gb
+set splitbelow                            " Intuitively split to below when doing horizontal split
+set splitright                            " Split to right when doing vertical split
+set synmaxcol=512                         " Limit syntax color for long lines to improve rendering speed
+set tabstop=2                             " Number of spaces that a <Tab> in the file counts for
+set tags=./.tags,./tags,.tags,tags;       " Use hidden tags files
+set undodir="$XDG_CONFIG_HOME/nvim/undo/" " Persistent undo directory
+set undofile                              " Persistent undo
+set updatetime=666                        " Make update related events slightly faster
+let &showbreak='↪ '                       " Make soft wrap visually appealing FIXME not showing up?
 " }}}
 
 
@@ -706,7 +712,9 @@ map <C-\> :NERDTreeFind <Bar> wincmd =<CR>
 
 " FIXME this only works with Python (hopefully), will need a proper
 " implementation
-map <F10> :!ctags -R -f ./tags `python -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())"`<CR>
+" let g:ycm_collect_identifiers_from_tags_files = 1
+" map <F10> :!ctags -R -f ./tags `python -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())"`<CR>
+
 
 " TODO
 " - add more precise ext based matching instead of the naïve one below
@@ -789,8 +797,8 @@ nnoremap <silent> <A-,> :TmuxNavigatePrevious<CR>
 " FIXME default colour setting of deusBg2 is too dark
 highlight! link NonText deusBg3
 
-if !empty(glob('~/.vimrc.after'))
-  source ~/.vimrc.after
+if !empty(glob(g:after_hook))
+  source g:after_hook
 end
 
 " {{{ Initialization

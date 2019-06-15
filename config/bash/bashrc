@@ -1,7 +1,6 @@
 #! /usr/bin/env bash
 
 # shellcheck disable=SC1090
-# TODO try .inputrc
 # TODO extra platform specific settings to a separate script
 
 # If not running interactively, don't do anything, common non-interactive shells including:
@@ -12,6 +11,8 @@ case $- in
   *i*) ;;
   *) return;;
 esac
+
+export XDG_CONFIG_HOME="$HOME/.config"
 
 # handy box specific injection before we load the main part
 [[ -f ~/.bashrc.before ]] && source ~/.bashrc.before
@@ -27,7 +28,8 @@ BASH_SCRIPTS=(
 )
 
 for s in "${BASH_SCRIPTS[@]}"; do
-  [[ -f ~/.bash_"${s}" ]] && source ~/.bash_"${s}"
+  p="$XDG_CONFIG_HOME/bash/bash_${s}"
+  [[ -f "$p" ]] && source "$p"
 done
 
 shopt -s cdspell
@@ -96,8 +98,8 @@ BCMP_PATH=/usr/share/bash-completion/bash_completion
 
 # enable color support
 if [[ -x dircolors ]]; then
-  if [[ -f ~/.dircolors ]]; then
-    eval "$(dircolors -b ~/.dircolors)"
+  if [[ -f "$XDG_CONFIG_HOME/dircolors" ]]; then
+    eval "$(dircolors -b "$XDG_CONFIG_HOME/dircolors")"
   else
     eval "$(dircolors -b)"
   fi

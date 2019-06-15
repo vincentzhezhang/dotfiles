@@ -5,6 +5,8 @@
 # everything
 #
 # set this in .bashrc.before to speed up loading
+# TODO
+# - add path to before hook directly with a info message
 if [[ -x $(command -v conda) ]] && [[ -z $__conda_env_root ]]; then
   >&2 echo 'setting conda_env_root'
   export __conda_env_root=$(conda info --root)
@@ -17,6 +19,9 @@ fi
 #
 # ubiquitous functions
 #
+# TODO
+# - add detection from shebang line
+# - add detection from common auto env file
 clever_conda_path()
 {
   if [[ -z $__conda_envs ]]; then
@@ -70,7 +75,7 @@ get_luminance() {
   else
     case $timestr in
       [$((day))-$((night - 1))]*) echo -n 'high';;
-      [$((night_start))-$((owl - 1))]*) echo -n 'normal';;
+      [$((night))-$((owl - 1))]*) echo -n 'normal';;
       *) echo -n 'low'
     esac
   fi

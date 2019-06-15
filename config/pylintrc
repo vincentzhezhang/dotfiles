@@ -1,0 +1,12 @@
+# XXX funny how config file are parsed differently for linters
+[MESSAGES CONTROL]
+disable =
+  too-few-public-methods,
+  invalid-name,
+  missing-docstring,
+  fixme,
+  wrong-import-position,
+  trailing-newlines,
+max-line-length=120
+
+# vim: set ft=config :

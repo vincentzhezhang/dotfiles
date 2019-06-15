@@ -60,7 +60,7 @@
 [core]
   editor = nvim
   autocrlf = input
-  excludesfile = ~/.gitignore_global
+  excludesfile = ~/.config/git/ignore
 [color]
   ui = true
 [color "branch"]

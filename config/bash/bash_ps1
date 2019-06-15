@@ -393,7 +393,7 @@ prettify_prompt() {
   fi
 
 
-  PS1="$status_line$env_line$last_state"
+  PS1="$status_line\n$env_line$last_state"
 }
 
 PROMPT_COMMAND="prettify_prompt; $PROMPT_COMMAND"
