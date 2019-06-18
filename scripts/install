@@ -35,7 +35,14 @@ echo 'Hacking for non-standard apps'
 
 echo 'Hacking for bash...'
 ln -nsf "$XDG_CONFIG_HOME/bash/bashrc" "$TARGET_HOME/.bashrc"
-echo 'Hacking for vim...'
+
+echo 'hacking for tmux tpm...'
+mkdir -p "$TARGET_HOME/.tmux/plugins"
+ln -nsf "$XDG_CONFIG_HOME/tmux/tmux.conf" "$TARGET_HOME/.tmux.conf"
+ln -nsf "$XDG_CONFIG_HOME/tmux/plugins/my" "$TARGET_HOME/.tmux/plugins/my"
+
+echo 'TODO: hacking for vim...'
+
 echo 'Hacked!'
 
 if [[ "$SHIT_GOT_REAL" == 'x' ]]; then

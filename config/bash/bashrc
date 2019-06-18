@@ -33,6 +33,11 @@ if [[ -z $XDG_DATA_HOME ]]; then
   >&2 echo "No \$XDG_DATA_HOME specified, using default: $XDG_DATA_HOME"
 fi
 
+if [[ ! -w ${XDG_RUNTIME_DIR:="/run/user/$UID"} ]]; then
+    echo "\$XDG_RUNTIME_DIR ($XDG_RUNTIME_DIR) not writable. Setting to /tmp." >&2
+    XDG_RUNTIME_DIR=/tmp
+fi
+
 # handy box specific injection before we load the main part
 [[ -f "$XDG_CONFIG_HOME/bash/before" ]] && source "$XDG_CONFIG_HOME/bash/before"
 

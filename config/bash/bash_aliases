@@ -28,7 +28,6 @@ alias ag='ag --color-match="1;31"'
 # ag -l $1 | xargs sed -ri.bak -e "s/$1/$2/g"
 
 alias mux="tmuxinator"
-alias tmux='tmux -f "$XDG_CONFIG_HOME/tmux/tmux.conf"'
 
 alias vtop='vtop -t dark'
 

@@ -48,7 +48,6 @@
 
 " Make use of bash utilities in vim
 let $BASH_ENV = '$XDG_CONFIG_HOME/bash/bash_utilities'
-
 let g:before_hook = '$XDG_CONFIG_HOME/nvim/before.vim'
 let g:after_hook = '$XDG_CONFIG_HOME/nvim/after.vim'
 
@@ -183,7 +182,7 @@ set synmaxcol=512                         " Limit syntax color for long lines to
 set tabstop=2                             " Number of spaces that a <Tab> in the file counts for
 set tags=./.tags,./tags,.tags,tags;       " Use hidden tags files
 " set undodir="$XDG_DATA_HOME/nvim/undo/" " Persistent undo directory FIXME default to XDG_DATA_HOME
-set undofile                              " Persistent undo
+set undofile                              " Persistent undo, note undodir default to xdg data
 set updatetime=666                        " Make update related events slightly faster
 let &showbreak='↪ '                       " Make soft wrap visually appealing FIXME not showing up?
 " }}}

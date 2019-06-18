@@ -246,6 +246,13 @@ fs() {
 }
 
 history_magic() {
+  # FIXME
+  # this crap is somehow broken on my current work setup, need to figure
+  # out why
+  # - [ ] how the original history works
+  # - [ ] what's my desired behaviour
+  # - [ ] what cannot be done by pure bash history
+  # - [ ] figure out the easiest way to fill the gap
   #
   # bash history with multiple sessions are screwed, let's manually
   # manage it, this function will be trigger on bash exit, and:
@@ -309,19 +316,19 @@ esac
 extract () {
   if [ -f "$1" ] ; then
     case "$1" in
-      *.tar)      mkdir -p "${1::-4}"; tar xvf  "$1" -C "${1::-4}"  ;;
-      *.tar.bz2)  mkdir -p "${1::-8}"; tar xvjf "$1" -C "${1::-8}"  ;;
-      *.tar.gz)   mkdir -p "${1::-7}"; tar xvzf "$1" -C "${1::-7}"  ;;
-      *.tar.xz)   mkdir -p "${1::-7}"; tar xvf  "$1" -C "${1::-7}"  ;;
-      *.7z)       7z x "$1"                                         ;;
-      *.Z)        uncompress "$1"                                   ;;
-      *.bz2)      bunzip2 "$1"                                      ;;
-      *.gz)       gunzip "$1"                                       ;;
-      *.rar)      rar x "$1"                                        ;;
-      *.tbz2)     mkdir -p "${1::-5}"; tar xvjf "$1" -C "${1::-5}"  ;;
-      *.tgz)      mkdir -p "${1::-4}"; tar xvzf "$1" -C "${1::-4}"  ;;
-      *.zip)      unzip "$1"                                        ;;
-      *)          echo "don't know how to extract $1..."            ;;
+      *.7z)       7z x "$1"                                         	;;
+      *.bz2)      bunzip2 "$1"                                      	;;
+      *.gz)       gunzip "$1"                                       	;;
+      *.rar)      rar x "$1"                                        	;;
+      *.tar)      mkdir -p "${1::-4}";  tar xvf   "$1" -C "${1::-4}"	;;
+      *.tar.bz2)  mkdir -p "${1::-8}";  tar xvjf  "$1" -C "${1::-8}"	;;
+      *.tar.gz)   mkdir -p "${1::-7}";  tar xvzf  "$1" -C "${1::-7}"	;;
+      *.tar.xz)   mkdir -p "${1::-7}"; tar xvf  "$1" -C "${1::-7}"  	;;
+      *.tbz2)     mkdir -p "${1::-5}"; tar xvjf "$1" -C "${1::-5}"  	;;
+      *.tgz)      mkdir -p "${1::-4}";  tar xvzf  "$1" -C "${1::-4}"  ;;
+      *.Z)        uncompress "$1"                                   	;;
+      *.zip)      mkdir -p "${1::-4}";  unzip "$1" -d "${1::-4}"      ;;
+      *)          echo "don't know how to extract $1..." 							;;
     esac
   else
     echo "$1 not found!"
