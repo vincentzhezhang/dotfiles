@@ -55,6 +55,7 @@ alias localhost='cd /var/www'
 alias find_broken_symlink='find -L . -maxdepth 1 -type l'
 
 # NeoVim for the win
+alias nvim='TERM=tmux-256color nvim'
 alias vi='nvim'
 alias vim='nvim'
 alias emacs='nvim'

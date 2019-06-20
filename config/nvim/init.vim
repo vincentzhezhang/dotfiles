@@ -244,7 +244,8 @@ let g:airline_right_sep                        = ''
 let g:airline_section_a                        = ''
 let g:airline_section_b                        = ''
 " let g:airline_section_c                        = ''
-let g:airline_section_x                        = ''
+" let g:airline_section_x                        = ''
+let g:airline_section_x                        = airline#section#create(["%{g:conda_venv_name}"])
 let g:airline_section_z                        = airline#section#create(["%{col('.')}:%{line('.')}"])
 let g:airline_symbols_ascii                    = 1
 " }}}
@@ -406,22 +407,12 @@ endfunction
 let g:conda_venv_dir = system('clever_conda_path' . ' ' . expand('%'))
 if empty(g:conda_venv_dir)
   let g:ycm_python_binary_path = 'python'
+  let g:conda_venv_name = ''
 else
+  let g:conda_venv_name = split(g:conda_venv_dir, '/')[-1]
   let g:ycm_python_binary_path = g:conda_venv_dir . '/bin/python'
   let g:ale_virtualenv_dir_names = [g:conda_venv_dir]
 endif
-
-function! ShowPythonPath()
-  if !empty(g:conda_venv_dir)
-    echohl Question " pity that there isn't an appropriate hi group
-    echo 'Found and loaded Python virtual env from: ' . g:conda_venv_dir
-    echohl None
-  endif
-endfunction
-
-augroup tmp
-  autocmd VimEnter * call ShowPythonPath()
-augroup END
 
 " typescript setup for YCM
 if !exists('g:ycm_semantic_triggers')
@@ -460,6 +451,7 @@ let g:NERDTreeIndicatorMapCustom = {
     \ 'Unmerged'  : '≠',
     \ 'Dirty'     : '*',
     \ 'Clean'     : '✓',
+    \ 'Removed'   : 'x',
     \ 'Unknown'   : '?'
     \ }
 

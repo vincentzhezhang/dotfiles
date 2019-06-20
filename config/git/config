@@ -119,3 +119,6 @@
   oldHighlight = red bold 52
   newNormal = green bold
   newHighlight = green bold 22
+[http]
+	sslCAInfo = /home/vincent.zhang/Downloads/bitbucket.pem
+	sslVerify = false

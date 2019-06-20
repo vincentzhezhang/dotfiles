@@ -343,7 +343,7 @@ generate_status_line() {
     ((dash_line_width-=1))
   done
 
-  echo -e "${dash_color}${host_str}${pwd_str} ${dash_line} ${time_str}${COFF}\\n"
+  echo -e "${dash_color}${host_str}${pwd_str} ${dash_line} ${time_str}${COFF}"
 }
 
 someone_goes_nuts()

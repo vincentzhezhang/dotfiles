@@ -7,12 +7,19 @@
 # set this in .bashrc.before to speed up loading
 # TODO
 # - add path to before hook directly with a info message
+
+case $- in
+  *i*) BASH_MODE=interactive ;;
+  *) BASE_MODE=noninteractive ;;
+esac
+
 if [[ -x $(command -v conda) ]] && [[ -z $__conda_env_root ]]; then
   >&2 echo 'Setting conda_env_root...'
   >&2 echo '-----------------------------------'
   >&2 echo 'Pro-tip: Add'
   >&2 echo 'export __conda_env_root=__PATH_TO_CONDA_ROOT__'
   >&2 echo 'to .bashrc.before to speed things up!'
+  echo 'wtf'
   export __conda_env_root=$(conda info --root)
 fi
 
@@ -85,11 +92,7 @@ get_luminance() {
   fi
 }
 
-#
-# XXX hack to detect if this file is sourced by an interactive shell
-#
-sourced_directly=$([[ -z "${BASH_SOURCE[1]}" ]] && echo 1 || echo 0)
-if [[ "$sourced_directly" -eq 1 ]]; then
+if [[ "$BASH_MODE" == 'noninteractive' ]]; then
   return 0
 fi
 
@@ -305,18 +308,19 @@ esac
 extract () {
   if [ -f "$1" ] ; then
     case "$1" in
-      *.tar.bz2)  mkdir -p "${1::-8}";  tar xvjf  "$1" -C "${1::-8}"    ;;
-      *.tar.gz)   mkdir -p "${1::-7}";  tar xvzf  "$1" -C "${1::-7}"    ;;
-      *.tar)      mkdir -p "${1::-4}";  tar xvf   "$1" -C "${1::-4}"    ;;
-      *.tbz2)     mkdir -p "${1::-5}";  tar xvjf  "$1" -C "${1::-5}"    ;;
-      *.tgz)      mkdir -p "${1::-4}";  tar xvzf  "$1" -C "${1::-4}"    ;;
-      *.Z)        uncompress "$1"  ;;
-      *.bz2)      bunzip2 "$1"     ;;
-      *.gz)       gunzip "$1"      ;;
-      *.zip)      unzip "$1"       ;;
-      *.7z)       7z x "$1"        ;;
-      *.rar)      rar x "$1"       ;;
-      *)          echo "don't know how to extract $1..." ;;
+      *.tar)      mkdir -p "${1::-4}"; tar xvf  "$1" -C "${1::-4}"  ;;
+      *.tar.bz2)  mkdir -p "${1::-8}"; tar xvjf "$1" -C "${1::-8}"  ;;
+      *.tar.gz)   mkdir -p "${1::-7}"; tar xvzf "$1" -C "${1::-7}"  ;;
+      *.tar.xz)   mkdir -p "${1::-7}"; tar xvf  "$1" -C "${1::-7}"  ;;
+      *.7z)       7z x "$1"                                         ;;
+      *.Z)        uncompress "$1"                                   ;;
+      *.bz2)      bunzip2 "$1"                                      ;;
+      *.gz)       gunzip "$1"                                       ;;
+      *.rar)      rar x "$1"                                        ;;
+      *.tbz2)     mkdir -p "${1::-5}"; tar xvjf "$1" -C "${1::-5}"  ;;
+      *.tgz)      mkdir -p "${1::-4}"; tar xvzf "$1" -C "${1::-4}"  ;;
+      *.zip)      unzip "$1"                                        ;;
+      *)          echo "don't know how to extract $1..."            ;;
     esac
   else
     echo "$1 not found!"
@@ -555,5 +559,9 @@ elif type compctl &>/dev/null; then
   compctl -K _npm_completion npm
 fi
 ###-end-npm-completion-###
+
+path() {
+  echo "${PATH//:/$'\n'}"
+}
 
 # vim: set ai ts=2 tw=79:
