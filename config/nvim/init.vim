@@ -66,6 +66,21 @@ endfor
 " temporary workaround for editorconfig-vim slowness
 let g:EditorConfig_core_mode = 'external_command'
 
+" FIXME polyglot not playing well with vim-markdown
+" https://github.com/sheerun/vim-polyglot/issues/152
+let g:polyglot_disabled = ['md', 'markdown']
+let g:markdown_fenced_languages = [
+      \ 'bash=sh',
+      \ 'c',
+      \ 'css',
+      \ 'html',
+      \ 'javascript',
+      \ 'python',
+      \ 'ruby',
+      \ 'scss',
+      \ 'sql',
+      \]
+
 " {{{ Plugins
 call SetupVimPlug() " in case vim-plug is missing
 call plug#begin('$XDG_CONFIG_HOME/nvim/plugged')
@@ -93,6 +108,7 @@ Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
 Plug 'mhinz/vim-startify'
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'peitalin/vim-jsx-typescript', { 'for': ['ts', 'tsx'] }
+Plug 'plasticboy/vim-markdown' " FIXME Not playing well with polyglot, see above
 Plug 'Raimondi/delimitMate'
 Plug 'romainl/flattened'
 Plug 'scrooloose/nerdcommenter'

@@ -1,7 +1,8 @@
 #! /usr/bin/env bash
-
 # shellcheck disable=SC1090
-# TODO extra platform specific settings to a separate script
+
+# TODO
+# - extra platform specific settings to a separate script
 
 # If not running interactively, don't do anything, common non-interactive shells including:
 # - login sheel
@@ -12,9 +13,24 @@ case $- in
   *) return;;
 esac
 
+# environment hack
+if [[ -f ~/.bash.env ]]; then
+  source ~/.bash.env
+fi
+
 if [[ -z $XDG_CONFIG_HOME ]]; then
   export XDG_CONFIG_HOME="$HOME/.config"
   >&2 echo "No \$XDG_CONFIG_HOME specified, using default: $XDG_CONFIG_HOME"
+fi
+
+if [[ -z $XDG_CACHE_HOME ]]; then
+  export XDG_CACHE_HOME="$HOME/.cache"
+  >&2 echo "No \$XDG_CACHE_HOME specified, using default: $XDG_CACHE_HOME"
+fi
+
+if [[ -z $XDG_DATA_HOME ]]; then
+  export XDG_DATA_HOME="$HOME/.local/share"
+  >&2 echo "No \$XDG_DATA_HOME specified, using default: $XDG_DATA_HOME"
 fi
 
 # handy box specific injection before we load the main part
@@ -53,6 +69,7 @@ hist_ignore=(
 
 # also see history_magic in .bash_utilities
 unset HISTTIMEFORMAT
+export HISTFILE="$XDG_DATA_HOME/bash_history"
 HISTCONTROL=ignoreboth:erasedups
 HISTSIZE=9999       # maximum entries allowed in current history
 HISTFILESIZE=9999   # maximum lines allowed in history file

@@ -262,7 +262,7 @@ history_magic() {
   local IFS=:
   local verbose=$1
 
-  src_file="$HOME/.bash_history"
+  src_file="${HISTFILE:?}"
   tmp_file="/tmp/bash_history_tmp_$(date +'%N')"
   lines_before=$(wc -l "$src_file")
 
@@ -288,6 +288,7 @@ history_magic() {
   else
     echo "removed ${lines_removed} lines from history!"
   fi
+
   time_ends=$(date +%s)
   secs=$(((time_ends - time_start) / 1000))
   sleep 5
