@@ -5,13 +5,13 @@ shopt -s expand_aliases
 alias c='clear'
 
 # handy ls aliases
-alias ls='ls -CFh --color=auto' # h is not effective here but can be re-use by other aliases
+alias ls='ls -C --classify --human-readable --color=auto --group-directories-first' # h is not effective here but can be re-use by other aliases
 alias sl='ls'
 alias l='ls'
 alias la='ls -A'
 alias ll='ls -Al'
 alias lt='ls -ltur'
-alias lg='ll -A | grep -i'
+alias lg='ll | grep -i'
 alias tree='tree -C'
 
 # handy grep aliases
