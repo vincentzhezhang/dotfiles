@@ -12,10 +12,13 @@ case $- in
   *) return;;
 esac
 
-export XDG_CONFIG_HOME="$HOME/.config"
+if [[ -z $XDG_CONFIG_HOME ]]; then
+  export XDG_CONFIG_HOME="$HOME/.config"
+  >&2 echo "No \$XDG_CONFIG_HOME specified, using default: $XDG_CONFIG_HOME"
+fi
 
 # handy box specific injection before we load the main part
-[[ -f ~/.bashrc.before ]] && source ~/.bashrc.before
+[[ -f "$XDG_CONFIG_HOME/bash/before" ]] && source "$XDG_CONFIG_HOME/bash/before"
 
 #
 # load bash related script modules
@@ -164,10 +167,11 @@ export FZF_CTRL_T_COMMAND
 [[ -f ~/.fzf.bash ]] && source ~/.fzf.bash
 
 # handy box specific injection after we load the main part
-[[ -f ~/.bashrc.after ]] && source ~/.bashrc.after
+[[ -f "$XDG_CONFIG_HOME/bash/after" ]] && source "$XDG_CONFIG_HOME/bash/after"
 
-# FIXME proper fix to eliminate the possibility of duplicates
-# remove duplicates from $PATH
+# FIXME
+# - proper fix to eliminate the possibility of duplicates, instead of remove
+# them here manually
 PATH=$(echo -n "$PATH" | awk -v RS=: -v ORS=: '!x[$0]++' | sed "s/\(.*\).\{1\}/\1/")
 
 # just for fun

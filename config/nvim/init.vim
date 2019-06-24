@@ -47,12 +47,13 @@
 "   U+259x  ▐  ░  ▒  ▓  ▔  ▕  ▖  ▗  ▘  ▙  ▚  ▛  ▜  ▝  ▞  ▟
 
 " Make use of bash utilities in vim
-let $BASH_ENV = "$XDG_CONFIG_HOME/bash/bash_utilities"
+let $BASH_ENV = '$XDG_CONFIG_HOME/bash/bash_utilities'
+
 let g:before_hook = '$XDG_CONFIG_HOME/nvim/before.vim'
 let g:after_hook = '$XDG_CONFIG_HOME/nvim/after.vim'
 
 if !empty(glob(g:before_hook))
-  source g:before_hook
+  exec 'source' g:before_hook
 end
 
 source $XDG_CONFIG_HOME/nvim/variables.vim
@@ -165,7 +166,7 @@ set splitright                            " Split to right when doing vertical s
 set synmaxcol=512                         " Limit syntax color for long lines to improve rendering speed
 set tabstop=2                             " Number of spaces that a <Tab> in the file counts for
 set tags=./.tags,./tags,.tags,tags;       " Use hidden tags files
-set undodir="$XDG_CONFIG_HOME/nvim/undo/" " Persistent undo directory
+" set undodir="$XDG_DATA_HOME/nvim/undo/" " Persistent undo directory FIXME default to XDG_DATA_HOME
 set undofile                              " Persistent undo
 set updatetime=666                        " Make update related events slightly faster
 let &showbreak='↪ '                       " Make soft wrap visually appealing FIXME not showing up?
@@ -790,7 +791,7 @@ nnoremap <silent> <A-,> :TmuxNavigatePrevious<CR>
 highlight! link NonText deusBg3
 
 if !empty(glob(g:after_hook))
-  source g:after_hook
+  exec 'source' g:after_hook
 end
 
 " {{{ Initialization

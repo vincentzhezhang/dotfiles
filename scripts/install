@@ -1,23 +1,30 @@
 #! /usr/bin/env bash
+set -e
+
 if [[ "$SHIT_GOT_REAL" == 'x' ]]; then
-  TARGET_HOME="$HOME"
+  if [[ -n $XDG_CONFIG_HOME ]]; then
+    >&2 echo "Using existing \$XDG_CONFIG_HOME: $XDG_CONFIG_HOME"
+  else
+    XDG_CONFIG_HOME="/$HOME/.config"
+    >&2 echo "\$XDG_CONFIG_HOME is not set, using default: $XDG_CONFIG_HOME"
+  fi
+  TARGET_HOME=$HOME
 else
-  TARGET_HOME="/tmp$HOME"
-  rm -rf "$TARGET_HOME"
+  TARGET_HOME="/tmp/$HOME"
+  XDG_CONFIG_HOME="/tmp/$HOME/.config"
+  rm -rf "$XDG_CONFIG_HOME"
+  mkdir -p "$XDG_CONFIG_HOME"
 fi
 
-XDG_CONFIG_HOME="$TARGET_HOME/.config"
-mkdir -p "$XDG_CONFIG_HOME"
-
-here="$(dirname ${BASH_SOURCE[0]})"
+here=$(dirname "${BASH_SOURCE[0]}")
 source_dir="$(readlink -f "$here/..")"
 
-echo ">>> source_dir: $source_dir"
-echo ">>> XDG_CONFIG_HOME: $XDG_CONFIG_HOME"
+>&2 echo ">>> \$source_dir: $source_dir"
+>&2 echo ">>> \$XDG_CONFIG_HOME: $XDG_CONFIG_HOME"
 
-echo 'Installing dot files...'
+>&2 echo 'Installing dot files...'
 stow --verbose=2 --no-fold --dir="$source_dir" --target="$XDG_CONFIG_HOME" config
-echo 'Installed dot files!'
+>&2 echo 'Installed dot files!'
 
 
 echo 'Hacking for non-standard apps'
@@ -28,8 +35,7 @@ echo 'Hacking for non-standard apps'
 
 echo 'Hacking for bash...'
 ln -nsf "$XDG_CONFIG_HOME/bash/bashrc" "$TARGET_HOME/.bashrc"
-echo 'TODO: hacking for vim...'
-echo 'TODO: hacking for vim...'
+echo 'Hacking for vim...'
 echo 'Hacked!'
 
 if [[ "$SHIT_GOT_REAL" == 'x' ]]; then

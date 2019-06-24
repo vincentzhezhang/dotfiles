@@ -1,12 +1,12 @@
-# XXX funny how config file are parsed differently for linters
 [MESSAGES CONTROL]
-disable =
-  too-few-public-methods,
+disable=
   invalid-name,
   missing-docstring,
-  fixme,
-  wrong-import-position,
-  trailing-newlines,
+  too-few-public-methods,
+  bad-continuation,
+  fixme,  # this is manually handled
+  wrong-import-order, # this should be handled by isort
 max-line-length=120
+extension-pkg-whitelist=ujson
 
 # vim: set ft=config :
