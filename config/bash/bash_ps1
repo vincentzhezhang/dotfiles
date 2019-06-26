@@ -272,7 +272,7 @@ v_env_conda() {
 
   detected_conda_env=$(clever_conda_path | xargs --no-run-if-empty basename)
   # (>&2 echo "detected: $detected_conda_env")
-  current_py_env=$(grep -oP 'conda/envs/(\K\w+)' <<< "$PATH")
+  current_py_env=$(grep -oP '\/.*conda.*/envs/(\K\w+)' <<< "$PATH")
   # (>&2 echo "current: $current_py_env")
 
   if [[ -z "$detected_conda_env" ]] && [[ -z "$current_py_env" ]]; then
