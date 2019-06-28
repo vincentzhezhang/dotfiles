@@ -7,10 +7,25 @@
 
 # note, apps that using virtual env are installed separately, we could either have default fallback or ignore it
 
+# shellcheck, no idea way to install on a restricted machine yet
+
+# lsp for bash
 npm i -g bash-language-server
 
+# man for the impatient
 npm i -g tldr
+npm i -g wscat
 
 # conda base environments creations
 
 # brew installs
+
+# better alternative for curl
+brew install httpie
+# handy spark lines
+brew install spark
+# YGNI
+brew install youtube-dl
+# JSON for cli
+brew install jq
+

@@ -42,7 +42,6 @@ ln -nsf "$XDG_CONFIG_HOME/tmux/tmux.conf" "$TARGET_HOME/.tmux.conf"
 ln -nsf "$XDG_CONFIG_HOME/tmux/plugins/my" "$TARGET_HOME/.tmux/plugins/my"
 
 echo 'TODO: hacking for vim...'
-
 echo 'Hacked!'
 
 if [[ "$SHIT_GOT_REAL" == 'x' ]]; then

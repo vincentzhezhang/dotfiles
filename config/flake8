@@ -1,3 +1,8 @@
+#
+# Rule of thumb:
+# linter are better used for catching logical bugs not styling issues, which
+# should really be automagically fixed by formatters
+#
 [flake8]
 ignore =
   # D203,
@@ -7,6 +12,6 @@ ignore =
   # E303 too many blank lines
   E303,
 exclude = .git,__pycache__,docs/source/conf.py,old,build,dist
-max-complexity = 10
+max-complexity = 12
 
 # vim: set ft=config :

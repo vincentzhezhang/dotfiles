@@ -19,8 +19,13 @@ alias grep='grep --color=auto'
 alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
 
-# ag for better code search
-alias ag='ag --color-match="1;31"'
+# TODO ag sucks at configuration
+alias ag="ag \
+  --path-to-ignore=\$XDG_CONFIG_HOME/git/ignore \
+  --color-match='1;33' \
+  --color-line-number='0;36' \
+  "
+
 # TODO
 # 1. batch search and replace
 # 2. should add two versions, one is search recursively within current diretory
@@ -78,9 +83,7 @@ alias pyserver='python -m SimpleHTTPServer'
 alias ipython='ipython --colors=linux'
 alias git-root='cd $(git rev-parse --show-toplevel)'
 
-# TODO
-# fzf based command line app launcher
-alias x='$(IFS=":"; for p in $PATH; do command ls -1 "$p" 2>/dev/null; done | fzf --height=36%)'
+alias x='cd $XDG_CONFIG_HOME'
 
 # use most recent version of git-cola
 alias cola='git-cola'

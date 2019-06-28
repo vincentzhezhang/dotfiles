@@ -1,0 +1,16 @@
+#
+# Rule of thumb:
+# linter are better used for catching logical bugs not styling issues, which
+# should really be automagically fixed by formatters
+#
+# the loading order of mypy conf is:
+# - local mypy.ini
+# - local setup.cfg NOTE: section header is [mypy]
+# - $XDG_CONFIG_HOME/mypy/config
+# - ~/.config/mypy/config
+# - ~/.mypy.ini
+#
+[mypy]
+ignore_missing_imports = True
+
+# vim: set ft=config :

@@ -31,8 +31,8 @@ fi
 # ubiquitous functions
 #
 # TODO
-# - add detection from shebang line
-# - add detection from common auto env file
+# - [ ] add detection from shebang line
+# - [ ] add detection from common auto env file
 clever_conda_path()
 {
   if [[ -z $__conda_envs ]]; then
@@ -109,7 +109,7 @@ weather()
 wtf()
 {
   # [W]here is [T]he [F]unction
-  shopt -s extdebug; declare -F "$1" | awk '{ print $3" +"$2 }'
+  shopt -s extdebug; declare -F "$1" | awk '{ print $3" +"$2 }' | xargs --no-run-if-empty nvim
 }
 __complete_wtf()
 {

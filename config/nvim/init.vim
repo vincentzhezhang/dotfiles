@@ -62,12 +62,10 @@ for f in split(glob('$XDG_CONFIG_HOME/nvim/pluginrc.d/*.vim'), '\n')
   exec 'source' f
 endfor
 
-" temporary workaround for editorconfig-vim slowness
-let g:EditorConfig_core_mode = 'external_command'
-
 " FIXME polyglot not playing well with vim-markdown
 " https://github.com/sheerun/vim-polyglot/issues/152
 let g:polyglot_disabled = ['md', 'markdown']
+let g:vim_markdown_folding_disabled = 1
 let g:markdown_fenced_languages = [
       \ 'bash=sh',
       \ 'c',
@@ -260,8 +258,9 @@ let g:airline_right_sep                        = ''
 let g:airline_section_a                        = ''
 let g:airline_section_b                        = ''
 " let g:airline_section_c                        = ''
-" let g:airline_section_x                        = ''
-let g:airline_section_x                        = airline#section#create(["%{g:conda_venv_name}"])
+let g:airline_section_x                        = ''
+" FIXME name of the virtualenv shows automagically
+" let g:airline_section_x                        = airline#section#create(['%{g:conda_venv_name}'])
 let g:airline_section_z                        = airline#section#create(["%{col('.')}:%{line('.')}"])
 let g:airline_symbols_ascii                    = 1
 " }}}
@@ -409,17 +408,8 @@ let g:multi_cursor_skip_key            = '<C-x>'
 let g:multi_cursor_quit_key            = '<Esc>'
 
 "
-" Smart Python env finder
+" Python Virtual Env Tweaks
 "
-function! s:match_highlight(highlight, pattern) abort
-  let matches = matchlist(a:highlight, a:pattern)
-  if len(matches) == 0
-    return 'NONE'
-  endif
-  return matches[1]
-endfunction
-
-" use Python from virtual env
 let g:conda_venv_dir = system('clever_conda_path' . ' ' . expand('%'))
 if empty(g:conda_venv_dir)
   let g:ycm_python_binary_path = 'python'
@@ -427,7 +417,9 @@ if empty(g:conda_venv_dir)
 else
   let g:conda_venv_name = split(g:conda_venv_dir, '/')[-1]
   let g:ycm_python_binary_path = g:conda_venv_dir . '/bin/python'
-  let g:ale_virtualenv_dir_names = [g:conda_venv_dir]
+  " disable ale's virtual env auto discover feature and use the envvar instead
+  let g:ale_virtualenv_dir_names = []
+  let $VIRTUAL_ENV = g:conda_venv_dir
 endif
 
 " typescript setup for YCM
@@ -435,6 +427,7 @@ if !exists('g:ycm_semantic_triggers')
   let g:ycm_semantic_triggers = {}
 endif
 let g:ycm_semantic_triggers['typescript'] = ['.']
+let g:ycm_max_num_candidates = 18
 
 let g:NERDTreeMinimalUI = 1
 let g:NERDTreeStatusline = '%#NonText#'

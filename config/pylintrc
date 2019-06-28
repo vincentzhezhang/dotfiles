@@ -1,11 +1,16 @@
+#
+# Rule of thumb:
+# linter are better used for catching logical bugs not styling issues, which
+# should really be automagically fixed by formatters
+#
 [MESSAGES CONTROL]
 disable=
+  bad-continuation,
+  fixme,                  # this is manually handled
   invalid-name,
   missing-docstring,
   too-few-public-methods,
-  bad-continuation,
-  fixme,  # this is manually handled
-  wrong-import-order, # this should be handled by isort
+  wrong-import-order,     # this should be handled by isort
 max-line-length=120
 extension-pkg-whitelist=ujson
 

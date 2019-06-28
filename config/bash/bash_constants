@@ -71,4 +71,8 @@ typeset -A nord_mapping
 nord_mapping=(
 )
 
+# TODO check if support is added, last checked 06-27
+export PYLINTRC="$XDG_CONFIG_HOME/pylintrc"
+export PYLINTHOME="$XDG_DATA_HOME/pylint.d"
+
 # vim: set ai ts=2 tw=79:
