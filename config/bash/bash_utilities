@@ -163,7 +163,7 @@ far() {
     return 1
   fi
 
-  if [[ ! -x $(command -v ag) ]]; then
+  if [[ ! -x $(which ag) ]]; then
     >&2 echo 'ag is missing, please install it first.'
     return 1
   fi
