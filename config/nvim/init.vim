@@ -407,20 +407,23 @@ let g:multi_cursor_prev_key            = '<C-p>'
 let g:multi_cursor_skip_key            = '<C-x>'
 let g:multi_cursor_quit_key            = '<Esc>'
 
+" {{{ Python Virtual Env Tweaks start
 "
-" Python Virtual Env Tweaks
-"
-let g:conda_venv_dir = system('clever_conda_path' . ' ' . expand('%'))
-if empty(g:conda_venv_dir)
-  let g:ycm_python_binary_path = 'python'
-  let g:conda_venv_name = ''
-else
-  let g:conda_venv_name = split(g:conda_venv_dir, '/')[-1]
-  let g:ycm_python_binary_path = g:conda_venv_dir . '/bin/python'
-  " disable ale's virtual env auto discover feature and use the envvar instead
-  let g:ale_virtualenv_dir_names = []
-  let $VIRTUAL_ENV = g:conda_venv_dir
+" XXX For historical reason, $VIRTUAL_ENV is used by many Python
+" plugins so we just have to abide by it for now
+let s:py_virtual_env_dir = system('clever_conda_path' . ' ' . expand('%'))
+if empty(s:py_virtual_env_dir)
+  let s:py_virtual_env_dir = substitute(trim(system('command -v python')), '/\+bin/python', '', 'g')
 endif
+
+let g:ycm_python_binary_path = s:py_virtual_env_dir . '/bin/python'
+let $VIRTUAL_ENV = s:py_virtual_env_dir
+
+" disable ale's virtual env auto discover feature and use the envvar instead
+" because we know the environment better
+let g:ale_virtualenv_dir_names = []
+"
+" }}}
 
 " typescript setup for YCM
 if !exists('g:ycm_semantic_triggers')
