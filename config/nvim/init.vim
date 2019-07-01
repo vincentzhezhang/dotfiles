@@ -303,7 +303,7 @@ xnoremap gx :call EnhancedBrowseX()<CR>
 function! TextMagic()
   set textwidth=0
   set wrapmargin=0
-  set colorcolumn=79
+  " set colorcolumn=79
   " FIXME
   " - this will get reset on window resize, need to prevent that
   " - columns are buggy with multiple buffers
@@ -313,8 +313,10 @@ function! TextMagic()
   set wrap
   nmap j gj
   nmap k gk
+  nmap 0 g0
+  nmap $ g$
   " FIXME can't link to LineNr due to a bug
-  hi ColorColumn ctermbg=239 guibg=#242a32
+  " hi ColorColumn ctermbg=239 guibg=#242a32
 endfunction
 
 "
@@ -333,7 +335,6 @@ augroup general_enhancements
   autocmd!
   autocmd BufCreate * call SetUpBuffer()
   autocmd BufEnter *.log set nospell " no spell check for log files
-  autocmd BufEnter *.md set nowrap
   autocmd BufEnter *.md,*.txt,*.doc,*.rst call TextMagic()
   autocmd BufEnter,InsertLeave * set cursorline
   autocmd BufLeave,InsertEnter * set nocursorline
@@ -664,7 +665,7 @@ noremap <space>c ea<C-x><C-s>
 " - open up preview for markdown files
 " - render plantuml for puml files
 " - run the file if it's executable and has shebang set
-nnoremap <leader>r :!%:p<CR><CR>
+nnoremap <leader>r :!%:p<CR>
 
 function EchoOutput(job_id, data, event)
   if a:data == 0
