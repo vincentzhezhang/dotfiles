@@ -1,6 +1,18 @@
 #! /usr/bin/env bash
+
+#
+# XDG support hacks :(
+#
+
+# TODO check if support is added, last checked 06-27
+export PYLINTRC="$XDG_CONFIG_HOME/pylintrc"
+export PYLINTHOME="$XDG_DATA_HOME/pylint.d"
+
 export INPUTRC="$XDG_CONFIG_HOME/readline/inputrc"
+
 export GEMRC="$XDG_CONFIG_HOME/ruby/gemrc"
+export GEM_HOME="$XDG_DATA_HOME/gem"
+export GEM_SPEC_CACHE="$XDG_CACHE_HOME/gem"
 
 # TODO this kinda pollutes the environment variables, needs a better solution
 
@@ -70,9 +82,5 @@ shades_of_gray=(
 typeset -A nord_mapping
 nord_mapping=(
 )
-
-# TODO check if support is added, last checked 06-27
-export PYLINTRC="$XDG_CONFIG_HOME/pylintrc"
-export PYLINTHOME="$XDG_DATA_HOME/pylint.d"
 
 # vim: set ai ts=2 tw=79:
