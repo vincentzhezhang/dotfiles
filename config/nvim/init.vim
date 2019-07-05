@@ -410,9 +410,19 @@ let g:multi_cursor_quit_key            = '<Esc>'
 
 " {{{ Python Virtual Env Tweaks start
 "
+" Priority
+" - active conda environment
+" - clever_conda_path
+" - wherever the current python from
+"
 " XXX For historical reason, $VIRTUAL_ENV is used by many Python
 " plugins so we just have to abide by it for now
-let s:py_virtual_env_dir = system('clever_conda_path' . ' ' . expand('%'))
+let s:py_virtual_env_dir = $CONDA_PREFIX
+
+if empty(s:py_virtual_env_dir)
+  let s:py_virtual_env_dir = system('clever_conda_path' . ' ' . expand('%'))
+endif
+
 if empty(s:py_virtual_env_dir)
   let s:py_virtual_env_dir = substitute(trim(system('command -v python')), '/\+bin/python', '', 'g')
 endif

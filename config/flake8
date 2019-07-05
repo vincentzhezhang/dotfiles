@@ -11,6 +11,8 @@ ignore =
   E501,
   # E303 too many blank lines
   E303,
+  # E702: multiple statements on one line (semicolon)
+  E702,
 exclude = .git,__pycache__,docs/source/conf.py,old,build,dist
 max-complexity = 12
 

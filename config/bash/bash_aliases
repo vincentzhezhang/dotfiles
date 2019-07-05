@@ -20,11 +20,15 @@ alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
 
 # TODO ag sucks at configuration
-alias ag="ag \
-  --path-to-ignore=\$XDG_CONFIG_HOME/git/ignore \
-  --color-match='1;33' \
-  --color-line-number='0;36' \
-  "
+# see if agrc is fixed or if we can use ENVVAR properly
+alias ag="\
+ag \
+--path-to-ignore=\$XDG_CONFIG_HOME/git/ignore \
+--follow \
+--color-match='1;33' \
+--color-line-number='0;35' \
+--pager='less -R' \
+"
 
 # TODO
 # 1. batch search and replace
