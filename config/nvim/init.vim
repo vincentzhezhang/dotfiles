@@ -181,7 +181,7 @@ set tabstop=2                             " Number of spaces that a <Tab> in the
 set tags=./.tags,./tags,.tags,tags;       " Use hidden tags files
 " set undodir="$XDG_DATA_HOME/nvim/undo/" " Persistent undo directory FIXME default to XDG_DATA_HOME
 set undofile                              " Persistent undo, note undodir default to xdg data
-set updatetime=666                        " Make update related events slightly faster
+set updatetime=128                        " Make update related events slightly faster
 let &showbreak='↪ '                       " Make soft wrap visually appealing FIXME not showing up?
 " }}}
 
