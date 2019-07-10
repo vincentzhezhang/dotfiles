@@ -1,37 +1,16 @@
 #! /usr/bin/env bash
-# shellcheck disable=SC2155
 
-# TODO
-# - make this a proper plugin
+#
+# use different colours in pane border to represent different modes of the pane
+#
+
 set -e
 
-get_tmux_option()
-{
-  local option_name="$1"
-  local default_option_value="$2"
-  local option_value=$(tmux show-option -gqv "$option_name")
-
-  if [[ -n "$option_value" ]]; then
-    echo "$option_value"
-  else
-    echo "$default_option_value"
-  fi
-}
-
-set_tmux_option()
-{
-  local option_name="$1"
-  local option_value="$2"
-  local session="$3"
-
-  if [[ -n "$session" ]]; then
-    tmux set-option -t "$session" "$option_name" "$option_value"
-  else
-    tmux set-option -g "$option_name" "$option_value"
-  fi
-}
+source ./utils
 
 here="${BASH_SOURCE[0]}"
+
+echo "pane plugin sourced!" >> /tmp/ttt.log
 
 default_copy_mode_border_style='fg=yellow'
 default_normal_mode_border_style='fg=cyan'
@@ -45,6 +24,7 @@ tmux set-hook -g window-pane-changed "run-shell '$here #{pane_in_mode} #{session
 
 main()
 {
+  echo "pane plugin executed!" >> /tmp/ttt.log
   local pane_in_mode="$1"
   local session_name="$2"
   if [[ "$pane_in_mode" == '1' ]]; then
@@ -53,4 +33,5 @@ main()
     set_tmux_option 'pane-active-border-style' "$normal_mode_border_style" "$session_name"
   fi
 }
+
 main "$@"
