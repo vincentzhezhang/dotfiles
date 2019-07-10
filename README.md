@@ -29,3 +29,8 @@ Check the output see if it make sense, then:
 ```sh
 SHIT_GOT_REAL=x ./script/install
 ```
+
+## Scripts
+
+All the scripts that can make modifications are executed in dry-run mode by
+default, add SHIT_GOT_REAL=x before the script to make it do the real work.
