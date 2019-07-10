@@ -120,5 +120,7 @@
   newNormal = green bold
   newHighlight = green bold 22
 [http]
-	sslCAInfo = /home/vincent.zhang/Downloads/bitbucket.pem
-	sslVerify = false
+  sslCAInfo = /home/vincent.zhang/Downloads/bitbucket.pem
+  sslVerify = false
+
+# vim: set ft=gitconfig :

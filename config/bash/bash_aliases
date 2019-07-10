@@ -12,7 +12,7 @@ alias la='ls -A'
 alias ll='ls -Al'
 alias lt='ls -ltur'
 alias lg='ll | grep -i'
-alias tree='tree -C'
+alias tree='tree -CF'
 
 # handy grep aliases
 alias grep='grep --color=auto'

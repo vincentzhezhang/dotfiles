@@ -7,7 +7,7 @@
 
 # note, apps that using virtual env are installed separately, we could either have default fallback or ignore it
 
-# shellcheck, no idea way to install on a restricted machine yet
+# FIXME shellcheck, no idea way to install on a restricted machine yet
 
 # lsp for bash
 npm i -g bash-language-server
@@ -29,3 +29,10 @@ brew install youtube-dl
 # JSON for cli
 brew install jq
 
+# docker file linter
+brew install hadolint
+
+#
+# linters
+#
+# could just refer to the ale doc for a comprehensive list
