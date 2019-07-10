@@ -2,17 +2,17 @@
 set -e
 
 if [[ "$SHIT_GOT_REAL" == 'x' ]]; then
+  TARGET_HOME=$HOME
+
   if [[ -n $XDG_CONFIG_HOME ]]; then
     >&2 echo "Using existing \$XDG_CONFIG_HOME: $XDG_CONFIG_HOME"
   else
-    XDG_CONFIG_HOME="/$HOME/.config"
-    >&2 echo "\$XDG_CONFIG_HOME is not set, using default: $XDG_CONFIG_HOME"
+    >&2 echo "\$XDG_CONFIG_HOME is not set, using default: \$HOME/.config"
+    XDG_CONFIG_HOME="$HOME/.config"
   fi
-  TARGET_HOME=$HOME
 else
-  TARGET_HOME="/tmp/$HOME"
-  XDG_CONFIG_HOME="/tmp/$HOME/.config"
-  rm -rf "$XDG_CONFIG_HOME"
+  TARGET_HOME="$(mktemp -d)/home"
+  XDG_CONFIG_HOME="$TARGET_HOME/.config"
   mkdir -p "$XDG_CONFIG_HOME"
 fi
 
@@ -45,106 +45,10 @@ echo 'TODO: hacking for vim...'
 echo 'Hacked!'
 
 if [[ "$SHIT_GOT_REAL" == 'x' ]]; then
-  find "$TARGET_HOME" -maxdepth 3 -type l -mmin -5 | xargs stat --printf '%N\n' | sort | column -t
+  find "$TARGET_HOME" -maxdepth 3 -type l -mmin -5 2>/dev/null | xargs stat --printf '%N\n' | sort | column -t
 else
   tree -aCF "$(readlink -f "$TARGET_HOME/..")"
 fi
-
-exit 0
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 cat << EOF
 

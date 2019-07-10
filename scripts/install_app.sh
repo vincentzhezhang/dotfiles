@@ -7,18 +7,28 @@
 
 # note, apps that using virtual env are installed separately, we could either have default fallback or ignore it
 
-# FIXME shellcheck, no idea way to install on a restricted machine yet
+# FIXME shellcheck, no ideal way to install on a restricted machine yet
 
-# lsp for bash
+# lsp for bash, see also shellcheck
 npm i -g bash-language-server
 
 # man for the impatient
 npm i -g tldr
+
+# handy websocket cli for testing
 npm i -g wscat
 
-# conda base environments creations
+# better git diff
+npm i -g diff-so-fancy
 
+# conda base environments creations
+# TODO remove python2 maybe after 2020
+conda create -n py3 python=3
+conda create -n py2 python=2
+
+#
 # brew installs
+#
 
 # better alternative for curl
 brew install httpie
