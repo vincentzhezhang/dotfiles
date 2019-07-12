@@ -45,4 +45,10 @@ brew install hadolint
 #
 # linters
 #
-# could just refer to the ale doc for a comprehensive list
+# could just refer to the ale's supported-tools doc for a comprehensive curated list
+
+declare -A linters
+linters=
+
+brew install hadolint
+brew install yamllint
