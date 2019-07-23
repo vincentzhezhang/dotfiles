@@ -1,4 +1,8 @@
 #! /usr/bin/env bash
+# TODO
+# - ditch alias in favour of functions because:
+#   - functions are more powerful
+#   - functions are easy to trace, e.g. wtf __func_name__
 shopt -s expand_aliases
 
 # you can never been too lazy
@@ -27,7 +31,7 @@ ag \
 --follow \
 --color-match='1;33' \
 --color-line-number='0;35' \
---pager='less -R' \
+--pager='less --RAW-CONTROL-CHARS --quit-if-one-screen' \
 "
 
 # TODO

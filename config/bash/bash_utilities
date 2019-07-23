@@ -10,7 +10,7 @@
 
 case $- in
   *i*) BASH_MODE=interactive ;;
-  *) BASE_MODE=noninteractive ;;
+  *) BASH_MODE=noninteractive ;;
 esac
 
 if [[ -x $(command -v conda) ]] && [[ -z $__conda_env_root ]]; then
@@ -19,45 +19,50 @@ if [[ -x $(command -v conda) ]] && [[ -z $__conda_env_root ]]; then
   >&2 echo 'Pro-tip: Add'
   >&2 echo 'export __conda_env_root=__PATH_TO_CONDA_ROOT__'
   >&2 echo 'to .bashrc.before to speed things up!'
-  echo 'wtf'
-  export __conda_env_root=$(conda info --root)
-fi
-
-if [[ -n $__conda_env_root ]]; then
-  export __conda_envs=$(ls -1 $__conda_env_root)
+  __conda_env_root=$(conda info --root)
+  export __conda_env_root
 fi
 
 #
 # ubiquitous functions
+#
+
+#
+# handy automagical conda env
+#
+# XXX priority:
+# - shebang
+# - current active conda env
+# - existing conda env that partially matches the current path
 #
 # TODO
 # - [ ] add detection from shebang line
 # - [ ] add detection from common auto env file
 clever_conda_path()
 {
-  if [[ -z $__conda_envs ]]; then
-    return 1
-  fi
 
-  local conda_env_name
+  local conda_env_names
+  local name
   local path
 
-  path=$(readlink -f "${1:-$PWD}")
+  path=$(readlink --canonicalize-existing "${1:-$PWD}")
+  conda_env_names=$(command ls -1 "$__conda_env_root")
 
-    # (>&2 echo "pkg_names via git: $pkg_names")
+  # >&2 echo "$path"
+  # >&2 echo "$conda_env_names"
 
-  for name in $__conda_envs; do
-    if grep -qw "$name" <<<"$path"; then
-      conda_env_name=$name
+  for conda_env_name in $conda_env_names; do
+    if grep --quiet --word-regexp "$conda_env_name" <<<"$path"; then
+      name=$conda_env_name
       break
     fi
   done
 
-  if [[ -z $conda_env_name ]]; then
+  if [[ -z $name ]]; then
     return 1
   fi
 
-  echo -n "$__conda_env_root/$conda_env_name"
+  echo -n "$__conda_env_root/$name"
 }
 
 #
@@ -316,19 +321,19 @@ esac
 extract () {
   if [ -f "$1" ] ; then
     case "$1" in
-      *.7z)       7z x "$1"                                         	;;
-      *.bz2)      bunzip2 "$1"                                      	;;
-      *.gz)       gunzip "$1"                                       	;;
-      *.rar)      rar x "$1"                                        	;;
-      *.tar)      mkdir -p "${1::-4}";  tar xvf   "$1" -C "${1::-4}"	;;
-      *.tar.bz2)  mkdir -p "${1::-8}";  tar xvjf  "$1" -C "${1::-8}"	;;
-      *.tar.gz)   mkdir -p "${1::-7}";  tar xvzf  "$1" -C "${1::-7}"	;;
-      *.tar.xz)   mkdir -p "${1::-7}"; tar xvf  "$1" -C "${1::-7}"  	;;
-      *.tbz2)     mkdir -p "${1::-5}"; tar xvjf "$1" -C "${1::-5}"  	;;
+      *.tar.bz2)  mkdir -p "${1::-8}";  tar xvjf  "$1" -C "${1::-8}"  ;;
+      *.tar.gz)   mkdir -p "${1::-7}";  tar xvzf  "$1" -C "${1::-7}"  ;;
+      *.tar.xz)   mkdir -p "${1::-7}"; tar xvf  "$1" -C "${1::-7}"    ;;
+      *.7z)       7z x "$1"                                           ;;
+      *.Z)        uncompress "$1"                                     ;;
+      *.bz2)      bunzip2 "$1"                                        ;;
+      *.gz)       gunzip "$1"                                         ;;
+      *.rar)      rar x "$1"                                          ;;
+      *.tar)      mkdir -p "${1::-4}";  tar xvf   "$1" -C "${1::-4}"  ;;
+      *.tbz2)     mkdir -p "${1::-5}"; tar xvjf "$1" -C "${1::-5}"    ;;
       *.tgz)      mkdir -p "${1::-4}";  tar xvzf  "$1" -C "${1::-4}"  ;;
-      *.Z)        uncompress "$1"                                   	;;
       *.zip)      mkdir -p "${1::-4}";  unzip "$1" -d "${1::-4}"      ;;
-      *)          echo "don't know how to extract $1..." 							;;
+      *)          echo "don't know how to extract $1..."              ;;
     esac
   else
     echo "$1 not found!"

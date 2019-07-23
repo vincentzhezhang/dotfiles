@@ -1,6 +1,11 @@
 #! /usr/bin/env bash
 # shellcheck disable=SC1090
 
+# environment hack
+if [[ -f ~/.bash.env ]]; then
+  source ~/.bash.env
+fi
+
 # TODO
 # - extra platform specific settings to a separate script
 
@@ -12,11 +17,6 @@ case $- in
   *i*) ;;
   *) return;;
 esac
-
-# environment hack
-if [[ -f ~/.bash.env ]]; then
-  source ~/.bash.env
-fi
 
 if [[ -z $XDG_CONFIG_HOME ]]; then
   export XDG_CONFIG_HOME="$HOME/.config"

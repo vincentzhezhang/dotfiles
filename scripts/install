@@ -1,13 +1,20 @@
 #! /usr/bin/env bash
-set -e
+set -eo pipefail
+
+this_file="${BASH_SOURCE[0]}"
+this_dir=$(dirname "$this_file")
+source_dir="$(readlink -f "$this_dir/..")"
+
+# shellcheck source=./utils.sh
+source "$this_dir/utils.sh"
 
 if [[ "$SHIT_GOT_REAL" == 'x' ]]; then
   TARGET_HOME=$HOME
 
   if [[ -n $XDG_CONFIG_HOME ]]; then
-    >&2 echo "Using existing \$XDG_CONFIG_HOME: $XDG_CONFIG_HOME"
+    __.log_info ">>> Using existing \$XDG_CONFIG_HOME: $XDG_CONFIG_HOME"
   else
-    >&2 echo "\$XDG_CONFIG_HOME is not set, using default: \$HOME/.config"
+    __.log_info ">>> \$XDG_CONFIG_HOME is not set, using default: \$HOME/.config"
     XDG_CONFIG_HOME="$HOME/.config"
   fi
 else
@@ -16,47 +23,54 @@ else
   mkdir -p "$XDG_CONFIG_HOME"
 fi
 
-here=$(dirname "${BASH_SOURCE[0]}")
-source_dir="$(readlink -f "$here/..")"
+__.log_info ">>> \$source_dir: $source_dir"
+__.log_info ">>> \$XDG_CONFIG_HOME: $XDG_CONFIG_HOME"
 
->&2 echo ">>> \$source_dir: $source_dir"
->&2 echo ">>> \$XDG_CONFIG_HOME: $XDG_CONFIG_HOME"
+__.log_info '>>> Installing dot files...'
+stow --no-fold --dir="$source_dir" --target="$XDG_CONFIG_HOME" config
+__.log_info '>>> Installed dot files!'
 
->&2 echo 'Installing dot files...'
-stow --verbose=2 --no-fold --dir="$source_dir" --target="$XDG_CONFIG_HOME" config
->&2 echo 'Installed dot files!'
-
-
-echo 'Hacking for non-standard apps'
+__.log_info '>>> Hacking for non-standard apps'
 # XXX hack can be:
 # - use environment or variable to override the config loading path (prefered)
 # - link config file back to $HOME
 # - others?
 
-echo 'Hacking for bash...'
+__.log_info '>>> Hacking for bash...'
 ln -nsf "$XDG_CONFIG_HOME/bash/bashrc" "$TARGET_HOME/.bashrc"
 
-echo 'hacking for tmux tpm...'
+__.log_info '>>> hacking for tmux tpm...'
 mkdir -p "$TARGET_HOME/.tmux/plugins"
 ln -nsf "$XDG_CONFIG_HOME/tmux/tmux.conf" "$TARGET_HOME/.tmux.conf"
 ln -nsf "$XDG_CONFIG_HOME/tmux/plugins/my" "$TARGET_HOME/.tmux/plugins/my"
 
-echo 'TODO: hacking for vim...'
-echo 'Hacked!'
+__.log_info '>>> TODO: hacking for vim...'
+__.log_info '>>> Hacked!'
 
 if [[ "$SHIT_GOT_REAL" == 'x' ]]; then
   find "$TARGET_HOME" -maxdepth 3 -type l -mmin -5 2>/dev/null | xargs stat --printf '%N\n' | sort | column -t
 else
+  __.log
+  __.log "===================================="
   tree -aCF "$(readlink -f "$TARGET_HOME/..")"
+  __.log "===================================="
+  __.log
 fi
 
-cat << EOF
+if [[ "$SHIT_GOT_REAL" == 'x' ]]; then
+  cat << EOF
 
- ██████╗  ██████╗ ███╗   ██╗███████╗
- ██╔══██╗██╔═══██╗████╗  ██║██╔════╝
- ██║  ██║██║   ██║██╔██╗ ██║█████╗
- ██║  ██║██║   ██║██║╚██╗██║██╔══╝
- ██████╔╝╚██████╔╝██║ ╚████║███████╗
- ╚═════╝  ╚═════╝ ╚═╝  ╚═══╝╚══════╝
-
+██████╗  ██████╗ ███╗   ██╗███████╗
+██╔══██╗██╔═══██╗████╗  ██║██╔════╝
+██║  ██║██║   ██║██╔██╗ ██║█████╗
+██║  ██║██║   ██║██║╚██╗██║██╔══╝
+██████╔╝╚██████╔╝██║ ╚████║███████╗
+╚═════╝  ╚═════╝ ╚═╝  ╚═══╝╚══════╝
 EOF
+
+else
+  __.log
+  __.log "if the dry-run result above looks good to you, do:"
+  __.log "SHIT_GOT_REAL=x $this_file"
+  __.log
+fi

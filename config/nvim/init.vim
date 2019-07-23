@@ -575,13 +575,13 @@ function! ColorSchemeTweaks()
   " let [l:guibg, l:guifg, l:ctermbg, l:ctermfg] = s:get_highlight('SignColumn')
 
   highlight ALEErrorSign          guifg=#FB4934 guibg=NONE
-  highlight ALEWarningSign        guifg=#FF9900 guibg=NONE
+  highlight ALEWarningSign        guifg=#FFCC00 guibg=NONE
 
   highlight YcmErrorSign          guifg=#FB4934 guibg=NONE
-  highlight YcmWarningSign        guifg=#FF9900 guibg=NONE
+  highlight YcmWarningSign        guifg=#FFCC00 guibg=NONE
 
   highlight GitGutterAdd          guifg=#98C379 guibg=NONE ctermbg=NONE
-  highlight GitGutterChange       guifg=#FF9900 guibg=NONE ctermbg=NONE
+  highlight GitGutterChange       guifg=#FFCC00 guibg=NONE ctermbg=NONE
   " a changed line followed by at least one removed line
   highlight GitGutterChangeDelete guifg=#2C323B guibg=NONE ctermbg=NONE
   highlight GitGutterDelete       guifg=#FB4934 guibg=NONE ctermbg=NONE
