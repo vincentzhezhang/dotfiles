@@ -27,6 +27,13 @@ conda create -n py3 python=3
 conda create -n py2 python=2
 
 #
+# Ulilities
+#
+
+brew install fd # better alternative to find
+brew install ag # better alternative to grep
+
+#
 # brew installs
 #
 
@@ -39,16 +46,21 @@ brew install youtube-dl
 # JSON for cli
 brew install jq
 
-# docker file linter
-brew install hadolint
 
 #
 # linters
 #
+
+# TODO
+# - just throwing thought here, apps should really be defined under categories with name and source
+#   then be consumed by installer
+declare -A linters
 # could just refer to the ale's supported-tools doc for a comprehensive curated list
 
-declare -A linters
-linters=
-
+# docker file linter
 brew install hadolint
+
 brew install yamllint
+
+# shell linter
+brew install shellcheck

@@ -66,7 +66,12 @@ endfor
 " FIXME polyglot not playing well with vim-markdown
 " https://github.com/sheerun/vim-polyglot/issues/152
 let g:polyglot_disabled = ['md', 'markdown']
+let g:tex_conceal = ''
+let g:vim_markdown_conceal = 0
 let g:vim_markdown_folding_disabled = 1
+let g:vim_markdown_math = 1
+let g:vim_markdown_math = 1
+let g:vim_markdown_strikethrough = 1
 let g:markdown_fenced_languages = [
       \ 'bash=sh',
       \ 'c',
@@ -79,6 +84,16 @@ let g:markdown_fenced_languages = [
       \ 'sql',
       \]
 
+let g:tagbar_type_markdown = {
+    \ 'ctagstype' : 'markdown',
+    \ 'kinds' : [
+        \ 'h:Heading_L1',
+        \ 'i:Heading_L2',
+        \ 'k:Heading_L3',
+        \ 'o:Heading_L4',
+        \ 'p:Heading_L5',
+    \ ]
+\ }
 " {{{ Plugins
 call SetupVimPlug() " in case vim-plug is missing
 call plug#begin('$XDG_CONFIG_HOME/nvim/plugged')
@@ -94,12 +109,12 @@ Plug 'cocopon/iceberg.vim'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'flazz/vim-colorschemes'
 Plug 'gyim/vim-boxdraw'
-Plug 'honza/vim-snippets'
 Plug 'jparise/vim-graphql' " TODO this is removed from vim-polyglot for now
 Plug 'jreybert/vimagit'
 Plug 'junegunn/fzf', { 'dir': '$XDG_CONFIG_HOME/fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'junegunn/vim-easy-align'
+Plug 'kristijanhusak/vim-carbon-now-sh'
 Plug 'Lokaltog/vim-easymotion'
 Plug 'majutsushi/tagbar'
 Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
@@ -112,7 +127,7 @@ Plug 'romainl/flattened'
 Plug 'scrooloose/nerdcommenter'
 Plug 'scrooloose/nerdtree'
 Plug 'sheerun/vim-polyglot', { 'for': ['jsx'] }
-Plug 'SirVer/ultisnips'
+Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
 Plug 'terryma/vim-multiple-cursors'
 Plug 'tmux-plugins/vim-tmux-focus-events'
 Plug 'tpope/vim-endwise'
@@ -123,6 +138,7 @@ Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'w0rp/ale'
 Plug 'Xuyuanp/nerdtree-git-plugin'
+Plug 'Yggdroot/indentLine'
 call plug#end()
 " }}}
 
@@ -268,7 +284,8 @@ let g:airline_symbols_ascii                    = 1
 
 " Trigger configuration. Do not use <tab> if you use https://github.com/Valloric/YouCompleteMe.
 " TODO get familiar with this
-let g:UltiSnipsExpandTrigger='<c-e>'
+" let g:UltiSnipsExpandTrigger='<c-e>'
+let g:UltiSnipsExpandTrigger='<A-e>'
 let g:UltiSnipsJumpForwardTrigger='<c-f>'
 let g:UltiSnipsJumpBackwardTrigger='<c-b>'
 
@@ -299,6 +316,8 @@ endfunction
 
 nnoremap gx :call EnhancedBrowseX()<CR>
 xnoremap gx :call EnhancedBrowseX()<CR>
+
+vmap <LeftRelease> "*ygv
 
 function! TextMagic()
   set textwidth=0
