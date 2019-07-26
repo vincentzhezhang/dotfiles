@@ -108,22 +108,26 @@ weather()
 {
   place=${1:-'shanghai,pudong,guozhan'}
   echo "loading weather for $place ..."
-  curl "http://wttr.in/~$place"
+  curl "http://wttr.in/~$place" &
 }
 
-wtf()
+gd()
 {
-  # [W]here is [T]he [F]unction
+  if [[ -z $1 ]]; then
+    echo "What are you looking for? Try gd then press <tab>!"
+  fi
+
+  # Goto Definition
   shopt -s extdebug; declare -F "$1" | awk '{ print $3" +"$2 }' | xargs --no-run-if-empty nvim
 }
-__complete_wtf()
+__complete_gd()
 {
   if [ "${#COMP_WORDS[@]}" != "2" ]; then
     return
   fi
   mapfile -t COMPREPLY < <(declare -F | awk '{ print $NF }' | grep -oE "^${COMP_WORDS[1]}[0-9a-z_-]+" | sort)
 }
-complete -F __complete_wtf -o nospace wtf
+complete -F __complete_gd -o nospace gd
 
 
 gg()

@@ -58,6 +58,7 @@ end
 source $XDG_CONFIG_HOME/nvim/variables.vim
 source $XDG_CONFIG_HOME/nvim/functions.vim
 
+" load my personal plugins
 for f in split(glob('$XDG_CONFIG_HOME/nvim/pluginrc.d/*.vim'), '\n')
   exec 'source' f
 endfor
@@ -126,7 +127,6 @@ call plug#end()
 " }}}
 
 " {{{ Basic settings
-"
 if !has('nvim')
   " TODO check out VIM8 see if any default option values been changed
   " Backwards compatibility for Vim, most of them are set by default in NeoVim
@@ -341,8 +341,9 @@ augroup general_enhancements
   autocmd BufEnter * call CustomHighlights()
 
   " FIXME temporary workaround for Docker issue
-  autocmd BufEnter *Dockerfile set ft=dockerfile
-  autocmd BufEnter Jenkinsfile set ft=groovy
+  autocmd BufEnter *Dockerfile      set filetype=dockerfile
+  autocmd BufEnter Jenkinsfile      set filetype=groovy
+  autocmd BufEnter *.bin,*.pcap     set binary
 
   " FIXME use filetype to disable cursorline within fugitiveblame
 
@@ -373,7 +374,7 @@ function! RenderPlantUML()
   let l:file_dir = expand('%:p:h')
   let l:png_name = expand('%:r') . '.png'
   let l:png_path = l:file_dir . '/' . l:png_name
-  let l:cmd = '!curl -sS "localhost:8080/png/$(puml encode ' . l:file_path . ')" -o ' . expand('%:r') . '.png'
+  let l:cmd = '!curl -sS "localhost:12345/png/$(puml encode ' . l:file_path . ')" -o ' . expand('%:r') . '.png'
   let l:cmd = l:cmd . " && (ps x | pgrep -af '". l:png_path . "$' && : || xdg-open " . l:png_path . ')'
   silent execute l:cmd
   redraw " FIXME any better way to deal with the messages?
@@ -575,13 +576,13 @@ function! ColorSchemeTweaks()
   " let [l:guibg, l:guifg, l:ctermbg, l:ctermfg] = s:get_highlight('SignColumn')
 
   highlight ALEErrorSign          guifg=#FB4934 guibg=NONE
-  highlight ALEWarningSign        guifg=#FFCC00 guibg=NONE
+  highlight ALEWarningSign        guifg=#FABD2F guibg=NONE
 
   highlight YcmErrorSign          guifg=#FB4934 guibg=NONE
-  highlight YcmWarningSign        guifg=#FFCC00 guibg=NONE
+  highlight YcmWarningSign        guifg=#FABD2F guibg=NONE
 
   highlight GitGutterAdd          guifg=#98C379 guibg=NONE ctermbg=NONE
-  highlight GitGutterChange       guifg=#FFCC00 guibg=NONE ctermbg=NONE
+  highlight GitGutterChange       guifg=#FABD2F guibg=NONE ctermbg=NONE
   " a changed line followed by at least one removed line
   highlight GitGutterChangeDelete guifg=#2C323B guibg=NONE ctermbg=NONE
   highlight GitGutterDelete       guifg=#FB4934 guibg=NONE ctermbg=NONE
