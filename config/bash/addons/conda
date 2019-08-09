@@ -1,0 +1,112 @@
+#! /usr/bin/env bash
+
+#
+# Conda add-ons
+#
+
+if ! hash conda > /dev/null 2>&1; then
+  >&2 echo 'no conda detected, please double check!'
+  return 1;
+fi
+
+if [[ -z $__conda_env_root ]]; then
+  >&2 echo 'Setting conda_env_root...'
+  >&2 echo '-----------------------------------'
+  >&2 echo 'Pro-tip: Add'
+  >&2 echo 'export __conda_env_root=__PATH_TO_CONDA_ROOT__'
+  >&2 echo 'to .bashrc.before to speed things up!'
+  __conda_env_root=$(conda info --root)
+  export __conda_env_root
+fi
+
+# handy automagical conda env
+#
+# XXX priority:
+# - shebang
+# - current active conda env
+# - existing conda env that partially matches the current path
+#
+# TODO
+# - [ ] add detection from shebang line
+# - [ ] add detection from common auto env file
+# shellcheck disable=SC2120  # default param
+__.conda.clever_prefix()
+{
+  local conda_env_names
+  local name
+  local path
+
+  path=$(readlink --canonicalize-existing "${1:-$PWD}")
+  conda_env_names=$(command ls -1 "$__conda_env_root")
+
+  # >&2 echo "$path"
+  # >&2 echo "$conda_env_names"
+
+  # perf_start=$(($(date +%s%3N)))
+  for conda_env_name in $conda_env_names; do
+    # perf_s=$(($(date +%s%3N)))
+    if [[ "$path" == *"$conda_env_name"* ]]; then
+      name=$conda_env_name
+      break
+    fi
+    # perf_pause=$(($(date +%s%3N)))
+    # elapsed=$((perf_pause - perf_s))
+    # >&2 echo "this round elapsed: $elapsed ms"
+  done
+  # perf_end=$(($(date +%s%3N)))
+  # elapsed=$((perf_end - perf_start))
+  # >&2 echo "clever_prefix elapsed: $elapsed ms"
+
+  if [[ -z $name ]]; then
+    return 1
+  fi
+
+  echo -n "$__conda_env_root/$name"
+}
+
+__.conda.ps1()
+{
+  #
+  # User friendly virtual environment PS1 prompt
+  #
+  # XXX
+  # - last benchmark avg 10.34 ms (clever_prefix 6.99ms)
+  #
+  # TODO
+  # - [ ] replace hard-coded colour code with variables
+  local active_conda_env
+  local detected_conda_env
+
+  if [[ "$PATH" =~ \/.*conda.*\/envs\/([^/]+) ]]; then
+    active_conda_env="${BASH_REMATCH[1]}"
+  fi
+
+  detected_conda_env=$(__.conda.clever_prefix | xargs --no-run-if-empty basename)
+
+  if [[ -z "$detected_conda_env" ]] && [[ -z "$active_conda_env" ]]; then
+    return 0
+  fi
+
+  if [[ -n "$active_conda_env" ]]; then
+    # bright green
+    echo -n "\\[\\e[0;38;5;2m\\]"
+  else
+    # dimmed green
+    echo -n "\\[\\e[2;38;5;2m\\]"
+  fi
+
+  echo -n ' # '
+  echo -n "\\[\\e[0m\\]"
+
+  if [[ -n "$detected_conda_env" ]] && [[ "$detected_conda_env" != "$active_conda_env" ]]; then
+    echo -n "\\[\\e[2;38;5;2m\\]"
+    echo -n "$detected_conda_env"
+    echo -n "\\[\\e[0m\\] "
+  fi
+
+  if [[ -n "$active_conda_env" ]]; then
+    echo -n "\\[\\e[0;38;5;2m\\]"
+    echo -n "$active_conda_env"
+    echo -n "\\[\\e[0m\\] "
+  fi
+}

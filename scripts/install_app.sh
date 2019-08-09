@@ -45,6 +45,8 @@ brew install spark
 brew install youtube-dl
 # JSON for cli
 brew install jq
+# website pressure test (better than ab)
+brew install wrk
 
 
 #

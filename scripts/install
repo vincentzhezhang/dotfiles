@@ -48,7 +48,7 @@ __.log_info '>>> TODO: hacking for vim...'
 __.log_info '>>> Hacked!'
 
 if [[ "$SHIT_GOT_REAL" == 'x' ]]; then
-  find "$TARGET_HOME" -maxdepth 3 -type l -mmin -5 2>/dev/null | xargs stat --printf '%N\n' | sort | column -t
+  find "$TARGET_HOME" -maxdepth 5 -type l -mmin -5 2>/dev/null | xargs stat --printf '%N\n' | sort | column -t
 else
   __.log
   __.log "===================================="

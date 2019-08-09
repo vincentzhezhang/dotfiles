@@ -34,3 +34,7 @@ SHIT_GOT_REAL=x ./script/install
 
 All the scripts that can make modifications are executed in dry-run mode by
 default, add SHIT_GOT_REAL=x before the script to make it do the real work.
+
+## Tips
+
+- bash built-ins are normally faster than command line alternatives, e.g. bash regex match is ~50% quicker than grep

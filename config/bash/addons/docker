@@ -4,8 +4,13 @@ if ! hash docker > /dev/null 2>&1; then
   return 0
 fi
 
-docker_clean()
+__.docker.clean()
 {
   docker images prune --filter 'dangling=true'
   docker volume prune --filter 'dangling=true'
+}
+
+__.docker.start_plantuml_server()
+{
+  docker run --detach --restart always --publish 12345:8080 --name plantuml-server plantuml/plantuml-server:jetty
 }

@@ -7,62 +7,82 @@
 # set this in .bashrc.before to speed up loading
 # TODO
 # - add path to before hook directly with a info message
+# - test, test, test!
 
 case $- in
   *i*) BASH_MODE=interactive ;;
   *) BASH_MODE=noninteractive ;;
 esac
 
-if [[ -x $(command -v conda) ]] && [[ -z $__conda_env_root ]]; then
-  >&2 echo 'Setting conda_env_root...'
-  >&2 echo '-----------------------------------'
-  >&2 echo 'Pro-tip: Add'
-  >&2 echo 'export __conda_env_root=__PATH_TO_CONDA_ROOT__'
-  >&2 echo 'to .bashrc.before to speed things up!'
-  __conda_env_root=$(conda info --root)
-  export __conda_env_root
-fi
+bm_cmd()
+{
+  cmd="$1"
+  count=100
+  i=0
+
+  if [[ -z "$cmd" ]]; then
+    >&2 echo 'What command do you want to measure?'
+  fi
+
+  >&2 echo 'Running 100 times...'
+  perf_start=$(($(date +%s%3N)))
+  # FIXME result from time seems weird and useless
+  while [[ $i -lt $count ]]; do
+    "$cmd" > /dev/null 2>&1
+    ((i++))
+  done
+  perf_end=$(($(date +%s%3N)))
+  t=$((perf_end - perf_start))
+  avg=$(bc <<< "scale=2; $t / 100")
+  >&2 echo "Ran $count in ${t}ms, avg: ${avg}ms"
+}
 
 #
 # ubiquitous functions
 #
 
-#
-# handy automagical conda env
-#
-# XXX priority:
-# - shebang
-# - current active conda env
-# - existing conda env that partially matches the current path
-#
-# TODO
-# - [ ] add detection from shebang line
-# - [ ] add detection from common auto env file
-clever_conda_path()
+__.venv.python.prefix()
 {
+  # main interface handling various Python virtual envs
+  # Priority
+  # - [ ] Python specified in the shebang line
+  # - [ ] Active conda environment
+  # - [ ] Detected conda environment
+  # - [ ] Whatever python available in path (maybe 2/3 detection?)
+  #
+  # TODO may need to rethink about the rationale of the priorities
+  #
+  # args:
+  # - str: path [optional] path to file/directory, default: pwd
+  #
+  # output:
+  # - str: path, path to detected python interpreter w w/o virtual env
 
-  local conda_env_names
-  local name
   local path
+  path=${1:-$PWD}
 
-  path=$(readlink --canonicalize-existing "${1:-$PWD}")
-  conda_env_names=$(command ls -1 "$__conda_env_root")
+  local py_exec
 
-  # >&2 echo "$path"
-  # >&2 echo "$conda_env_names"
+  if [[ -f "$path" ]]; then
+    # shebang detection
+    local shebang_line;
+    shebang_line=$(head -1 "$path")
 
-  for conda_env_name in $conda_env_names; do
-    if grep --quiet --word-regexp "$conda_env_name" <<<"$path"; then
-      name=$conda_env_name
-      break
+    # XXX need to exclude /usr/bin/env python
+    if [[ "$shebang_line" =~ ^#\!.+/python[23]?$ ]]; then
+      py_exec=$(cut -c 3- <<< "$shebang_line")
+      >&2 echo 'got python from shebang_line!'
+      echo "$py_exec"
+      return 0
     fi
-  done
-
-  if [[ -z $name ]]; then
-    return 1
   fi
 
-  echo -n "$__conda_env_root/$name"
+  if hash __.conda.clever_prefix; then
+    py_exec=$(__.conda.clever_prefix "$path")
+    >&2 echo 'got python from __.conda.clever_prefix!'
+    echo "$py_exec"
+    return 0
+  fi
 }
 
 #
@@ -581,4 +601,51 @@ path() {
   echo "${PATH//:/$'\n'}"
 }
 
+
+#
+# hmmmm
+#
+
+fix_iwlwifi() {
+  #
+  # iwlwifi for intel-7265D higher than 22 has bugs that result in
+  # very bad WiFi performance and constant drop offs
+  #
+  echo 'Stopping iwlwifi mod...' \
+    && sudo modprobe --remove iwlwifi \
+    && echo 'Removing bad firmware...' \
+    && sudo rm /lib/firmware/iwlwifi-7265D* \
+    && echo 'Linking good firmware...' \
+    && sudo ln -s /lib/firmware/iwlwifi.good/iwlwifi-7265D-22.ucode /lib/firmware/ \
+    && echo 'Loading iwlwifi mod...' \
+    && sudo modprobe iwlwifi
+}
+
+archive_photo()
+{
+  # see https://developers.google.com/speed/docs/insights/OptimizeImages#optimizations-for-gif-png-and-jpeg-images
+  # TODO
+  # - still better to add different output filename support
+  mogrify \
+    -resize 1920x1080 \
+    -sampling-factor 4:2:0 \
+    -strip \
+    -quality 85 \
+    -interlace JPEG \
+    -colorspace sRGB \
+    -format jpg "$@"
+}
+
+open_captive_portal()
+{
+  # XXX
+  # - Chrome will be installed anyway
+  # - apple's captive site looks the most reliable one
+  #
+  # FIXME
+  # - it is surprisingly hard to specify a fixed window size
+  /usr/bin/google-chrome --incognito --disable-extensions --app=http://captive.apple.com
+}
+
 # vim: set ai ts=2 tw=79:
+

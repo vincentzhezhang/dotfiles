@@ -2,20 +2,27 @@
 # TODO
 # - ditch alias in favour of functions because:
 #   - functions are more powerful
-#   - functions are easy to trace, e.g. wtf __func_name__
+#   - functions are easy to trace, e.g. declare -F EXAMPLE_FUNCTION
 shopt -s expand_aliases
 
-# you can never been too lazy
+# you can never be too lazy
 alias c='clear'
 
+#
 # handy ls aliases
+#
+# XXX
+# some params, e.g.:
+# -a/--almost-all
+# -l/--format=verbose
+# -h/--reverse
+# are too common and orthogonal so it's ignored here mostly
 alias ls='ls -C --classify --human-readable --color=auto --group-directories-first' # h is not effective here but can be re-use by other aliases
-alias sl='ls'
+alias sl='ls'  # :(
 alias l='ls'
-alias la='ls -A'
-alias ll='ls -Al'
-alias lt='ls -ltur'
-alias lg='ll | grep -i'
+alias ll='ls --format=verbose'
+alias lt='ll --sort=time'
+alias lh='ll --sort=size'
 alias tree='tree -CF'
 
 # handy grep aliases
@@ -50,7 +57,7 @@ alias cp='cp -i'
 alias df='df -h'
 alias du='du -h -c'
 alias fsort='~/workspace/personal/auto_sorter/sort'
-alias mkdir='mkdir -p -v'
+alias mkdir='mkdir --parents --verbose'
 alias mv='mv -i'
 alias reload='source ~/.bashrc'
 
@@ -97,21 +104,15 @@ alias x='cd $XDG_CONFIG_HOME'
 alias cola='git-cola'
 alias config_change='git --no-pager diff --no-color | xclip -sel clip | xclip -o -sel clip'
 
-# OS specific aliases
-if [[ $OSTYPE == darwin* ]]; then
-  # OSX specific aliases
-  alias wtf='bbq'
-else
-  # Sudo fixes
-  alias orphand='sudo deborphan | xargs sudo apt-get -y remove --purge'
-  alias cleanup='sudo apt-get autoclean && sudo apt-get autoremove && sudo apt-get clean && sudo apt-get remove && orphand'
-  alias updatedb='sudo updatedb'
-  alias u='sudo apt update; sudo apt full-upgrade -y'
+# Sudo fixes
+alias orphand='sudo deborphan | xargs sudo apt-get -y remove --purge'
+alias cleanup='sudo apt-get autoclean && sudo apt-get autoremove && sudo apt-get clean && sudo apt-get remove && orphand'
+alias updatedb='sudo updatedb'
+alias u='sudo apt update && sudo apt upgrade && sudo apt full-upgrade -y'
 
-  # apt-get
-  alias si='sudo apt-get install'
-  alias sd='sudo apt-get update'
+# apt-get
+alias si='sudo apt-get install'
+alias sd='sudo apt-get update'
 
-  # just fuck it
-  alias fuck='sudo "$BASH" -c "$(history -p !!)"'
-fi
+# just fuck it
+alias fuck='sudo "$BASH" -c "$(history -p !!)"'

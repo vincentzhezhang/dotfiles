@@ -1,0 +1,7 @@
+#! /usr/bin/env bash
+
+#
+# bash functions loader for noninteractive apps
+#
+
+source ./addons/conda

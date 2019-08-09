@@ -22,300 +22,15 @@ else
   esac
 fi
 
-#
-# git prompt snippet, use plumbing commands for reliable states parsing
-#
-# TODO this worth a rework, should be able to make it much simpler without
-# using anything else other than bash & git
-git_prompt()
-{
-  git_dir="$(git rev-parse --git-dir 2> /dev/null)"
-
-  if [[ -z $git_dir ]]; then
-    return 2
-  fi
-
-  if [[ -f "$git_dir/REBASE_HEAD" ]]; then
-    echo "${BRED}[-R-]${COFF}"
-    return
-  fi
-
-  if [[ -f "$git_dir/MERGE_HEAD" ]]; then
-    echo "${BRED}[-M-]${COFF}"
-    return
-  fi
-
-  raw_status="$(git status --branch --porcelain 2> /dev/null)"
-  branch_info=$(echo "$raw_status" | head -1)
-  # change_info=$(echo "$raw_status" | tail -n +2)
-  simplified_change_info=$(echo "$raw_status" | tail -n +2 | cut -c -2)
-
-  local dirty_state
-  local staged_state
-
-  local modified_count=0
-  local deleted_count=0
-  local type_changed_count=0
-  local untracked_files_count=0
-  local staged_new_count=0
-  local staged_modified_count=0
-  local staged_type_changed_count=0
-  local staged_deleted_count=0
-  local staged_renamed_files_count=0
-
-  # see:
-  # https://unix.stackexchange.com/questions/169716/why-is-using-a-shell-loop-to-process-text-considered-bad-practice
-  while IFS= read -r tag; do
-    if [[ "$tag" == *'M' ]]; then ((modified_count++));             fi
-    if [[ "$tag" == *'D' ]]; then ((deleted_count++));              fi
-    if [[ "$tag" == *'T' ]]; then ((type_changed_count++));         fi
-    if [[ "$tag" == '??' ]]; then ((untracked_files_count++));      fi
-
-    if [[ "$tag" == 'A'* ]]; then ((staged_new_count++));           fi
-    if [[ "$tag" == 'M'* ]]; then ((staged_modified_count++));      fi
-    if [[ "$tag" == 'T'* ]]; then ((staged_type_changed_count++));  fi
-    if [[ "$tag" == 'D'* ]]; then ((staged_deleted_count++));       fi
-    if [[ "$tag" == 'R'* ]]; then ((staged_renamed_files_count++)); fi
-  done <<<"$simplified_change_info"
-
-  #   >&2 echo -n $modified_count-
-  #   >&2 echo -n $deleted_count-
-  #   >&2 echo -n $type_changed_count-
-  #   >&2 echo -n $untracked_files_count-
-  #   >&2 echo -n $staged_new_count-
-  #   >&2 echo -n $staged_modified_count-
-  #   >&2 echo -n $staged_type_changed_count-
-  #   >&2 echo -n $staged_deleted_count-
-  #   >&2 echo -n $staged_renamed_files_count-
-  #   >&2 echo
-  #
-  #   modified_count=0
-  #   deleted_count=0
-  #   type_changed_count=0
-  #   untracked_files_count=0
-  #   staged_new_count=0
-  #   staged_modified_count=0
-  #   staged_type_changed_count=0
-  #   staged_deleted_count=0
-  #   staged_renamed_files_count=0
-  #
-  #   if [[ -n $change_info ]]; then
-  #     #
-  #     # NOTE: for matching patterns, please refer to git status manual
-  #     #
-  #     # stats for files not staged
-  #     modified_count=$(echo "$change_info" | grep -E '^.M' --count)
-  #     deleted_count=$(echo "$change_info" | grep -E '^.D' --count)
-  #     type_changed_count=$(echo "$change_info" | grep -E '^.T' --count)
-  #     untracked_files_count=$(echo "$change_info" | grep -E '^\?\? ' --count)
-  #
-  #     # stats for staged files
-  #     local staged_state=''
-  #     staged_new_count=$(echo "$change_info" | grep -E '^A' --count)
-  #     staged_modified_count=$(echo "$change_info" | grep -E '^M' --count)
-  #     staged_type_changed_count=$(echo "$change_info" | grep -E '^T' --count)
-  #     staged_deleted_count=$(echo "$change_info" | grep -E '^D' --count)
-  #     staged_renamed_files_count=$(echo "$change_info" | grep -E '^R ' --count)
-  #   fi
-  #
-  #   >&2 echo -n $modified_count-
-  #   >&2 echo -n $deleted_count-
-  #   >&2 echo -n $type_changed_count-
-  #   >&2 echo -n $untracked_files_count-
-  #   >&2 echo -n $staged_new_count-
-  #   >&2 echo -n $staged_modified_count-
-  #   >&2 echo -n $staged_type_changed_count-
-  #   >&2 echo -n $staged_deleted_count-
-  #   >&2 echo -n $staged_renamed_files_count-
-  #   >&2 echo
-
-
-  if [[ $modified_count -gt 0 ]]; then
-    unstaged_state+="${BLUE}m${modified_count}${COFF}"
-  fi
-
-  if [[ $deleted_count -gt 0 ]]; then
-    unstaged_state+="${RED}d${deleted_count}${COFF}"
-  fi
-
-  if [[ $type_changed_count -gt 0 ]]; then
-    unstaged_state+="${YELLOW}t${type_changed_count}${COFF}"
-  fi
-
-  if [[ $untracked_files_count -gt 0 ]]; then
-    unstaged_state+="${BASE1}u${untracked_files_count}${COFF}"
-  fi
-
-  if [[ $staged_new_count -gt 0 ]]; then
-    staged_state+="${BGREEN}A${staged_new_count}${COFF}"
-  fi
-
-  if [[ $staged_modified_count -gt 0 ]]; then
-    staged_state+="${BBLUE}M${staged_modified_count}${COFF}"
-  fi
-
-  if [[ $staged_deleted_count -gt 0 ]]; then
-    staged_state+="${BRED}D${staged_deleted_count}${COFF}"
-  fi
-
-  if [[ $staged_type_changed_count -gt 0 ]]; then
-    staged_state+="${BYELLOW}T${staged_type_changed_count}${COFF}"
-  fi
-
-  if [[ $staged_renamed_files_count -gt 0 ]]; then
-    staged_state+="${BCYAN}R${staged_renamed_files_count}${COFF}"
-  fi
-
-  if [[ -n "$unstaged_state" ]]; then
-    dirty_state+="$unstaged_state"
-  fi
-
-  if [[ -n "$unstaged_state" && -n "$staged_state" ]]; then
-    dirty_state+="${YELLOW}|${COFF}"
-  fi
-
-  if [[ -n "$staged_state" ]]; then
-    dirty_state+="$staged_state"
-  fi
-
-  if [[ -n "$dirty_state" ]]; then
-    dirty_state="${CYAN}(${COFF}${dirty_state}${CYAN})${COFF}"
-  fi
-
-  # XXX < 0.03s til here
-
-  # only check status against tracking upstream when it exists and not gone
-  local local_prompt
-  local tracking_state
-  local remote_prompt
-
-
-  if grep -q 'No commits yet' <<<"$branch_info"; then
-    current_branch='[new]'
-  else
-    current_branch=$(git rev-parse --abbrev-ref HEAD)
-  fi
-
-  local_prompt="${CYAN}${current_branch}${COFF}"
-
-  tracking_branch=$(2> /dev/null git rev-parse --abbrev-ref --symbolic-full-name '@{u}')
-
-  # XXX < 0.035s til here
-
-  if [[ -n "$tracking_branch" ]]; then
-    remote_name=${tracking_branch%"/$current_branch"}
-
-    branch_meta=$(echo "$branch_info" | grep -oP '(\[[^]]+\])')
-    gone=$(echo "$branch_meta" | grep gone)
-    ahead=$(echo "$branch_meta" | grep -oP 'ahead (\K[0-9]+)')
-    behind=$(echo "$branch_meta" | grep -oP 'behind (\K[0-9]+)')
-
-    if [[ -n "$gone" ]]; then
-      remote_name+="[gone]"
-    fi
-
-    # ↑↓
-    # 🠘129048 🠙129049 🠚129050 🠛129051 🠜129052 🠝129053 🠞129054 🠟129055 🠠129056 🠡129057 🠢129058 🠣129059
-    # 🠤129060 🠥129061 🠦129062 🠧129063 🠨129064 🠩129065 🠪129066 🠫129067 🠬129068 🠭129069 🠮129070 🠯129071
-    # 🠰129072 🠱129073 🠲129074 🠳129075 🠴129076 🠵129077 🠶129078 🠷129079 🠸129080 🠹129081 🠺129082 🠻129083
-    # 🠼129084 🠽129085 🠾129086 🠿129087 🡀129088 🡁129089 🡂129090 🡃129091 🡄129092 🡅129093 🡆129094 🡇129095
-    if [[ -n "$ahead" ]]; then
-      tracking_state+="${CYAN}${ahead}🠥${COFF}"
-    fi
-
-    if [[ -n "$behind" ]]; then
-      tracking_state+="${MAGENTA}${behind}🠧${COFF}"
-    fi
-  else
-    tracking_state="${BLUE}?${COFF}"
-  fi
-
-  # »«
-  if [[ -n "$remote_name" ]]; then
-    remote_prompt="${BYELLOW} » ${COFF}${MAGENTA}${remote_name}${COFF}"
-  fi
-
-  if [[ -n "$tracking_state" ]]; then
-    tracking_state="${tracking_state}"
-  fi
-
-  diff="${tracking_state}${dirty_state}"
-
-  if [[ -n "$diff" ]]; then
-    diff=" ${BYELLOW}*${COFF} ${diff}"
-  fi
-
-  git_dir=$(git rev-parse --git-dir)
-
-  fetch_head="$git_dir/FETCH_HEAD"
-  if [[ -f $fetch_head ]]; then
-    last_updated_at=$(stat -c %Y "$fetch_head")
-    now=$(date +%s)
-    seconds_elapsed=$((now - last_updated_at))
-
-    mins=$((seconds_elapsed / 60))
-    seconds_elapsed=$((seconds_elapsed % 60))
-
-    # TODO better name
-    bbq=" ${BASE0}$mins:$(printf "%02d" $seconds_elapsed)${COFF}"
-  else
-    bbq=''
-  fi
-
-  # XXX < 0.042s til here
-  echo "${local_prompt}${remote_prompt}${diff}${bbq}"
-}
-
-# TODO this is just a temporary solution that sufficient enough for current works, should add
-# - node/npm version detection
-# - ruby version detection
-# - use named color codes instead of explicit numbers
-v_env_conda() {
-  local current_py_env
-  local detected_conda_env
-
-  detected_conda_env=$(clever_conda_path | xargs --no-run-if-empty basename)
-  # (>&2 echo "detected: $detected_conda_env")
-  current_py_env=$(grep -oP '\/.*conda.*/envs/(\K\w+)' <<< "$PATH")
-  # (>&2 echo "current: $current_py_env")
-
-  if [[ -z "$detected_conda_env" ]] && [[ -z "$current_py_env" ]]; then
-    unset __python_venv_name
-    return
-  fi
-
-  if [[ "$current_py_env" != "$__python_venv_name" ]]; then
-    # (>&2 echo "current_py_env: $current_py_env")
-    # (>&2 echo "__python_venv_name: $__python_venv_name")
-    __python_venv_name="$current_py_env"
-  fi
-
-  if [[ -n "$current_py_env" ]]; then
-    echo -n "\\[\\e[0;38;5;2m\\]"
-    echo -n ' # '
-
-    if [[ -n "$detected_conda_env" ]] && [[ "$detected_conda_env" != "$current_py_env" ]]; then
-      echo -n "\\[\\e[2;38;5;2m\\]"
-      echo -n "$detected_conda_env"
-      echo -n "\\[\\e[0m\\] "
-    fi
-
-    echo -n "\\[\\e[0;38;5;2m\\]"
-    echo -n "$__python_venv_name"
-    echo -n "\\[\\e[0m\\] "
-  else
-    echo -n "\\[\\e[2;38;5;2m\\]"
-    echo -n ' # '
-    echo -n "$detected_conda_env"
-    echo -n "\\[\\e[0m\\] "
-  fi
-}
-
-generate_status_line() {
-  # TODO fit paths as much as possible before abbreviate it
-  # e.g. /s/v/workspace/webapp/vol_tracker instead of /s/v/w/vol_tracker
-  # create a dash line which has a length of the current terminal columns minus
-  # user@hostname, time string and padding spaces
+# benchmark ~= 5.84 ms
+__.ps1.status_line() {
+  # FIXME
+  # - length calculation of full-width character is broken
+  # TODO
+  # - fit paths as much as possible before abbreviate it
+  #   e.g. /s/v/workspace/webapp/vol_tracker instead of /s/v/w/vol_tracker
+  #   create a dash line which has a length of the current terminal columns minus
+  #   user@hostname, time string and padding spaces
   local host_str
   local time_str
   local dash_line
@@ -360,44 +75,109 @@ someone_goes_nuts()
   [[ $((now - last_update)) -lt $PS1_UPDATE_THRESHOLD ]]
 }
 
-generate_last_state()
+# benchmark < 0.10 ms
+__.ps1.last_status()
 {
   local last_exit_code=$1
   [[ $last_exit_code -eq 0 ]] && echo "${BGREEN}:) ${COFF}" || echo "${BRED}:( ${COFF}"
 }
 
-# FIXME
-# - length calculation of full-width character is broken
-# - the aim is to keep this function runs under 50ms, which means:
-#   - TODO no single subroutine should exceed 50ms
-#   - TODO use async if possible
-prettify_prompt() {
+# XXX
+# last perf: avg: 48.5 ms (4ms overhead for existence check, note 2>/dev/null seems won't speed up)
+# tested with status: (m35d11u3|A1M5R1)
+# benchmark ~= 50.88 ms
+# benchmark of inner git func ~= 45.62 ms
+#
+# NOTE CPU load is very low so what's going on?
+# TODO
+# - sounds like CPU is waiting for IO, redo the benchmark after new disk installed
+__.ps1.version_control()
+{
+  # XXX Only support git for now
+  local prompt=''
+
+  if hash __.git.ps1 2>&1 ; then
+    prompt+=$(__.git.ps1)
+  fi
+
+  echo "$prompt"
+}
+
+# benchmark ~= 14.69 ms
+# benchmark of inner conda func ~= 13.57 ms
+__.ps1.virtual_env()
+{
+  # TODO
+  # - other virtual env detections if necessary
+  local prompt=''
+
+  if hash __.conda.ps1 2>&1 ; then
+    prompt+=$(__.conda.ps1)
+  fi
+
+  echo "$prompt"
+}
+
+__.ps1() {
+  #
+  # main function to generate PS1
+  #
+  # The current refined pure bash built-ins implementation can generate a
+  # relatively complex PS1 in less than 100 ms in the alacritty repo with 1053
+  # commits and 184 files:
+  #
+  # tetsdasf » origin/master ∗  1↱ 28↲ (u2m30d10t1|A7M8D3T1R1) 269938:54 # py36
+  #
+  # TODO
+  # - check if possible to reduce the whole thing under 17ms, so we can achieve 60 fps terminal!
+  #   - this implies may need to use external compiled apps and/or background service
+  #   - async
   local last_exit_code=$?
 
   if someone_goes_nuts; then
+    # XXX throttle workaround, can have better solution
     return
   fi
 
-  last_state="$(generate_last_state $last_exit_code)"
+  # perf
+  local perf_start
+  local perf_end
+  local t
+  perf_start=$(date +%s%3N)
 
-  if [[ $COLUMNS -le $PS1_MINIMUM_COLUMN_WIDTH ]]; then
-    PS1="$last_state"
-    return
+  PS1=''
+
+  local line_1
+  line_1="$(__.ps1.status_line)"
+
+  if [[ -n "$line_1" ]]; then
+    PS1+="$line_1\\n"
   fi
 
-  git_str="$(git_prompt)"
-  v_env_str="$(v_env_conda)"
-  status_line="$(generate_status_line)"
-  env_line="${git_str}${v_env_str}"
+  local line_2
+  version_control_str="$(__.ps1.version_control)"
+  virtual_env_str="$(__.ps1.virtual_env)"
+  line_2="${version_control_str}${virtual_env_str}"
 
-
-  # FIXME use join_by to add delimiters nicely
-  if [[ -n "$env_line" ]]; then
-    env_line="$env_line\\n"
+  if [[ -n "$line_2" ]]; then
+    PS1+="$line_2\\n"
   fi
 
+  local line_3
+  local last_status
+  last_status="$(__.ps1.last_status $last_exit_code)"
+  line_3="$last_status"
 
-  PS1="$status_line\n$env_line$last_state"
+  if [[ -n "$line_3" ]]; then
+    PS1+="$line_3"
+  fi
+
+  perf_end=$(date +%s%3N)
+  t=$((perf_end - perf_start))
+
+  if [[ $t -gt 100 ]]; then
+    >&2 echo "PS1 took $t ms!"
+  fi
 }
 
-PROMPT_COMMAND="prettify_prompt; $PROMPT_COMMAND"
+PROMPT_COMMAND="__.ps1; $PROMPT_COMMAND"

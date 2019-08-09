@@ -188,8 +188,16 @@ export FZF_CTRL_T_COMMAND
 # FIXME decouple fzf with other bash scripts
 [[ -f ~/.fzf.bash ]] && source ~/.fzf.bash
 
+
 # handy box specific injection after we load the main part
 [[ -f "$XDG_CONFIG_HOME/bash/after" ]] && source "$XDG_CONFIG_HOME/bash/after"
+
+#
+# load addons
+#
+for addon in "$XDG_CONFIG_HOME/bash/addons"/*; do
+  source "$addon"
+done
 
 # FIXME
 # - proper fix to eliminate the possibility of duplicates, instead of remove

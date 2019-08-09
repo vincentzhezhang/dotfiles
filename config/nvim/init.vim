@@ -17,7 +17,7 @@
 "
 " handy selection of symbols
 " - poker suits:    ♠ ♥ ♣ ♦
-" - common symbols: •
+" - common symbols: • ￭
 " - white space:    ] [(em) XXX needed as leading whitespace in sign column
 "
 " - Box Drawing Characters table (as of Unicode version 11.0)
@@ -139,6 +139,7 @@ Plug 'vim-airline/vim-airline-themes'
 Plug 'w0rp/ale'
 Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'Yggdroot/indentLine'
+Plug 'zxqfl/tabnine-vim'
 call plug#end()
 " }}}
 
@@ -430,13 +431,9 @@ let g:multi_cursor_quit_key            = '<Esc>'
 
 " {{{ Python Virtual Env Tweaks start
 "
-" Priority
-" - active conda environment
-" - clever_conda_path
-" - wherever the current python from
+" TODO delegate virtual env detection to bash command as it's also used by
+" other shell utilities
 "
-" XXX For historical reason, $VIRTUAL_ENV is used by many Python
-" plugins so we just have to abide by it for now
 let s:py_virtual_env_dir = $CONDA_PREFIX
 
 if empty(s:py_virtual_env_dir)
@@ -448,6 +445,8 @@ if empty(s:py_virtual_env_dir)
 endif
 
 let g:ycm_python_binary_path = s:py_virtual_env_dir . '/bin/python'
+" XXX For historical reason, $VIRTUAL_ENV is used by many Python
+" plugins so we just have to abide by it for now
 let $VIRTUAL_ENV = s:py_virtual_env_dir
 
 " disable ale's virtual env auto discover feature and use the envvar instead
@@ -522,11 +521,11 @@ let g:tmux_navigator_no_mappings = 1
 "
 "
 
-" let g:ale_sign_error = ' ■' " good on fantasque mono, but why it's so fucking huge in Ubuntu mono?
 " TODO
 " not sure if this is feasible but if we can merge linter symbols
 " and git status symbols it will look great!
 " let g:linter_sign = '┃•' " good on Ubuntu mono
+" let g:linter_sign = ' ￭'   " good on Ubuntu mono
 let g:linter_sign = ' •'   " good on Ubuntu mono
 " let g:git_sign = '┃ '      " good on Ubuntu mono
 let g:git_sign = '│ '      " good on Ubuntu mono

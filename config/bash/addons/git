@@ -1,0 +1,325 @@
+#! /usr/bin/env bash
+
+#
+# Git add-ons
+#
+
+if ! hash git > /dev/null 2>&1; then
+  >&2 echo 'no git detected, please double check!'
+  return 1;
+fi
+
+#
+# public functions
+#
+git.branches()
+{
+  # branch with brief details ordered by last changed desc
+  git for-each-ref \
+    --sort='-committerdate' refs/heads/ \
+    --format="%(HEAD) %(color:yellow)%(refname:short)%(color:reset)|\
+    %(color:red)%(objectname:short)%(color:reset)|\
+    %(color:green)%(committerdate:relative)%(color:reset)|\
+    %(authorname)|\
+    %(contents:subject)"
+}
+
+git.today()
+{
+  # what's done today for current repo
+  git log \
+    --abbrev-commit \
+    --author="$(git config user.email)" \
+    --decorate='' \
+    --no-merges \
+    --oneline \
+    --reverse \
+    --since="$(date -u +'%Y-%m-%dT00:00:00')" \
+    --use-mailmap
+}
+
+git.snapshot()
+{
+  # check out a snapshot repo for quick n dirty work or as a handy backup
+  git checkout -b "snapshot_$(/usr/bin/env date '+%y%m%d_%H%M%S')"
+}
+
+git.birth_info()
+{
+  # get the initial git log for given path
+  if [[ -z $1 ]]; then
+    >&2 echo 'Please provide a file!'
+    return 1
+  fi
+
+  git log --diff-filter=A -- "$1"
+}
+
+git.review()
+{
+  # create a review branch with given ticket and revision
+  # ticket  [string]:   name of the ticket or PR
+  # revision [git-rev]: commish, branch name, etc
+  ticket=$1
+  revision=$2
+  branch_name="review/${ticket:?}/${revision:?}"
+
+  if ! git rev-parse "$revision" > /dev/null 2>&1; then
+    >&2 echo "Rev: \"$revision\" is invalid, please double check!"
+    return 1
+  fi
+
+  git branch --force "$branch_name" "$revision" && git checkout --force "$branch_name"
+}
+
+git.finish-review()
+{
+  # remove all the review branches from local
+  git checkout --force master \
+    && git branch --no-color |\
+    cut -c 3- |\
+    grep "^review/" |\
+    xargs --no-run-if-empty git branch -D
+}
+
+git.create-patch()
+{
+  # create a diff.patch file for currently staged changes
+  diff="$(2>/dev/null git --no-pager diff --cached --no-color "$@")"
+
+  if [[ -z $diff ]]; then
+    echo "No diff detected, do you forget to stage the changes?"
+    return 1
+  fi
+
+  patch_path="$(mktemp -d)/patch.diff"
+  echo "$diff" > "$patch_path"
+  echo "Patch file created at: file://$patch_path"
+  xdg-open "$(dirname "$patch_path")"
+}
+
+git.maintainers()
+{
+  # guess naively for the maintainers of give path
+  path="${1:-$PWD}"
+  git shortlog --summary --numbered --max-count=100 --since=1.year -- "$path" | head
+}
+
+git.contributors()
+{
+  # guess naively for the contributors of give path
+  path="${1:-$PWD}"
+  git shortlog --summary --numbered -- "$path" | head
+}
+
+#
+# Private functions
+#
+__.git.ps1()
+{
+  #
+  # git prompt snippet, use plumbing commands for reliable states parsing
+  #
+  # TODO this worth a rework, should be able to make it much simpler without
+  # using anything else other than bash & git
+  #
+  # XXX
+  # last perf: avg 44.36ms
+  # tested and perfed with status:
+  # tetsdasf » origin/master ∗  1↱ 28↲ (u2m30d10t1|A7M8D3T1R1)<Paste>
+  # in the alacritty repo
+
+  # perf_start=$(date +%s%3N)
+
+  local git_dir
+  git_dir="$(git rev-parse --git-dir 2> /dev/null)"
+
+  if [[ -z $git_dir ]]; then
+    return 1
+  fi
+
+  if [[ -f "$git_dir/REBASE_HEAD" ]]; then
+    echo "${BRED}[-R-]${COFF}"
+    return 0
+  fi
+
+  if [[ -f "$git_dir/MERGE_HEAD" ]]; then
+    echo "${BRED}[-M-]${COFF}"
+    return 0
+  fi
+
+  local raw_status
+  local branch_info
+  local file_status
+
+  raw_status="$(git status --branch --porcelain 2> /dev/null)"
+  branch_info=$(head -1 <<< "$raw_status")
+  file_status=$(echo "$raw_status" | tail -n +2 | cut -c -2)
+
+  local dirty_state
+  local unstaged_state
+  local staged_state
+
+  local modified_count=0
+  local deleted_count=0
+  local type_changed_count=0
+  local untracked_files_count=0
+  local staged_new_count=0
+  local staged_modified_count=0
+  local staged_type_changed_count=0
+  local staged_deleted_count=0
+  local staged_renamed_files_count=0
+
+  # see:
+  # https://unix.stackexchange.com/questions/169716/why-is-using-a-shell-loop-to-process-text-considered-bad-practice
+  while IFS= read -r fs; do
+    if [[ "$fs" == '??' ]]; then ((untracked_files_count++));      fi
+    if [[ "$fs" == ?'M' ]]; then ((modified_count++));             fi
+    if [[ "$fs" == ?'D' ]]; then ((deleted_count++));              fi
+    if [[ "$fs" == ?'T' ]]; then ((type_changed_count++));         fi
+
+    if [[ "$fs" == 'A'? ]]; then ((staged_new_count++));           fi
+    if [[ "$fs" == 'M'? ]]; then ((staged_modified_count++));      fi
+    if [[ "$fs" == 'T'? ]]; then ((staged_type_changed_count++));  fi
+    if [[ "$fs" == 'D'? ]]; then ((staged_deleted_count++));       fi
+    if [[ "$fs" == 'R'? ]]; then ((staged_renamed_files_count++)); fi
+  done <<<"$file_status"
+
+  if [[ $untracked_files_count -gt 0 ]]; then
+    unstaged_state+="${BASE1}u${untracked_files_count}${COFF}"
+  fi
+
+  if [[ $modified_count -gt 0 ]]; then
+    unstaged_state+="${YELLOW}m${modified_count}${COFF}"
+  fi
+
+  if [[ $deleted_count -gt 0 ]]; then
+    unstaged_state+="${RED}d${deleted_count}${COFF}"
+  fi
+
+  if [[ $type_changed_count -gt 0 ]]; then
+    unstaged_state+="${BLUE}t${type_changed_count}${COFF}"
+  fi
+
+  if [[ $staged_new_count -gt 0 ]]; then
+    staged_state+="${BGREEN}A${staged_new_count}${COFF}"
+  fi
+
+  if [[ $staged_modified_count -gt 0 ]]; then
+    staged_state+="${BYELLOW}M${staged_modified_count}${COFF}"
+  fi
+
+  if [[ $staged_deleted_count -gt 0 ]]; then
+    staged_state+="${BRED}D${staged_deleted_count}${COFF}"
+  fi
+
+  if [[ $staged_type_changed_count -gt 0 ]]; then
+    staged_state+="${BBLUE}T${staged_type_changed_count}${COFF}"
+  fi
+
+  if [[ $staged_renamed_files_count -gt 0 ]]; then
+    staged_state+="${BMAGENTA}R${staged_renamed_files_count}${COFF}"
+  fi
+
+  if [[ -n "$unstaged_state" ]]; then
+    dirty_state+="$unstaged_state"
+  fi
+
+  if [[ -n "$unstaged_state" && -n "$staged_state" ]]; then
+    dirty_state+="${YELLOW}|${COFF}"
+  fi
+
+  if [[ -n "$staged_state" ]]; then
+    dirty_state+="$staged_state"
+  fi
+
+  if [[ -n "$dirty_state" ]]; then
+    dirty_state="${CYAN}(${COFF}${dirty_state}${CYAN})${COFF}"
+  fi
+
+  # perf_track=$(date +%s%3N)
+  # >&2 echo "$((perf_track - perf_start))"
+  # XXX ~ 35 ms here
+
+  # only check status against tracking upstream when it exists and not gone
+  local local_prompt
+  local tracking_state
+  local remote_prompt
+
+  if [[ "$branch_info" == '## No commits yet'* ]]; then
+    current_branch='[new]'
+  else
+    current_branch=$(git rev-parse --abbrev-ref HEAD)
+  fi
+
+  local_prompt="${CYAN}${current_branch}${COFF}"
+
+  local tracking_branch
+  tracking_branch=$(2> /dev/null git rev-parse --abbrev-ref --symbolic-full-name '@{u}')
+
+  # perf_track=$(date +%s%3N)
+  # >&2 echo "$((perf_track - perf_start))"
+  # XXX < 0.045s til here (deep nested repo webapp/lib/py/webcommon/webcommon/handlers)
+
+  if [[ -n "$tracking_branch" ]]; then
+    remote_name=${tracking_branch%"/$current_branch"}
+
+    # XXX may break
+    if [[ "$branch_info" == *'gone'* ]]; then
+      remote_name+="[gone]"
+    else
+      # XXX no global match support yet in bash
+      # ⭠ ⭢ ⭡ ⭣  ⭤ ⭥  ⭦ ⭧ ⭨ ⭩  🠀 🠂 🠁 🠃  🠄 🠆 🠅 🠇 🠠 🠢 🠡 🠣 🠐 🠒 🠑 🠓  🠔 🠖 🠕 🠗  🠘 🠚 🠙 🠛 ⭎ ⭏ ↑↓
+      if [[ "$branch_info" =~ ahead\ ([0-9]+) ]]; then
+        tracking_state+="${CYAN}${BASH_REMATCH[1]}↱ ${COFF}"
+      fi
+
+      if [[ "$branch_info" =~ behind\ ([0-9]+) ]]; then
+        tracking_state+="${MAGENTA}${BASH_REMATCH[1]}↲ ${COFF}"
+      fi
+    fi
+  else
+    tracking_state="${BLUE}?${COFF}"
+  fi
+
+  # perf_track=$(date +%s%3N)
+  # >&2 echo "$((perf_track - perf_start))"
+  # XXX < 60ms til here (deep nested repo webapp/lib/py/webcommon/webcommon/handlers)
+
+  # »«
+  if [[ -n "$remote_name" ]]; then
+    remote_prompt="${BYELLOW} » ${COFF}${MAGENTA}${remote_name}${COFF}"
+  fi
+
+  if [[ -n "$tracking_state" ]]; then
+    tracking_state="${tracking_state}"
+  fi
+
+  diff="${tracking_state}${dirty_state}"
+
+  if [[ -n "$diff" ]]; then
+    diff=" ${BYELLOW}∗ ${COFF} ${diff}"
+  fi
+
+  git_dir=$(git rev-parse --git-dir)
+
+  fetch_head="$git_dir/FETCH_HEAD"
+  if [[ -f $fetch_head ]]; then
+    last_updated_at=$(stat -c %Y "$fetch_head")
+    now=$(date +%s)
+    seconds_elapsed=$((now - last_updated_at))
+
+    mins=$((seconds_elapsed / 60))
+    seconds_elapsed=$((seconds_elapsed % 60))
+
+    # TODO better name
+    bbq=" ${BASE0}$mins:$(printf "%02d" $seconds_elapsed)${COFF}"
+  else
+    bbq=''
+  fi
+
+  # perf_track=$(date +%s%3N)
+  # >&2 echo "$((perf_track - perf_start))"
+  # XXX < 60ms til here (deep nested repo webapp/lib/py/webcommon/webcommon/handlers)
+  echo "${local_prompt}${remote_prompt}${diff}${bbq}"
+}
