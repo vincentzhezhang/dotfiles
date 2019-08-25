@@ -1,0 +1,49 @@
+#! /usr/bin/env bash
+
+#
+# TODO
+# - [ ] maybe use automation frameworks e.g. ansible?
+# - [ ] install astrill (this need login so ...)
+# - [ ] support for multiple LTS? (e.g. personal/work)
+#
+
+set -eu
+
+export INSTALLATION_PREFIX=/data
+
+l(){
+  >&2 echo -e "\e[0;38;5;6m>>> $@\e[0m"
+}
+export -f l
+
+#
+# XXX All the installation/setup scripts here need to be atomic!
+#
+#
+# General prerefence prorities:
+# - apt
+#   - system level apps, i.e. apps require root to run properly, e.g. docker
+#   - apps with good ppa support, e.g. chrome, neovim
+# - docker
+#   - work/research related apps that requires complete separate envs
+#   - apps that hard to set up, e.g. pluntuml server which requires Java
+# - conda
+#   - vim/neovim virtual env providers, e.g. python-neovim
+#   - project specific requirements (which handled separatedly)
+# - npm
+#   - vim/neovim virtual env providers, e.g. neovim(node-client)
+#   - global tools that has better support in npm world, e.g. bash-language-server
+# - linuxbrew
+#   - system utilities that has newer version available, e.g. git
+#   - app that easier to install using linuxbrew, e.g. dfc, ag
+
+./bootstrap
+./apt
+./docker
+./linuxbrew
+./conda
+./node
+
+# XXX vim is likely not set up when running this script, so make use of mode
+# line below to get some basic editing behaviours correct
+# vim: set autoindent expandtab number textwidth=119 tabstop=2 shiftwidth=2 :

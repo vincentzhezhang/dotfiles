@@ -7,6 +7,7 @@ if [[ -f ~/.bash.env ]]; then
 fi
 
 # TODO
+# - update basic configurations according to latest ubuntu bashrc
 # - extra platform specific settings to a separate script
 
 # If not running interactively, don't do anything, common non-interactive shells including:

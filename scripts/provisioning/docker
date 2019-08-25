@@ -1,0 +1,52 @@
+#! /usr/bin/env bash
+
+set -eu
+
+# TODO
+# - [ ] note that user group only works after log in and out, need to deal with that
+#
+main(){
+  install_docker
+  configure_docker
+  install_docker_apps
+}
+
+install_docker(){
+  if hash docker 2>/dev/null; then
+    l 'docker is installed, skipping ...'
+    return 0
+  fi
+
+  l 'Installing docker ...'
+  getent group docker > /dev/null || sudo groupadd docker
+  sudo usermod --append --groups docker "$USER"
+  sudo apt-get update
+  sudo apt-get install --yes --no-install-recommends \
+    apt-transport-https \
+    ca-certificates \
+    curl \
+    gnupg-agent \
+    software-properties-common
+  curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+  sudo add-apt-repository --yes \
+     "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+     $(lsb_release --codename --short) \
+     stable"
+  sudo apt-get update
+  sudo apt-get install --yes --no-install-recommends docker-ce docker-ce-cli containerd.io
+}
+
+configure_docker(){
+  echo 'TODO: configure_docker!'
+  # TODO
+  # - [ ] may need to move the data folder to data/sandbox
+  # - [ ] may need to double check group permissions
+}
+
+install_docker_apps(){
+  echo 'TODO: install docker apps!'
+}
+
+main
+
+# vim: set autoindent expandtab number textwidth=119 tabstop=2 shiftwidth=2 :

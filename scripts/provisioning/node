@@ -1,0 +1,66 @@
+#! /usr/bin/env bash
+
+main(){
+  install_nvm
+  install_node
+  install_node_apps
+}
+
+#
+# node/npm via nvm
+#
+# migrate global packages while installing
+# nvm install node --reinstall-packages-from=node
+#
+install_nvm(){
+  if hash nvm 2>/dev/null; then
+    l 'nvm is installed, skipping...'
+    return 0
+  fi
+
+  __nvm_prefix__="$INSTALLATION_PREFIX/.nvm"
+
+  if [[ ! -f "$__nvm_prefix__/nvm.sh" ]]; then
+    l 'Installing nvm...'
+    (
+    git clone https://github.com/nvm-sh/nvm.git "$__nvm_prefix__"
+    cd "$__nvm_prefix__"
+    git checkout `git describe --abbrev=0 --tags --match "v[0-9]*" $(git rev-list --tags --max-count=1)`
+    )
+  fi
+
+  l 'Configuring nvm'
+  source "$__nvm_prefix__/nvm.sh"
+
+  unset __nvm_prefix__
+}
+
+install_node(){
+  if [[ $(command -v node) == *'nvm'* ]]; then
+    l 'node is installed, skipping...'
+    return 0
+  fi
+
+  l 'installing latest lts node...'
+  nvm install --lts
+}
+
+install_node_apps(){
+  echo 'TODO: instal_node_apps'
+  return 0
+  # lsp for bash, see also shellcheck
+  npm i -g bash-language-server
+
+  # man for the impatient
+  npm i -g tldr
+
+  # handy websocket cli for testing
+  npm i -g wscat
+
+  # better git diff
+  npm i -g diff-so-fancy
+}
+
+main
+
+# vim: set autoindent expandtab number textwidth=119 tabstop=2 shiftwidth=2 :

@@ -6,7 +6,7 @@
 #
 
 image_file=/tmp/screen_lock.png
-resolution='1920x1080'
+resolution='3200x1800'
 # resolution=$(xdpyinfo | grep dimensions | awk '{print $2}')
 
 # use blur filter

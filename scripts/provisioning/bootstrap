@@ -1,0 +1,37 @@
+#! /usr/bin/env bash
+
+set -eu
+
+main(){
+  install_prerequisites
+}
+
+install_prerequisites(){
+  # 
+  # Prerequisites
+  #
+  # some of the apps below are needed during the installation period, e.g.:
+  # git, stow
+  # could be override once other software managers are installed
+  #
+  l 'Checking prerequisites...'
+  local prerequisites=''
+
+  for app in build-essential git software-properties-common stow; do
+    if [[ -z "$(dpkg --get-selections "$app" 2>/dev/null)" ]]; then
+      prerequisites+="$app "
+    fi
+  done
+
+  if [[ -z "$prerequisites" ]]; then
+    l 'Prerequisites are satisified, skipping...'
+  else
+    l 'Installing missing prerequisites...'
+    sudo apt update
+    sudo apt install --yes --no-install-recommends "$prerequisites"
+  fi
+}
+
+main
+
+# vim: set autoindent expandtab number textwidth=119 tabstop=2 shiftwidth=2 :

@@ -1,0 +1,57 @@
+#! /usr/bin/env bash
+
+main(){
+  install_rbenv
+  install_ruby
+  install_ruby_apps
+}
+
+#
+# ruby/gem via rbenv
+#
+# migrate global packages while installing
+# rbenv install ruby --reinstall-packages-from=ruby
+#
+install_rbenv(){
+  echo 'TODO: install rbenv!'
+  return 0
+
+  if hash rbenv 2>/dev/null; then
+    l 'rbenv is installed, skipping...'
+    return 0
+  else
+    __rbenv_prefix__="$INSTALLATION_PREFIX/.rbenv"
+  fi
+}
+
+install_ruby(){
+  echo 'TODO: install rbenv!'
+  return 0
+
+  if [[ $(command -v ruby) == *'rbenv'* ]]; then
+    l 'ruby is installed, skipping...'
+  else
+    l 'installing latest lts ruby...'
+    rbenv install --lts
+  fi
+}
+
+install_ruby_apps(){
+  echo 'TODO: instal_ruby_apps'
+  return 0
+  # lsp for bash, see also shellcheck
+  gem i -g bash-language-server
+
+  # man for the impatient
+  gem i -g tldr
+
+  # handy websocket cli for testing
+  gem i -g wscat
+
+  # better git diff
+  gem i -g diff-so-fancy
+}
+
+main
+
+# vim: set autoindent expandtab number textwidth=119 tabstop=2 shiftwidth=2 :

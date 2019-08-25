@@ -1,0 +1,70 @@
+#! /usr/bin/env bash
+
+main() {
+  install_chrome
+  install_neovim
+  install_tlp
+  install_virtualbox
+}
+
+install_chrome() {
+  if hash google-chrome-stable 2>/dev/null; then
+    l 'Google Chrome is installed, skipping...'
+    return 0
+  fi
+
+  l 'Installing Google Chrome...'
+  wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+  if [[ ! -f chrome.deb ]]; then
+    wget -O /tmp/chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb 
+  fi
+  sudo apt install --fix-broken --yes --no-install-recommends /tmp/chrome.deb
+}
+
+install_neovim() {
+  if hash nvim 2>/dev/null; then
+    l 'neovim is installed, skipping ...'
+    return 0
+  fi
+
+  l 'Installing neovim ...'
+  sudo add-apt-repository --yes ppa:neovim-ppa/stable
+  sudo apt install neovim
+  sudo update-alternatives --install /usr/bin/vi vi /usr/bin/nvim 60
+  sudo update-alternatives --auto vi
+  sudo update-alternatives --install /usr/bin/vim vim /usr/bin/nvim 60
+  sudo update-alternatives --auto vim
+  sudo update-alternatives --install /usr/bin/editor editor /usr/bin/nvim 60
+  sudo update-alternatives --auto editor
+}
+
+install_tlp() {
+  if hash tlp 2>/dev/null; then
+    l 'tlp is installed, skipping...'
+    return 0
+  fi
+
+  l 'Installing tlp...'
+  sudo add-apt-repository --yes ppa:linrunner/tlp
+  sudo apt install --fix-broken --yes --no-install-recommends tlp
+}
+
+install_virtualbox() {
+  if hash virtualbox 2>/dev/null; then
+    l 'virtualbox is installed, skipping ...'
+    return 0
+  fi
+
+  l 'Installing virtualbox ...'
+  wget -q https://www.virtualbox.org/download/oracle_vbox_2016.asc -O- | sudo apt-key add -
+  sudo add-apt-repository --yes \
+    "deb http://download.virtualbox.org/virtualbox/debian \
+    $(lsb_release --codename --short) \
+    contrib"
+  sudo apt update
+  sudo apt install --yes --no-install-recommends virtualbox-6.0
+}
+
+main
+
+# vim: set autoindent expandtab number textwidth=119 tabstop=2 shiftwidth=2 :

@@ -1,0 +1,114 @@
+#! /usr/bin/env bash
+
+set -eu
+
+main() {
+  install_linuxbrew
+  install_linuxbrew_apps
+}
+
+# TODO
+# - [ ] figure out a better way to share the same envs with dotfiles
+install_linuxbrew(){
+  if hash brew 2>/dev/null; then
+    l 'Linuxbrew is installed, skipping...'
+    return 0
+  fi
+
+  # XXX linuxbrew has special installation requirements
+  __brew_prefix__=/home/linuxbrew/.linuxbrew
+
+  if [[ ! -x "$__brew_prefix__/bin/brew" ]]; then
+    l 'Installing linuxbrew...'
+    getent group linuxbrew > /dev/null || sudo groupadd linuxbrew
+    sudo usermod --append --groups linuxbrew "$USER"
+
+    sudo mkdir --parents "$__brew_prefix__"
+    sudo chown --recursive "$(whoami):linuxbrew" "$__brew_prefix__"
+
+    git clone --quiet --depth 1 https://github.com/Homebrew/brew "$__brew_prefix__"
+    $(
+      cd "$__brew_prefix__"
+      sudo mkdir --parents \
+        Cellar \
+        etc \
+        include \
+        lib \
+        opt \
+        sbin \
+        share \
+        var/homebrew/linked
+      sudo chmod --recursive ug+rwx \
+        Cellar \
+        etc \
+        include \
+        lib \
+        opt \
+        sbin \
+        share \
+        var/homebrew/linked
+    )
+    sudo chown --recursive "$(whoami):linuxbrew" $__brew_prefix__
+  fi
+
+  l 'Configuring linuxbrew...'
+
+  set +u # some path brew want to update may not be defined yet
+  brew_envs=$("$__brew_prefix__/bin/brew" shellenv)
+  eval "$brew_envs"
+  set -u
+
+  # brew doctor
+
+  unset __brew_root__
+  unset __brew_prefix__
+}
+
+install_linuxbrew_apps(){
+  echo 'TODO: install_linuxbrew_apps!'
+  return 0
+  #
+  # Ulilities
+  #
+
+  brew install fd # better alternative to find
+  brew install ag # better alternative to grep
+
+  #
+  # brew installs
+  #
+
+  # better alternative for curl
+  brew install httpie
+  # handy spark lines
+  brew install spark
+  # YGNI
+  brew install youtube-dl
+  # JSON for cli
+  brew install jq
+  # website pressure test (better than ab)
+  brew install wrk
+
+  #
+  # linters
+  #
+
+  # TODO
+  # - just throwing thought here, apps should really be defined under categories with name and source
+  #   then be consumed by installer
+  declare -A linters
+  # could just refer to the ale's supported-tools doc for a comprehensive curated list
+
+  # docker file linter
+  brew install hadolint
+
+  brew install yamllint
+
+  # FIXME shellcheck, no ideal way to install on a restricted machine yet
+  # shell linter
+  brew install shellcheck
+}
+
+main
+
+# vim: set autoindent expandtab number textwidth=119 tabstop=2 shiftwidth=2 :

@@ -1,0 +1,40 @@
+#! /usr/bin/env bash
+
+main(){
+  install_conda
+  create_conda_envs
+}
+
+install_conda(){
+  if hash conda 2>/dev/null; then
+    l 'conda is installed, skipping...'
+    return 0
+  fi
+
+  local __conda_prefix__="$INSTALLATION_PREFIX/.conda"
+
+  if [[ ! -x "$__conda_prefix__/bin/conda" ]]; then
+    l 'Installing conda...'
+    if [[ ! -f conda.sh ]]; then
+      wget -O /tmp/conda.sh https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+    fi
+    chmod +x /tmp/conda.sh
+    /tmp/conda.sh -b -p "$__conda_prefix__"
+  fi
+
+  l 'Configuring conda...'
+  conda_envs="export PATH=\"$__conda_prefix__/bin:\$PATH\""
+  eval "$conda_envs"
+  # conda info
+}
+
+create_conda_envs(){
+  echo 'TODO: create_conda_envs'
+  return 0
+  conda create --name py3 python=3
+  conda create --name py2 python=2
+}
+
+main
+
+# vim: set autoindent expandtab number textwidth=119 tabstop=2 shiftwidth=2 :
