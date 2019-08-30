@@ -29,7 +29,7 @@ install_neovim() {
 
   l 'Installing neovim ...'
   sudo add-apt-repository --yes ppa:neovim-ppa/stable
-  sudo apt install neovim
+  sudo apt install --fix-broken --yes --no-install-recommends neovim
   sudo update-alternatives --install /usr/bin/vi vi /usr/bin/nvim 60
   sudo update-alternatives --auto vi
   sudo update-alternatives --install /usr/bin/vim vim /usr/bin/nvim 60

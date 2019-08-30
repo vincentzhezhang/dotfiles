@@ -2,9 +2,22 @@
 
 set -eu
 
+
+# TODO
+# - should load environment variables from ../../config/bash/
 main(){
+  check_system_config
   install_prerequisites
 }
+
+check_system_config(){
+  if [[ ! -w "$INSTALLATION_PREFIX" ]]; then
+    l "INSTALLATION_PREFIX: $INSTALLATION_PREFIX does not exists or"
+    l "you don't have write permission, please double check!"
+    exit 1
+  fi
+}
+
 
 install_prerequisites(){
   # 
@@ -28,7 +41,8 @@ install_prerequisites(){
   else
     l 'Installing missing prerequisites...'
     sudo apt update
-    sudo apt install --yes --no-install-recommends "$prerequisites"
+    # we want $prerequisites to be splat here
+    sudo apt install --yes --no-install-recommends $prerequisites
   fi
 }
 
