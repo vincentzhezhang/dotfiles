@@ -5,6 +5,7 @@ set -eu
 source ../utils.sh
 
 main() {
+  check_system_config
   install_linuxbrew
   install_linuxbrew_apps
 }

@@ -11,6 +11,15 @@ set -eu
 
 export INSTALLATION_PREFIX=/data
 
+check_system_config(){
+  if [[ ! -w "$INSTALLATION_PREFIX" ]]; then
+    __.log_warning "INSTALLATION_PREFIX: $INSTALLATION_PREFIX does not exists or"
+    __.log_warning "you don't have write permission, please double check!"
+    exit 1
+  fi
+}
+export -f check_system_config
+
 #
 # XXX All the installation/setup scripts here need to be atomic!
 #

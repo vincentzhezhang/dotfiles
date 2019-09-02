@@ -8,9 +8,11 @@ source ../utils.sh
 # - [ ] note that user group only works after log in and out, need to deal with that
 #
 main(){
+  check_system_config
   install_docker
   configure_docker
   install_docker_apps
+  install_docker_dev_essentials
 }
 
 install_docker(){
@@ -41,12 +43,11 @@ install_docker(){
 install_docker_dev_essentials(){
   __.log_warning 'TODO install docker dev essentials'
   # TODO
-  # - [ ] PlantUML
-  # - [ ] Jenkins for validation?
-  # - [ ] Maybe dockercraft too ;)
-  # echo 'Start updating kubeval...'
+  # Apps below may be install separately as they are more convenient to install via linuxbrew
+  # - [ ] minikube
+  # - [ ] kubectl
+  # - [ ] kubeval
   # wget --quiet --show-progress --output-document=- https://github.com/instrumenta/kubeval/releases/latest/download/kubeval-linux-amd64.tar.gz | tar -C /sandbox/vincent.zhang/bin/ -xzf -
-  # echo 'Done'
 }
 
 configure_docker(){
@@ -58,6 +59,10 @@ configure_docker(){
 
 install_docker_apps(){
   __.log_warning 'TODO: install docker apps!'
+  # TODO
+  # - [ ] PlantUML
+  # - [ ] Jenkins for validation?
+  # - [ ] Maybe dockercraft too ;)
 }
 
 main

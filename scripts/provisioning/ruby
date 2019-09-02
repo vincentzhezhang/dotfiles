@@ -3,6 +3,7 @@
 source ../utils.sh
 
 main(){
+  check_system_config
   install_rbenv
   install_ruby
   install_ruby_apps

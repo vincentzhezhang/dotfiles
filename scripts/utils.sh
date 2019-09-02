@@ -2,27 +2,32 @@
 
 __.log()
 {
-  >&2 echo ">>> $@"
+  local color_code="${1:?}"
+  local filename="${BASH_SOURCE[2]:-stdin}"
+  local lineno="${BASH_LINENO[1]}"
+  shift;
+
+  >&2 echo -e "\\e[${color_code}m>>> [$filename:$lineno] $@\\e[0m"
 }
 
 __.log_success()
 {
-  >&2 echo -e "\\e[32m>>> [$(basename $0):${BASH_LINENO[1]}] $@\\e[0m"
+  __.log 32 "$@"
 }
 
 __.log_info()
 {
-  >&2 echo -e "\\e[36m>>> [$(basename $0):${BASH_LINENO[1]}] $@\\e[0m"
+  __.log 36 "$@"
 }
 
 __.log_warning()
 {
-  >&2 echo -e "\\e[33m>>> [$(basename $0):${BASH_LINENO[1]}] $@\\e[0m"
+  __.log 33 "$@"
 }
 
 __.log_error()
 {
-  >&2 echo -e "\\e[1;31m>>> [$(basename $0):${BASH_LINENO[1]}] $@\\e[0m"
+  __.log '1;31' "$@"
 }
 
 # vim: set autoindent expandtab number textwidth=119 tabstop=2 shiftwidth=2 :

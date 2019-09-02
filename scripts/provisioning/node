@@ -3,6 +3,7 @@
 source ../utils.sh
 
 main(){
+  check_system_config
   install_nvm
   install_node
   install_node_apps
@@ -20,7 +21,7 @@ install_nvm(){
     return 0
   fi
 
-  __nvm_prefix__="$INSTALLATION_PREFIX/.nvm"
+  __nvm_prefix__="${INSTALLATION_PREFIX:?}/.nvm"
 
   if [[ ! -f "$__nvm_prefix__/nvm.sh" ]]; then
     __.log_info 'Installing nvm...'
