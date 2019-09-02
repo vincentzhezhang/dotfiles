@@ -1,5 +1,7 @@
 #! /usr/bin/env bash
 
+source ../utils.sh
+
 main() {
   install_chrome
   install_neovim
@@ -9,11 +11,11 @@ main() {
 
 install_chrome() {
   if hash google-chrome-stable 2>/dev/null; then
-    l 'Google Chrome is installed, skipping...'
+    __.log_info 'Google Chrome is installed, skipping...'
     return 0
   fi
 
-  l 'Installing Google Chrome...'
+  __.log_info 'Installing Google Chrome...'
   wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
   if [[ ! -f chrome.deb ]]; then
     wget -O /tmp/chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb 
@@ -23,11 +25,11 @@ install_chrome() {
 
 install_neovim() {
   if hash nvim 2>/dev/null; then
-    l 'neovim is installed, skipping ...'
+    __.log_info 'neovim is installed, skipping ...'
     return 0
   fi
 
-  l 'Installing neovim ...'
+  __.log_info 'Installing neovim ...'
   sudo add-apt-repository --yes ppa:neovim-ppa/stable
   sudo apt install --fix-broken --yes --no-install-recommends neovim
   sudo update-alternatives --install /usr/bin/vi vi /usr/bin/nvim 60
@@ -40,22 +42,22 @@ install_neovim() {
 
 install_tlp() {
   if hash tlp 2>/dev/null; then
-    l 'tlp is installed, skipping...'
+    __.log_info 'tlp is installed, skipping...'
     return 0
   fi
 
-  l 'Installing tlp...'
+  __.log_info 'Installing tlp...'
   sudo add-apt-repository --yes ppa:linrunner/tlp
   sudo apt install --fix-broken --yes --no-install-recommends tlp
 }
 
 install_virtualbox() {
   if hash virtualbox 2>/dev/null; then
-    l 'virtualbox is installed, skipping ...'
+    __.log_info 'virtualbox is installed, skipping ...'
     return 0
   fi
 
-  l 'Installing virtualbox ...'
+  __.log_info 'Installing virtualbox ...'
   wget -q https://www.virtualbox.org/download/oracle_vbox_2016.asc -O- | sudo apt-key add -
   sudo add-apt-repository --yes \
     "deb http://download.virtualbox.org/virtualbox/debian \

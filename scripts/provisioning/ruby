@@ -1,5 +1,7 @@
 #! /usr/bin/env bash
 
+source ../utils.sh
+
 main(){
   install_rbenv
   install_ruby
@@ -13,11 +15,11 @@ main(){
 # rbenv install ruby --reinstall-packages-from=ruby
 #
 install_rbenv(){
-  echo 'TODO: install rbenv!'
+  __.log_warning 'TODO: install rbenv!'
   return 0
 
   if hash rbenv 2>/dev/null; then
-    l 'rbenv is installed, skipping...'
+    __.log_info 'rbenv is installed, skipping...'
     return 0
   else
     __rbenv_prefix__="$INSTALLATION_PREFIX/.rbenv"
@@ -25,19 +27,19 @@ install_rbenv(){
 }
 
 install_ruby(){
-  echo 'TODO: install rbenv!'
+  __.log_warning 'TODO: install rbenv!'
   return 0
 
   if [[ $(command -v ruby) == *'rbenv'* ]]; then
-    l 'ruby is installed, skipping...'
+    __.log_info 'ruby is installed, skipping...'
   else
-    l 'installing latest lts ruby...'
+    __.log_info 'installing latest lts ruby...'
     rbenv install --lts
   fi
 }
 
 install_ruby_apps(){
-  echo 'TODO: instal_ruby_apps'
+  __.log_warning 'TODO: instal_ruby_apps'
   return 0
   # lsp for bash, see also shellcheck
   gem i -g bash-language-server

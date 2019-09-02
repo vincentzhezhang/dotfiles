@@ -11,11 +11,6 @@ set -eu
 
 export INSTALLATION_PREFIX=/data
 
-l(){
-  >&2 echo -e "\e[0;38;5;6m>>> $@\e[0m"
-}
-export -f l
-
 #
 # XXX All the installation/setup scripts here need to be atomic!
 #

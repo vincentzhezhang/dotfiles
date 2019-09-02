@@ -2,6 +2,8 @@
 
 set -eu
 
+source ../utils.sh
+
 
 # TODO
 # - should load environment variables from ../../config/bash/
@@ -12,8 +14,8 @@ main(){
 
 check_system_config(){
   if [[ ! -w "$INSTALLATION_PREFIX" ]]; then
-    l "INSTALLATION_PREFIX: $INSTALLATION_PREFIX does not exists or"
-    l "you don't have write permission, please double check!"
+    __.log_warning "INSTALLATION_PREFIX: $INSTALLATION_PREFIX does not exists or"
+    __.log_warning "you don't have write permission, please double check!"
     exit 1
   fi
 }
@@ -27,19 +29,26 @@ install_prerequisites(){
   # git, stow
   # could be override once other software managers are installed
   #
-  l 'Checking prerequisites...'
+  __.log_info 'Checking prerequisites...'
   local prerequisites=''
 
-  for app in build-essential git software-properties-common stow; do
+  for app in \
+    build-essential \
+    git \
+    net-tools \
+    openssh-server \
+    software-properties-common \
+    stow;\
+  do
     if [[ -z "$(dpkg --get-selections "$app" 2>/dev/null)" ]]; then
       prerequisites+="$app "
     fi
   done
 
   if [[ -z "$prerequisites" ]]; then
-    l 'Prerequisites are satisified, skipping...'
+    __.log_info 'Prerequisites are satisified, skipping...'
   else
-    l 'Installing missing prerequisites...'
+    __.log_info 'Installing missing prerequisites...'
     sudo apt update
     # we want $prerequisites to be splat here
     sudo apt install --yes --no-install-recommends $prerequisites

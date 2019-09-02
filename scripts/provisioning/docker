@@ -2,6 +2,8 @@
 
 set -eu
 
+source ../utils.sh
+
 # TODO
 # - [ ] note that user group only works after log in and out, need to deal with that
 #
@@ -13,11 +15,11 @@ main(){
 
 install_docker(){
   if hash docker 2>/dev/null; then
-    l 'docker is installed, skipping ...'
+    __.log_info 'docker is installed, skipping ...'
     return 0
   fi
 
-  l 'Installing docker ...'
+  __.log_info 'Installing docker ...'
   getent group docker > /dev/null || sudo groupadd docker
   sudo usermod --append --groups docker "$USER"
   sudo apt-get update
@@ -36,15 +38,26 @@ install_docker(){
   sudo apt-get install --yes --no-install-recommends docker-ce docker-ce-cli containerd.io
 }
 
+install_docker_dev_essentials(){
+  __.log_warning 'TODO install docker dev essentials'
+  # TODO
+  # - [ ] PlantUML
+  # - [ ] Jenkins for validation?
+  # - [ ] Maybe dockercraft too ;)
+  # echo 'Start updating kubeval...'
+  # wget --quiet --show-progress --output-document=- https://github.com/instrumenta/kubeval/releases/latest/download/kubeval-linux-amd64.tar.gz | tar -C /sandbox/vincent.zhang/bin/ -xzf -
+  # echo 'Done'
+}
+
 configure_docker(){
-  echo 'TODO: configure_docker!'
+  __.log_warning 'TODO: configure_docker!'
   # TODO
   # - [ ] may need to move the data folder to data/sandbox
   # - [ ] may need to double check group permissions
 }
 
 install_docker_apps(){
-  echo 'TODO: install docker apps!'
+  __.log_warning 'TODO: install docker apps!'
 }
 
 main

@@ -2,6 +2,8 @@
 
 set -eu
 
+source ../utils.sh
+
 main() {
   install_linuxbrew
   install_linuxbrew_apps
@@ -11,7 +13,7 @@ main() {
 # - [ ] figure out a better way to share the same envs with dotfiles
 install_linuxbrew(){
   if hash brew 2>/dev/null; then
-    l 'Linuxbrew is installed, skipping...'
+    __.log_info 'Linuxbrew is installed, skipping...'
     return 0
   fi
 
@@ -19,7 +21,7 @@ install_linuxbrew(){
   __brew_prefix__=/home/linuxbrew/.linuxbrew
 
   if [[ ! -x "$__brew_prefix__/bin/brew" ]]; then
-    l 'Installing linuxbrew...'
+    __.log_info 'Installing linuxbrew...'
     getent group linuxbrew > /dev/null || sudo groupadd linuxbrew
     sudo usermod --append --groups linuxbrew "$USER"
 
@@ -51,7 +53,7 @@ install_linuxbrew(){
     sudo chown --recursive "$(whoami):linuxbrew" $__brew_prefix__
   fi
 
-  l 'Configuring linuxbrew...'
+  __.log_info 'Configuring linuxbrew...'
 
   set +u # some path brew want to update may not be defined yet
   brew_envs=$("$__brew_prefix__/bin/brew" shellenv)
@@ -65,7 +67,7 @@ install_linuxbrew(){
 }
 
 install_linuxbrew_apps(){
-  echo 'TODO: install_linuxbrew_apps!'
+  __.log_warning 'TODO: install_linuxbrew_apps!'
   return 0
   #
   # Ulilities

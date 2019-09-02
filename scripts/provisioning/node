@@ -1,5 +1,7 @@
 #! /usr/bin/env bash
 
+source ../utils.sh
+
 main(){
   install_nvm
   install_node
@@ -14,14 +16,14 @@ main(){
 #
 install_nvm(){
   if hash nvm 2>/dev/null; then
-    l 'nvm is installed, skipping...'
+    __.log_info 'nvm is installed, skipping...'
     return 0
   fi
 
   __nvm_prefix__="$INSTALLATION_PREFIX/.nvm"
 
   if [[ ! -f "$__nvm_prefix__/nvm.sh" ]]; then
-    l 'Installing nvm...'
+    __.log_info 'Installing nvm...'
     (
     git clone https://github.com/nvm-sh/nvm.git "$__nvm_prefix__"
     cd "$__nvm_prefix__"
@@ -29,7 +31,7 @@ install_nvm(){
     )
   fi
 
-  l 'Configuring nvm'
+  __.log_info 'Configuring nvm'
   source "$__nvm_prefix__/nvm.sh"
 
   unset __nvm_prefix__
@@ -37,16 +39,16 @@ install_nvm(){
 
 install_node(){
   if [[ $(command -v node) == *'nvm'* ]]; then
-    l 'node is installed, skipping...'
+    __.log_info 'node is installed, skipping...'
     return 0
   fi
 
-  l 'installing latest lts node...'
+  __.log_info 'installing latest lts node...'
   nvm install --lts
 }
 
 install_node_apps(){
-  echo 'TODO: instal_node_apps'
+  __.log_warning 'TODO: instal_node_apps'
   return 0
   # lsp for bash, see also shellcheck
   npm i -g bash-language-server
