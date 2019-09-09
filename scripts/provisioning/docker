@@ -8,7 +8,6 @@ source ../utils.sh
 # - [ ] note that user group only works after log in and out, need to deal with that
 #
 main(){
-  check_system_config
   install_docker
   configure_docker
   install_docker_apps

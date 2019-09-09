@@ -43,6 +43,7 @@ __.log_info '>>> Hacking for non-standard apps'
 # - others?
 
 __.log_info '>>> Hacking for bash...'
+ln -nsf "$XDG_CONFIG_HOME/bash/bash.env" "$TARGET_HOME/.bash.env"
 ln -nsf "$XDG_CONFIG_HOME/bash/bashrc" "$TARGET_HOME/.bashrc"
 
 __.log_info '>>> hacking for tmux tpm...'
@@ -56,11 +57,11 @@ __.log_info '>>> Hacked!'
 if [[ "$SHIT_GOT_REAL" == 'x' ]]; then
   find "$TARGET_HOME" -maxdepth 5 -type l -mmin -5 2>/dev/null | xargs stat --printf '%N\n' | sort | column -t
 else
-  __.log
-  __.log "===================================="
+  __.log_info
+  __.log_info "===================================="
   tree -aCF "$(readlink -f "$TARGET_HOME/..")"
-  __.log "===================================="
-  __.log
+  __.log_info "===================================="
+  __.log_info
 fi
 
 if [[ "$SHIT_GOT_REAL" == 'x' ]]; then
@@ -75,8 +76,8 @@ if [[ "$SHIT_GOT_REAL" == 'x' ]]; then
 EOF
 
 else
-  __.log
-  __.log "if the dry-run result above looks good to you, do:"
-  __.log "SHIT_GOT_REAL=x $this_file"
-  __.log
+  __.log_info
+  __.log_info "if the dry-run result above looks good to you, do:"
+  __.log_info "SHIT_GOT_REAL=x $this_file"
+  __.log_info
 fi

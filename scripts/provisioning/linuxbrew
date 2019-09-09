@@ -2,69 +2,73 @@
 
 set -eu
 
+source ../../config/bash/bash.env
 source ../utils.sh
 
+__.log_info "Using prefix: ${__prefix_linuxbrew:?}"
+
 main() {
-  check_system_config
   install_linuxbrew
   install_linuxbrew_apps
 }
 
-# TODO
-# - [ ] figure out a better way to share the same envs with dotfiles
 install_linuxbrew(){
   if hash brew 2>/dev/null; then
     __.log_info 'Linuxbrew is installed, skipping...'
+    brew --version
+
+    set +u # some path brew want to update may not be defined yet
+    brew_envs=$("$__prefix_linuxbrew/bin/brew" shellenv)
+    eval "$brew_envs"
+    set -u
+    echo '--------'
+    env | grep -i brew | sort -i
+    echo '--------'
+
     return 0
   fi
 
-  # XXX linuxbrew has special installation requirements
-  __brew_prefix__=/home/linuxbrew/.linuxbrew
+  __.log_info 'Installing linuxbrew...'
+  sudo usermod --append --groups linuxbrew "$USER"
 
-  if [[ ! -x "$__brew_prefix__/bin/brew" ]]; then
-    __.log_info 'Installing linuxbrew...'
-    getent group linuxbrew > /dev/null || sudo groupadd linuxbrew
-    sudo usermod --append --groups linuxbrew "$USER"
+  sudo mkdir --parents "$__prefix_linuxbrew"
+  sudo chown --recursive "$(whoami):linuxbrew" "$__prefix_linuxbrew"
 
-    sudo mkdir --parents "$__brew_prefix__"
-    sudo chown --recursive "$(whoami):linuxbrew" "$__brew_prefix__"
-
-    git clone --quiet --depth 1 https://github.com/Homebrew/brew "$__brew_prefix__"
-    $(
-      cd "$__brew_prefix__"
-      sudo mkdir --parents \
-        Cellar \
-        etc \
-        include \
-        lib \
-        opt \
-        sbin \
-        share \
-        var/homebrew/linked
-      sudo chmod --recursive ug+rwx \
-        Cellar \
-        etc \
-        include \
-        lib \
-        opt \
-        sbin \
-        share \
-        var/homebrew/linked
-    )
-    sudo chown --recursive "$(whoami):linuxbrew" $__brew_prefix__
-  fi
+  git clone --quiet --depth 1 https://github.com/Homebrew/brew "$__prefix_linuxbrew"
+  $(
+    cd "$__prefix_linuxbrew"
+    sudo mkdir --parents \
+      Cellar \
+      etc \
+      include \
+      lib \
+      opt \
+      sbin \
+      share \
+      var/homebrew/linked
+    sudo chmod --recursive ug+rwx \
+      Cellar \
+      etc \
+      include \
+      lib \
+      opt \
+      sbin \
+      share \
+      var/homebrew/linked
+  )
+  sudo chown --recursive "$(whoami):linuxbrew" $__prefix_linuxbrew
 
   __.log_info 'Configuring linuxbrew...'
 
   set +u # some path brew want to update may not be defined yet
-  brew_envs=$("$__brew_prefix__/bin/brew" shellenv)
+  brew_envs=$("$__prefix_linuxbrew/bin/brew" shellenv)
   eval "$brew_envs"
   set -u
+  echo '--------'
+  env
+  echo '--------'
 
-  # brew doctor
-
-  unset __brew_root__
-  unset __brew_prefix__
+  brew --version
 }
 
 install_linuxbrew_apps(){

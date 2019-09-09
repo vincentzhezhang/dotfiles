@@ -8,7 +8,6 @@ source ../utils.sh
 # TODO
 # - should load environment variables from ../../config/bash/
 main(){
-  check_system_config
   install_prerequisites
 }
 

@@ -1,9 +1,13 @@
 #! /usr/bin/env bash
 
+set -eu
+
+source ../../config/bash/bash.env
 source ../utils.sh
 
+__.log_info "Using prefix: ${__prefix_nvm:?}"
+
 main(){
-  check_system_config
   install_nvm
   install_node
   install_node_apps
@@ -18,24 +22,18 @@ main(){
 install_nvm(){
   if hash nvm 2>/dev/null; then
     __.log_info 'nvm is installed, skipping...'
+    nvm --version
     return 0
   fi
 
-  __nvm_prefix__="${INSTALLATION_PREFIX:?}/.nvm"
-
-  if [[ ! -f "$__nvm_prefix__/nvm.sh" ]]; then
-    __.log_info 'Installing nvm...'
-    (
-    git clone https://github.com/nvm-sh/nvm.git "$__nvm_prefix__"
-    cd "$__nvm_prefix__"
+  __.log_info 'Installing nvm...'
+  (
+    git clone https://github.com/nvm-sh/nvm.git "$__prefix_nvm"
+    cd "$__prefix_nvm"
     git checkout `git describe --abbrev=0 --tags --match "v[0-9]*" $(git rev-list --tags --max-count=1)`
-    )
-  fi
-
-  __.log_info 'Configuring nvm'
-  source "$__nvm_prefix__/nvm.sh"
-
-  unset __nvm_prefix__
+  )
+  source "${__prefix_nvm:?}/nvm.sh" --no-use
+  nvm --vesion
 }
 
 install_node(){

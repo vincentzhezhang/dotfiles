@@ -1,12 +1,17 @@
 #! /usr/bin/env bash
 
+set -eu
+
 source ../utils.sh
 
+# TODO
+# - maybe loading install functions dynamically?
 main() {
   install_chrome
   install_neovim
   install_tlp
   install_virtualbox
+  install_htop
 }
 
 install_chrome() {
@@ -65,6 +70,16 @@ install_virtualbox() {
     contrib"
   sudo apt update
   sudo apt install --yes --no-install-recommends virtualbox-6.0
+}
+
+install_htop() {
+  if hash htop 2>/dev/null; then
+    __.log_info 'htop is installed, skipping...'
+    return 0
+  fi
+
+  __.log_info 'Installing htop...'
+  sudo apt install --fix-broken --yes --no-install-recommends htop
 }
 
 main

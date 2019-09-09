@@ -1,3 +1,0 @@
-#! /usr/bin/env bash
-
-docker run --detach --restart always --publish 12345:8080 --name plantuml-server plantuml/plantuml-server:jetty

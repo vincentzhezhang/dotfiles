@@ -10,6 +10,8 @@
 #
 # basic setups
 #
+# TODO threshold should really based on key repeat interval, or
+# make it quick as possible so we can have 60 fps
 PS1_UPDATE_THRESHOLD=167
 PS1_MINIMUM_COLUMN_WIDTH=60
 

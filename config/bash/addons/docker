@@ -1,8 +1,11 @@
 #! /usr/bin/env bash
 
 if ! hash docker > /dev/null 2>&1; then
+  >&2 echo 'no docker detected, skipping addons'
   return 0
 fi
+
+>&2 echo 'loading docker'
 
 __.docker.clean()
 {
@@ -12,5 +15,11 @@ __.docker.clean()
 
 __.docker.start_plantuml_server()
 {
+  # TODO
+  # - this better be asynchrosouly started when necessary, e.g. editing PlantUML file
+  #   - e.g. create a container before hand
+  #   - then use docker start plant_uml whenever needed
+  #   - docker stop plant_uml whenever a timeout is reached, e.g. 1 hour, or the file is closed?
+  #   - actual implementation depends on the speed
   docker run --detach --restart always --publish 12345:8080 --name plantuml-server plantuml/plantuml-server:jetty
 }

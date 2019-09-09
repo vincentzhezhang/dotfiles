@@ -1,5 +1,7 @@
 #! /usr/bin/env bash
 
+set -eu
+
 source ../utils.sh
 
 main(){
@@ -42,17 +44,6 @@ install_ruby(){
 install_ruby_apps(){
   __.log_warning 'TODO: instal_ruby_apps'
   return 0
-  # lsp for bash, see also shellcheck
-  gem i -g bash-language-server
-
-  # man for the impatient
-  gem i -g tldr
-
-  # handy websocket cli for testing
-  gem i -g wscat
-
-  # better git diff
-  gem i -g diff-so-fancy
 }
 
 main
