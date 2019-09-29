@@ -20,20 +20,26 @@ install_conda(){
   fi
 
   __.log_info 'Installing conda...'
-  if [[ ! -f conda.sh ]]; then
-      wget -O /tmp/conda.sh https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+  local conda_script_path='/tmp/conda.sh'
+  if [[ ! -f "$conda_script_path" ]]; then
+      wget -O "$conda_script_path" https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
   fi
 
-  chmod +x /tmp/conda.sh
-  /tmp/conda.sh -b -p "$__prefix_conda"
+  chmod +x "$conda_script_path"
+  "$conda_script_path" -b -p "$__prefix_conda"
   conda --version
 }
 
 create_conda_envs(){
-  __.log_warning 'TODO: create_conda_envs'
-  return 0
-  conda create --name py3 python=3
-  conda create --name py2 python=2
+  __.log_info 'Creating conda envs...'
+
+  if [[ ! -d "${__prefix_conda:?}/envs/py3" ]]; then
+    conda create --name py3 python=3
+  fi
+
+  if [[ ! -d "${__prefix_conda:?}/envs/py2" ]]; then
+    conda create --name py2 python=2
+  fi
 }
 
 main

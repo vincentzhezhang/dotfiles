@@ -47,11 +47,6 @@ install_node(){
 }
 
 install_node_apps(){
-  __.log_warning 'TODO: instal_node_apps'
-  return 0
-  # lsp for bash, see also shellcheck
-  npm i -g bash-language-server
-
   # man for the impatient
   npm i -g tldr
 
@@ -60,6 +55,12 @@ install_node_apps(){
 
   # better git diff
   npm i -g diff-so-fancy
+
+  # lsp for bash, see also shellcheck
+  npm i -g bash-language-server
+
+  __.log_warning 'TODO: instal_node_apps'
+  return 0
 }
 
 main

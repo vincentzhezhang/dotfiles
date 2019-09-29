@@ -9,6 +9,7 @@ source ../utils.sh
 # - should load environment variables from ../../config/bash/
 main(){
   install_prerequisites
+  set_up_system_directories
 }
 
 install_prerequisites(){
@@ -43,6 +44,11 @@ install_prerequisites(){
     # we want $prerequisites to be splat here
     sudo apt install --yes --no-install-recommends $prerequisites
   fi
+}
+
+set_up_system_directories(){
+  sudo mkdir --parents /sandbox
+  sudo chown "$USER:$USER" /sandbox
 }
 
 main

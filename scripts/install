@@ -9,6 +9,12 @@ source_dir="$(readlink -f "$this_dir/..")"
 # - dependencies should be handled in provisioning script
 if ! hash stow; then
   >&2 echo 'Please install stow first!'
+  exit 1
+fi
+
+if ! hash tree; then
+  >&2 echo 'Please install tree first!'
+  exit 1
 fi
 
 # shellcheck source=./utils.sh
@@ -24,7 +30,7 @@ if [[ "$SHIT_GOT_REAL" == 'x' ]]; then
     XDG_CONFIG_HOME="$HOME/.config"
   fi
 else
-  TARGET_HOME="$(mktemp -d)/home"
+  TARGET_HOME="$(mktemp -d)$HOME"
   XDG_CONFIG_HOME="$TARGET_HOME/.config"
   mkdir -p "$XDG_CONFIG_HOME"
 fi
@@ -59,7 +65,7 @@ if [[ "$SHIT_GOT_REAL" == 'x' ]]; then
 else
   __.log_info
   __.log_info "===================================="
-  tree -aCF "$(readlink -f "$TARGET_HOME/..")"
+  tree -aCF "$(readlink -f "$TARGET_HOME/../..")"
   __.log_info "===================================="
   __.log_info
 fi

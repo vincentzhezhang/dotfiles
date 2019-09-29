@@ -23,6 +23,7 @@ install_docker(){
   __.log_info 'Installing docker ...'
   getent group docker > /dev/null || sudo groupadd docker
   sudo usermod --append --groups docker "$USER"
+  __.log_info "Added $USER to docker group, you need to logout and log in again to make it work."
   sudo apt-get update
   sudo apt-get install --yes --no-install-recommends \
     apt-transport-https \
