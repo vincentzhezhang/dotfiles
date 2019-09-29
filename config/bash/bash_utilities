@@ -101,19 +101,28 @@ __.venv.python.prefix()
 # 2. Tmux
 #   - tmux adaptive color scheme for status line
 get_luminance() {
-  local day=530
-  local night=1630
-  local owl=2100
-  local timestr; timestr="$(date +%H%M)"
-
+  # feel free to overwrite luminance in places with consistently
+  # lighting, e.g. office
   if [[ -n $LUMINANCE ]]; then
     echo -n "$LUMINANCE"
+    return 0
   else
-    case $timestr in
-      [$((day))-$((night - 1))]*) echo -n 'high';;
-      [$((night))-$((owl - 1))]*) echo -n 'normal';;
-      *) echo -n 'low'
-    esac
+    local day=530
+    local night=1830
+    local owl=2300
+    local timestr
+    time="$(date +%H%M)"
+    local luminance
+
+    if ((day <= time && time < night)); then
+      luminance='high'
+    elif ((night <= time && time < owl)); then
+      luminance='normal'
+    else
+      luminance='low'
+    fi
+
+    echo -n "$luminance"
   fi
 }
 

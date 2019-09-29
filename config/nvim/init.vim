@@ -8,6 +8,7 @@
 " - checkout defx.nvim as an alternative to nerdtree
 " - remove vim-jsx-typescript after vim-polyglot added support | not ready 23, Nov 2018
 " - try ncm2 as an alternative to YCM
+" - try coc.vim as an alternative to YCM
 " - think about the colorscheme crap
 "
 " FIXME
@@ -15,7 +16,7 @@
 " - fix cursorline caused slowness, in fast scroll and gblame
 " - this is too buggy but the idea is great: Plug 'jiangmiao/auto-pairs'
 "
-" handy selection of symbols
+" {{{ handy selection of symbols
 " - poker suits:    ♠ ♥ ♣ ♦
 " - common symbols: • ￭
 " - white space:    ] [(em) XXX needed as leading whitespace in sign column
@@ -45,6 +46,7 @@
 "   U+258x  ▀  ▁  ▂  ▃  ▄  ▅  ▆  ▇  █  ▉  ▊  ▋  ▌  ▍  ▎  ▏
 "
 "   U+259x  ▐  ░  ▒  ▓  ▔  ▕  ▖  ▗  ▘  ▙  ▚  ▛  ▜  ▝  ▞  ▟
+"   }}}
 
 " Make use of bash utilities in vim
 let $BASH_ENV = '$XDG_CONFIG_HOME/bash/bash_utilities'
@@ -138,7 +140,7 @@ Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'w0rp/ale'
 Plug 'Xuyuanp/nerdtree-git-plugin'
-Plug 'Yggdroot/indentLine'
+" Plug 'Yggdroot/indentLine'
 Plug 'zxqfl/tabnine-vim'
 call plug#end()
 " }}}

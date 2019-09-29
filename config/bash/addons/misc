@@ -13,22 +13,24 @@ if hash brew > /dev/null 2>&1; then
   export MANPATH="/home/linuxbrew/.linuxbrew/share/man:$MANPATH"
   export INFOPATH="/home/linuxbrew/.linuxbrew/share/info:$INFOPATH"
 
-  for comp_file in "$HOMEBREW_PREFIX"/etc/bash_completion.d/*; do
-    source "$comp_file"
-  done
+  if [[ -d "$HOMEBREW_PREFIX/etc/bash_completion.d/" ]]; then
+    for comp_file in "$HOMEBREW_PREFIX/etc/bash_completion.d/"*; do
+      source "$comp_file"
+    done
+  fi
 fi
 
+####################
+# fzf tweaks start #
+####################
 if hash fzf > /dev/null 2>&1; then
-  #
-  # fzf tweaks
-  #
   read -r -d '' FZF_DEFAULT_COMMAND <<BASH
     ($GIT_DEFAULT_LS_COMMAND ||
      find . -path "*/\.*" -prune -o -type f -print -o -type l -print |
         sed s/^..//) 2> /dev/null
-  BASH
+BASH
   export FZF_DEFAULT_COMMAND
-  
+
   # let __fzf_cd__ ignore node_modules and static directories
   read -r -d '' FZF_ALT_C_COMMAND <<BASH
   command find -L . -mindepth 1 \
@@ -43,7 +45,7 @@ if hash fzf > /dev/null 2>&1; then
     \\) -prune -o -type d -print 2> /dev/null | sed 's/^.\///'
 BASH
   export FZF_ALT_C_COMMAND
-  
+
   # let __fzf_select__ ignore node_modules and static directories
   # TODO
   # - determine symbolic link type and add trailing slash if applicable
@@ -66,3 +68,6 @@ BASH
 BASH
   export FZF_CTRL_T_COMMAND
 fi
+####################
+#  fzf tweaks end  #
+####################

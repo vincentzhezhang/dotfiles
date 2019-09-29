@@ -1,7 +1,7 @@
 #! /usr/bin/env bash
 # shellcheck disable=SC1090
 
-# environment hack
+# per box environment setup
 if [[ -f ~/.bash.env ]]; then
   source ~/.bash.env
 fi
@@ -35,8 +35,8 @@ if [[ -z $XDG_DATA_HOME ]]; then
 fi
 
 if [[ ! -w ${XDG_RUNTIME_DIR:="/run/user/$UID"} ]]; then
-    echo "\$XDG_RUNTIME_DIR ($XDG_RUNTIME_DIR) not writable. Setting to /tmp." >&2
-    XDG_RUNTIME_DIR=/tmp
+  >&2 echo "\$XDG_RUNTIME_DIR ($XDG_RUNTIME_DIR) not writable. Setting to /tmp." 
+  XDG_RUNTIME_DIR=/tmp
 fi
 
 # handy box specific injection before we load the main part
