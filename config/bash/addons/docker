@@ -14,10 +14,16 @@ __.docker.clean()
 __.docker.start_plantuml_server()
 {
   # TODO
-  # - this better be asynchrosouly started when necessary, e.g. editing PlantUML file
-  #   - e.g. create a container before hand
-  #   - then use docker start plant_uml whenever needed
+  # - this better be started asynchronously when necessary, e.g.:
+  #   - create a container before hand during the provisioning period
+  #   - after opened a PlantUML file
+  #   - start the container
   #   - docker stop plant_uml whenever a timeout is reached, e.g. 1 hour, or the file is closed?
   #   - actual implementation depends on the speed
-  docker run --detach --restart always --publish 12345:8080 --name plantuml-server plantuml/plantuml-server:jetty
+  docker run \
+    --detach \
+    --restart=unless-stopped \
+    --publish 12345:8080 \
+    --name=plantuml-server \
+    plantuml/plantuml-server:jetty
 }

@@ -4,14 +4,18 @@ set -eu
 
 source ../utils.sh
 
-# TODO
-# - maybe loading install functions dynamically?
 main() {
-  install_chrome
-  install_neovim
-  install_tlp
-  install_virtualbox
-  install_htop
+  #
+  # trigger install functions dynamically
+  #
+  IFS=$'\n'
+  for f in $(declare -F); do
+    func_name="${f:11}"
+
+    if [[ "$func_name" = 'install_'* ]]; then
+      "$func_name"
+    fi
+  done
 }
 
 install_chrome() {
@@ -23,7 +27,7 @@ install_chrome() {
   __.log_info 'Installing Google Chrome...'
   wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
   if [[ ! -f chrome.deb ]]; then
-    wget -O /tmp/chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb 
+    wget -O /tmp/chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
   fi
   sudo apt install --fix-broken --yes --no-install-recommends /tmp/chrome.deb
 }
@@ -37,6 +41,8 @@ install_neovim() {
   __.log_info 'Installing neovim ...'
   sudo add-apt-repository --yes ppa:neovim-ppa/stable
   sudo apt install --fix-broken --yes --no-install-recommends neovim
+
+  # use neovim by default system wide
   sudo update-alternatives --install /usr/bin/vi vi /usr/bin/nvim 60
   sudo update-alternatives --auto vi
   sudo update-alternatives --install /usr/bin/vim vim /usr/bin/nvim 60

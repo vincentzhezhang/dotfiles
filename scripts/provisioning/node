@@ -30,8 +30,9 @@ install_nvm(){
   (
     git clone https://github.com/nvm-sh/nvm.git "$__prefix_nvm"
     cd "$__prefix_nvm"
-    git checkout `git describe --abbrev=0 --tags --match "v[0-9]*" $(git rev-list --tags --max-count=1)`
+    git checkout "$(git describe --abbrev=0 --tags --match "v[0-9]*" "$(git rev-list --tags --max-count=1)")"
   )
+  # shellcheck source=/sandbox/.nvm/nvm.sh
   source "${__prefix_nvm:?}/nvm.sh" --no-use
   nvm --vesion
 }
@@ -47,20 +48,23 @@ install_node(){
 }
 
 install_node_apps(){
+  # upgrade npm first
+  npm install --global npm
+
+  # install node.js provider for neovim
+  npm install --global neovim
+
   # man for the impatient
-  npm i -g tldr
+  npm install --global tldr
 
   # handy websocket cli for testing
-  npm i -g wscat
+  npm install --global wscat
 
   # better git diff
-  npm i -g diff-so-fancy
+  npm install --global diff-so-fancy
 
   # lsp for bash, see also shellcheck
-  npm i -g bash-language-server
-
-  __.log_warning 'TODO: instal_node_apps'
-  return 0
+  npm install --global bash-language-server
 }
 
 main

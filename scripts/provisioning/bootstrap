@@ -2,18 +2,18 @@
 
 set -eu
 
+source ../../config/bash/bash.env
 source ../utils.sh
 
+__.log_info "Using sandbox: ${__sandbox_path:?}"
 
-# TODO
-# - should load environment variables from ../../config/bash/
 main(){
   install_prerequisites
   set_up_system_directories
 }
 
 install_prerequisites(){
-  # 
+  #
   # Prerequisites
   #
   # some of the apps below are needed during the installation period, e.g.:
@@ -37,18 +37,18 @@ install_prerequisites(){
   done
 
   if [[ -z "$prerequisites" ]]; then
-    __.log_info 'Prerequisites are satisified, skipping...'
+    __.log_info 'Prerequisites are satisfied, skipping...'
   else
     __.log_info 'Installing missing prerequisites...'
     sudo apt update
-    # we want $prerequisites to be splat here
+    # shellcheck disable=SC2086  # splat $prerequisites
     sudo apt install --yes --no-install-recommends $prerequisites
   fi
 }
 
 set_up_system_directories(){
-  sudo mkdir --parents /sandbox
-  sudo chown "$USER:$USER" /sandbox
+  sudo mkdir --parents "$__sandbox_path"
+  sudo chown "$USER:$USER" "$__sandbox_path"
 }
 
 main

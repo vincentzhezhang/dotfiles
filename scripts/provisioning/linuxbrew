@@ -16,15 +16,6 @@ install_linuxbrew(){
   if hash brew 2>/dev/null; then
     __.log_info 'Linuxbrew is installed, skipping...'
     brew --version
-
-    set +u # some path brew want to update may not be defined yet
-    brew_envs=$("$__prefix_linuxbrew/bin/brew" shellenv)
-    eval "$brew_envs"
-    set -u
-    echo '--------'
-    env | grep -i brew | sort -i
-    echo '--------'
-
     return 0
   fi
 
@@ -37,7 +28,7 @@ install_linuxbrew(){
   sudo chown --recursive "$(whoami):linuxbrew" "$__prefix_linuxbrew"
 
   git clone --quiet --depth 1 https://github.com/Homebrew/brew "$__prefix_linuxbrew"
-  $(
+  (
     cd "$__prefix_linuxbrew"
     sudo mkdir --parents \
       Cellar \
@@ -58,7 +49,7 @@ install_linuxbrew(){
       share \
       var/homebrew/linked
   )
-  sudo chown --recursive "$(whoami):linuxbrew" $__prefix_linuxbrew
+  sudo chown --recursive "$(whoami):linuxbrew" "$__prefix_linuxbrew"
 
   __.log_info 'Configuring linuxbrew...'
 
@@ -66,28 +57,46 @@ install_linuxbrew(){
   brew_envs=$("$__prefix_linuxbrew/bin/brew" shellenv)
   eval "$brew_envs"
   set -u
-  echo '--------'
-  env | grep -i brew | sort
-  echo '--------'
-
   brew --version
 }
 
+__.brew.upinstall(){
+  app_name="$1"
+
+  if [[ -z "$app_name" ]]; then
+    >&2 echo 'Usage:'
+    >&2 echo '__.brew.upinstall APP_NAME'
+  fi
+
+  if brew ls --versions "$app_name" >/dev/null; then
+    if grep -q "$app_name" <<< "$BREW_OUTDATED"; then
+      >&2 echo "Upgrading $app_name"
+      HOMEBREW_NO_AUTO_UPDATE=1 brew upgrade "$app_name"
+    fi
+  else
+    >&2 echo "Installing $app_name"
+    HOMEBREW_NO_AUTO_UPDATE=1 brew install "$app_name"
+  fi
+}
+
 install_linuxbrew_apps(){
-  #
-  # Ulilities
-  #
+  brew update > /dev/null
+  BREW_OUTDATED=$(brew outdated)
 
   # better alternative to find
-  brew install fd
+  __.brew.upinstall fd
+
   # better alternative to grep
-  brew install ag
+  __.brew.upinstall ag
+
   # another better alternative to grep
-  brew install rg
+  __.brew.upinstall rg
+
   # newer than system git
-  brew install git
+  __.brew.upinstall git
+
   # newer than system tmux
-  brew install tmux
+  __.brew.upinstall tmux
 
   # TODO
   # - find a better way to handle pre/post install
@@ -97,51 +106,53 @@ install_linuxbrew_apps(){
     git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
   fi
 
-  __.log_warning 'TODO: install more linuxbrew apps!'
-  return 0
-
   # open source alternative to the Cisco AnyConnect Client
-  # XXX the source repo:
-  # http://git.infradead.org/users/dwmw2/
-  # may be down at times and brew install will stuck
-  # TODO
-  # - sounds like they moved the official repo to gitlab
-  #   then don't we just use source code from there? Maybe worth firing a PR
-  brew install openconnect
-
-  #
-  # brew installs
-  #
+  __.brew.upinstall openconnect
 
   # better alternative for curl
-  brew install httpie
+  __.brew.upinstall httpie
+
   # handy spark lines
-  brew install spark
+  __.brew.upinstall spark
+
   # YGNI
-  brew install youtube-dl
+  __.brew.upinstall youtube-dl
+
   # JSON for cli
-  brew install jq
+  __.brew.upinstall jq
+  # interactive cli JSON utility
+
+  __.brew.upinstall fx
   # website pressure test (better than ab)
-  brew install wrk
 
-  #
-  # linters
-  #
-
-  # TODO
-  # - just throwing thought here, apps should really be defined under categories with name and source
-  #   then be consumed by installer
-  declare -A linters
-  # could just refer to the ale's supported-tools doc for a comprehensive curated list
-
+  __.brew.upinstall wrk
   # docker file linter
-  brew install hadolint
 
-  brew install yamllint
+  __.brew.upinstall hadolint
+  # linter for yaml
 
+  __.brew.upinstall yamllint
   # FIXME shellcheck, no ideal way to install on a restricted machine yet
+
   # shell linter
-  brew install shellcheck
+  __.brew.upinstall shellcheck
+
+  #
+  # docker dev essentials
+  #
+  __.brew.upinstall minikube
+  __.brew.upinstall kubectl
+  __.brew.upinstall kubectx
+  brew tap instrumenta/instrumenta
+  __.brew.upinstall kubeval
+
+  # ctags.io
+  # FIXME this is problematic now
+  # brew tap universal-ctags/universal-ctags
+  # brew install --HEAD universal-ctags/universal-ctags/universal-ctags
+  __.brew.upinstall ctags
+
+  unset BREW_OUTDATED
 }
 
 main

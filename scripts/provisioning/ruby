@@ -25,7 +25,8 @@ install_rbenv(){
     __.log_info 'rbenv is installed, skipping...'
     return 0
   else
-    __rbenv_prefix__="$INSTALLATION_PREFIX/.rbenv"
+    # __rbenv_prefix__="$INSTALLATION_PREFIX/.rbenv"
+    >&2 "Not using Ruby atm, ignoring"
   fi
 }
 

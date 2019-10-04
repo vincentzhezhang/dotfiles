@@ -4,14 +4,8 @@ set -eu
 
 source ../utils.sh
 
-# TODO
-# - [ ] note that user group only works after log in and out, need to deal with that
-#
 main(){
   install_docker
-  configure_docker
-  install_docker_apps
-  install_docker_dev_essentials
 }
 
 install_docker(){
@@ -23,46 +17,32 @@ install_docker(){
   __.log_info 'Installing docker ...'
   getent group docker > /dev/null || sudo groupadd docker
   sudo usermod --append --groups docker "$USER"
-  __.log_info "Added $USER to docker group, you need to logout and log in again to make it work."
-  sudo apt-get update
+
+  #
+  # group hack without logout
+  #
+  newgrp docker
+  newgrp "$USER"
+  __.log_warning "Added $USER to docker group, you need to logout and log in again to make it permanent."
+
+
+  curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+  sudo add-apt-repository --yes \
+     "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+     $(lsb_release --codename --short) \
+     stable"
+
   sudo apt-get install --yes --no-install-recommends \
     apt-transport-https \
     ca-certificates \
     curl \
     gnupg-agent \
     software-properties-common
-  curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-  sudo add-apt-repository --yes \
-     "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
-     $(lsb_release --codename --short) \
-     stable"
-  sudo apt-get update
-  sudo apt-get install --yes --no-install-recommends docker-ce docker-ce-cli containerd.io
-}
 
-install_docker_dev_essentials(){
-  __.log_warning 'TODO install docker dev essentials'
-  # TODO
-  # Apps below may be install separately as they are more convenient to install via linuxbrew
-  # - [ ] minikube
-  # - [ ] kubectl
-  # - [ ] kubeval
-  # wget --quiet --show-progress --output-document=- https://github.com/instrumenta/kubeval/releases/latest/download/kubeval-linux-amd64.tar.gz | tar -C /sandbox/vincent.zhang/bin/ -xzf -
-}
-
-configure_docker(){
-  __.log_warning 'TODO: configure_docker!'
-  # TODO
-  # - [ ] may need to move the data folder to data/sandbox
-  # - [ ] may need to double check group permissions
-}
-
-install_docker_apps(){
-  __.log_warning 'TODO: install docker apps!'
-  # TODO
-  # - [ ] PlantUML
-  # - [ ] Jenkins for validation?
-  # - [ ] Maybe dockercraft too ;)
+  sudo apt-get install --yes --no-install-recommends \
+    docker-ce \
+    docker-ce-cli \
+    containerd.io
 }
 
 main

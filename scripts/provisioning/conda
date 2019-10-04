@@ -31,15 +31,26 @@ install_conda(){
 }
 
 create_conda_envs(){
-  __.log_info 'Creating conda envs...'
 
-  if [[ ! -d "${__prefix_conda:?}/envs/py3" ]]; then
+  if [[ -d "${__prefix_conda:?}/envs/py3" ]]; then
+    __.log_info 'Conda env py3 already exists, skipping...'
+  else
+    __.log_info 'Creating conda env py3...'
     conda create --name py3 python=3
   fi
+  (
+    "${__prefix_conda:?}/envs/py3/bin/pip" install --upgrade pynvim
+  )
 
-  if [[ ! -d "${__prefix_conda:?}/envs/py2" ]]; then
+  if [[ -d "${__prefix_conda:?}/envs/py2" ]]; then
+    __.log_info 'Conda env py2 already exists, skipping...'
+  else
+    __.log_info 'Creating conda env py2...'
     conda create --name py2 python=2
   fi
+  (
+    "${__prefix_conda:?}/envs/py2/bin/pip" install --upgrade pynvim
+  )
 }
 
 main
