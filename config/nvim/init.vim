@@ -48,21 +48,26 @@
 "   U+259x  ▐  ░  ▒  ▓  ▔  ▕  ▖  ▗  ▘  ▙  ▚  ▛  ▜  ▝  ▞  ▟
 "   }}}
 
+let g:vim_conf_root  = $XDG_CONFIG_HOME
+if empty(g:vim_conf_root)
+  let g:vim_conf_root = expand('<sfile>:p:h:h')
+endif
+
 " Make use of bash utilities in vim
-let $BASH_ENV = '$XDG_CONFIG_HOME/bash/bash_utilities'
-let g:before_hook = '$XDG_CONFIG_HOME/nvim/before.vim'
-let g:after_hook = '$XDG_CONFIG_HOME/nvim/after.vim'
+let $BASH_ENV = g:vim_conf_root . '/bash/noninteractive'
+let g:before_hook = g:vim_conf_root . '/nvim/before.vim'
+let g:after_hook = g:vim_conf_root . '/nvim/after.vim'
 
-if !empty(glob(g:before_hook))
-  exec 'source' g:before_hook
-end
+if filereadable(g:before_hook)
+  execute 'source' g:before_hook
+endif
 
-source $XDG_CONFIG_HOME/nvim/variables.vim
-source $XDG_CONFIG_HOME/nvim/functions.vim
+execute 'source' g:vim_conf_root . '/nvim/variables.vim'
+execute 'source' g:vim_conf_root . '/nvim/functions.vim'
 
 " load my personal plugins
-for f in split(glob('$XDG_CONFIG_HOME/nvim/pluginrc.d/*.vim'), '\n')
-  exec 'source' f
+for f in split(glob(g:vim_conf_root . '/nvim/pluginrc.d/*.vim'), '\n')
+  execute 'source' f
 endfor
 
 " FIXME polyglot not playing well with vim-markdown
@@ -98,7 +103,7 @@ let g:tagbar_type_markdown = {
 \ }
 " {{{ Plugins
 call SetupVimPlug() " in case vim-plug is missing
-call plug#begin('$XDG_CONFIG_HOME/nvim/plugged')
+call plug#begin(g:vim_conf_root . '/nvim/plugged')
 Plug 'airblade/vim-gitgutter'
 Plug 'airblade/vim-rooter'
 Plug 'ajmwagar/vim-deus'
@@ -113,11 +118,12 @@ Plug 'flazz/vim-colorschemes'
 Plug 'gyim/vim-boxdraw'
 Plug 'jparise/vim-graphql' " TODO this is removed from vim-polyglot for now
 Plug 'jreybert/vimagit'
-Plug 'junegunn/fzf', { 'dir': '$XDG_CONFIG_HOME/fzf', 'do': './install --all' }
+Plug 'junegunn/fzf', { 'dir': g:vim_conf_root . '/fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'junegunn/vim-easy-align'
 Plug 'kristijanhusak/vim-carbon-now-sh'
 Plug 'Lokaltog/vim-easymotion'
+Plug 'liuchengxu/vista.vim'
 Plug 'majutsushi/tagbar'
 Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
 Plug 'mhinz/vim-startify'
@@ -140,7 +146,6 @@ Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'w0rp/ale'
 Plug 'Xuyuanp/nerdtree-git-plugin'
-" Plug 'Yggdroot/indentLine'
 Plug 'zxqfl/tabnine-vim'
 call plug#end()
 " }}}
@@ -161,7 +166,7 @@ if !has('nvim')
   set softtabstop=0              " moved up from below
   set ttyfast
   syntax on                      " Enable syntax highlight
-end
+endif
 
 " force utf-8 encoding cause we have multi-bytes chars here
 scriptencoding utf-8
@@ -433,20 +438,38 @@ let g:multi_cursor_quit_key            = '<Esc>'
 
 " {{{ Python Virtual Env Tweaks start
 "
-" TODO delegate virtual env detection to bash command as it's also used by
-" other shell utilities
 "
+if isdirectory(glob("$__conda_env_root"))
+  let s:py3_path = glob("$__conda_env_root/py3/bin/python")
+  if executable(s:py3_path)
+    let g:python3_host_prog = s:py3_path
+    let g:ycm_server_python_interpreter = s:py3_path
+  endif
+
+  let s:py2_path = glob("$__conda_env_root/py2/bin/python")
+  if executable(s:py2_path)
+    let g:python_host_prog = s:py2_path
+  endif
+endif
+
 let s:py_virtual_env_dir = $CONDA_PREFIX
 
 if empty(s:py_virtual_env_dir)
-  let s:py_virtual_env_dir = system('clever_conda_path' . ' ' . expand('%'))
+  let s:py_virtual_env_dir = system('2>/dev/null' . ' ' . '__.venv.python.prefix' . ' ' . expand('%'))
 endif
 
 if empty(s:py_virtual_env_dir)
   let s:py_virtual_env_dir = substitute(trim(system('command -v python')), '/\+bin/python', '', 'g')
 endif
 
-let g:ycm_python_binary_path = s:py_virtual_env_dir . '/bin/python'
+" see YCM official doc
+let g:ycm_python_interpreter_path = s:py_virtual_env_dir . '/bin/python'
+let g:ycm_python_sys_path = []
+let g:ycm_extra_conf_vim_data = [
+  \  'g:ycm_python_interpreter_path',
+  \  'g:ycm_python_sys_path'
+  \]
+let g:ycm_global_ycm_extra_conf = g:vim_conf_root . '/ycm_global_extra_conf.py'
 " XXX For historical reason, $VIRTUAL_ENV is used by many Python
 " plugins so we just have to abide by it for now
 let $VIRTUAL_ENV = s:py_virtual_env_dir
@@ -833,9 +856,9 @@ nnoremap <silent> <A-,> :TmuxNavigatePrevious<CR>
 " FIXME default colour setting of deusBg2 is too dark
 highlight! link NonText deusBg3
 
-if !empty(glob(g:after_hook))
-  exec 'source' g:after_hook
-end
+if filereadable(g:after_hook)
+  execute 'source' g:after_hook
+endif
 
 " {{{ Initialization
 "

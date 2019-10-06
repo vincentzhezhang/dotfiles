@@ -25,6 +25,7 @@ install_prerequisites(){
 
   for app in \
     build-essential \
+    cmake \
     git \
     net-tools \
     openssh-server \

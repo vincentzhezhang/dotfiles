@@ -1,18 +1,7 @@
 #! /usr/bin/env bash
 #
-# this file is normally sourced by .bashrc, however, some of the apps, e.g. vim
-# will also make use of this file so in that case, we don't want to source
-# everything
+# Uncategorized functions
 #
-# set this in .bashrc.before to speed up loading
-# TODO
-# - add path to before hook directly with a info message
-# - test, test, test!
-
-case $- in
-  *i*) BASH_MODE=interactive ;;
-  *) BASH_MODE=noninteractive ;;
-esac
 
 bm_cmd()
 {
@@ -37,102 +26,6 @@ bm_cmd()
   >&2 echo "Ran $count in ${t}ms, avg: ${avg}ms"
 }
 
-#
-# ubiquitous functions
-#
-
-__.venv.python.prefix()
-{
-  # main interface handling various Python virtual envs
-  # Priority
-  # - [ ] Python specified in the shebang line
-  # - [ ] Active conda environment
-  # - [ ] Detected conda environment
-  # - [ ] Whatever python available in path (maybe 2/3 detection?)
-  #
-  # TODO may need to rethink about the rationale of the priorities
-  #
-  # args:
-  # - str: path [optional] path to file/directory, default: pwd
-  #
-  # output:
-  # - str: path, path to detected python interpreter w w/o virtual env
-
-  local path
-  path=${1:-$PWD}
-
-  local py_exec
-
-  if [[ -f "$path" ]]; then
-    # shebang detection
-    local shebang_line;
-    shebang_line=$(head -1 "$path")
-
-    # XXX need to exclude /usr/bin/env python
-    if [[ "$shebang_line" =~ ^#\!.+/python[23]?$ ]]; then
-      py_exec=$(cut -c 3- <<< "$shebang_line")
-      >&2 echo 'got python from shebang_line!'
-      echo "$py_exec"
-      return 0
-    fi
-  fi
-
-  if hash __.conda.clever_prefix; then
-    py_exec=$(__.conda.clever_prefix "$path")
-    >&2 echo 'got python from __.conda.clever_prefix!'
-    echo "$py_exec"
-    return 0
-  fi
-}
-
-#
-# Share contrast across applications
-#
-# TODO use new system wide contrast settings to deprecate cli app detections
-# 0. Terminal color schemes
-#   - adaptive color scheme for gnome-terminal
-#
-# 1. Vim specific settings
-#   - vim adaptive color scheme DONE
-#   - airline adaptive color scheme
-#   - vim gutter related adaptive color scheme
-#   - fzf adaptive color scheme
-#
-# 2. Tmux
-#   - tmux adaptive color scheme for status line
-get_luminance() {
-  # feel free to overwrite luminance in places with consistently
-  # lighting, e.g. office
-  if [[ -n $LUMINANCE ]]; then
-    echo -n "$LUMINANCE"
-    return 0
-  else
-    local day=530
-    local night=1830
-    local owl=2300
-    local timestr
-    time="$(date +%H%M)"
-    local luminance
-
-    if ((day <= time && time < night)); then
-      luminance='high'
-    elif ((night <= time && time < owl)); then
-      luminance='normal'
-    else
-      luminance='low'
-    fi
-
-    echo -n "$luminance"
-  fi
-}
-
-if [[ "$BASH_MODE" == 'noninteractive' ]]; then
-  return 0
-fi
-
-#
-# interactive mode only functions
-#
 weather()
 {
   place=${1:-'shanghai,pudong,guozhan'}
@@ -140,13 +33,15 @@ weather()
   curl "http://wttr.in/~$place" &
 }
 
+#
+# Goto Definition of a bash function
+#
 gd()
 {
   if [[ -z $1 ]]; then
     echo "What are you looking for? Try gd then press <tab>!"
   fi
 
-  # Goto Definition
   shopt -s extdebug; declare -F "$1" | awk '{ print $3" +"$2 }' | xargs --no-run-if-empty nvim
 }
 __complete_gd()
@@ -159,17 +54,17 @@ __complete_gd()
 complete -F __complete_gd -o nospace gd
 
 
+#
+# Goto Git branch
+#
 gg()
 {
-  #
-  # navigate and checkout to branches easily
-  #
   if ! git rev-parse --show-toplevel > /dev/null 2>&1; then
     >&2 echo 'not a git repository!'
     return 1
   fi
 
-  if [[ ! -x $(which fzf) ]]; then
+  if ! hash fzf; then
     >&2 echo 'fzf is missing, how can you miss that?'
     return 1
   fi
@@ -195,18 +90,21 @@ gg()
   fi
 }
 
+#
+# Find and Replace
+#
 far() {
   if [[ -z $1 || -z $2 ]]; then
     >&2 echo 'Usage: far find_pattern replace_pattern'
     return 1
   fi
 
-  if [[ ! -x $(which ag) ]]; then
+  if ! hash ag; then
     >&2 echo 'ag is missing, please install it first.'
     return 1
   fi
 
-  if [[ ! -x $(command -v sed) ]]; then
+  if ! hash sed; then
     >&2 echo 'sed is missing, please install it first.'
     return 1
   fi
@@ -384,29 +282,6 @@ mktar() { tar cvf  "${1%%/}.tar"     "${1%%/}/"; }
 mktgz() { tar cvzf "${1%%/}.tar.gz"  "${1%%/}/"; }
 mktbz() { tar cvjf "${1%%/}.tar.bz2" "${1%%/}/"; }
 
-#netinfo - shows network information for your system
-netinfo ()
-{
-  echo "--------------- Network Information ---------------"
-  /sbin/ifconfig | awk /'inet addr/ {print $2}'
-  /sbin/ifconfig | awk /'Bcast/ {print $3}'
-  /sbin/ifconfig | awk /'inet addr/ {print $4}'
-  /sbin/ifconfig | awk /'HWaddr/ {print $4,$5}'
-  myip="$(lynx -dump -hiddenlinks=ignore -nolist http://checkip.dyndns.org:8245/ | sed '/^$/d; s/^[ ]*//g; s/[ ]*$//g')"
-  echo "${myip}"
-  echo "---------------------------------------------------"
-}
-
-# dirsize - finds directory sizes and lists them for the current directory
-dirsize ()
-{
-  du -shx ./* .[a-zA-Z0-9_]* 2> /dev/null | \
-    egrep '^ *[0-9.]*[MG]' | sort -n > /tmp/list
-  egrep '^ *[0-9.]*M' /tmp/list
-  egrep '^ *[0-9.]*G' /tmp/list
-  rm -rf /tmp/list
-}
-
 # cleanof - clean files older than specific days
 cleanof ()
 {
@@ -499,7 +374,7 @@ bullshit()
   fi
 
   cow=$(find "$cow_path" -name '*.cow' | command $shuf -n1)
-  cowsay -f "$cow" "$(fortune)" | toilet -F gay -f term
+  fortune | cowsay -f "$cow" | lolcat
 }
 
 #
@@ -509,7 +384,7 @@ bulltruth()
 {
   cowstates=(b d g p s t w t y)
   cowstate=${cowstates[$RANDOM % ${#cowstates[@]}]}
-  git-tip | fold -s -w 60 | cowthink -"${cowstate}" -n | toilet -F gay -f term
+  git-tip | fold -s -w 80 | cowthink -"${cowstate}" -n | lolcat
 }
 
 #
@@ -545,96 +420,15 @@ random_splash()
   esac
 }
 
-###-begin-npm-completion-###
-#
-# npm command completion script
-#
-# Installation: npm completion >> ~/.bashrc  (or ~/.zshrc)
-# Or, maybe: npm completion > /usr/local/etc/bash_completion.d/npm
-#
-
-if type complete &>/dev/null; then
-  _npm_completion () {
-    local words cword
-    if type _get_comp_words_by_ref &>/dev/null; then
-      _get_comp_words_by_ref -n = -n @ -n : -w words -i cword
-    else
-      cword="$COMP_CWORD"
-      words=("${COMP_WORDS[@]}")
-    fi
-
-    local si="$IFS"
-    IFS=$'\n' COMPREPLY=($(COMP_CWORD="$cword" \
-                           COMP_LINE="$COMP_LINE" \
-                           COMP_POINT="$COMP_POINT" \
-                           npm completion -- "${words[@]}" \
-                           2>/dev/null)) || return $?
-    IFS="$si"
-    if type __ltrim_colon_completions &>/dev/null; then
-      __ltrim_colon_completions "${words[cword]}"
-    fi
-  }
-  complete -o default -F _npm_completion npm
-elif type compdef &>/dev/null; then
-  _npm_completion() {
-    local si=$IFS
-    compadd -- "$(COMP_CWORD=$((CURRENT-1)) \
-                 COMP_LINE=$BUFFER \
-                 COMP_POINT=0 \
-                 npm completion -- "${words[@]}" \
-                 2>/dev/null)"
-    IFS=$si
-  }
-  compdef _npm_completion npm
-elif type compctl &>/dev/null; then
-  _npm_completion () {
-    local cword line point words si
-    read -Ac words
-    read -cn cword
-    let cword-=1
-    read -l line
-    read -ln point
-    si="$IFS"
-    IFS=$'\n' reply=($(COMP_CWORD="$cword" \
-                       COMP_LINE="$line" \
-                       COMP_POINT="$point" \
-                       npm completion -- "${words[@]}" \
-                       2>/dev/null)) || return $?
-    IFS="$si"
-  }
-  compctl -K _npm_completion npm
-fi
-###-end-npm-completion-###
-
 path() {
   echo "${PATH//:/$'\n'}"
-}
-
-
-#
-# hmmmm
-#
-
-fix_iwlwifi() {
-  #
-  # iwlwifi for intel-7265D higher than 22 has bugs that result in
-  # very bad WiFi performance and constant drop offs
-  #
-  echo 'Stopping iwlwifi mod...' \
-    && sudo modprobe --remove iwlwifi \
-    && echo 'Removing bad firmware...' \
-    && sudo rm /lib/firmware/iwlwifi-7265D* \
-    && echo 'Linking good firmware...' \
-    && sudo ln -s /lib/firmware/iwlwifi.good/iwlwifi-7265D-22.ucode /lib/firmware/ \
-    && echo 'Loading iwlwifi mod...' \
-    && sudo modprobe iwlwifi
 }
 
 archive_photo()
 {
   # see https://developers.google.com/speed/docs/insights/OptimizeImages#optimizations-for-gif-png-and-jpeg-images
   # TODO
-  # - still better to add different output filename support
+  # - [ ] still better to add different output filename support
   mogrify \
     -resize 1920x1080 \
     -sampling-factor 4:2:0 \
@@ -652,9 +446,8 @@ open_captive_portal()
   # - apple's captive site looks the most reliable one
   #
   # FIXME
-  # - it is surprisingly hard to specify a fixed window size
+  # - [ ] it is surprisingly hard to specify a fixed window size
   /usr/bin/google-chrome --incognito --disable-extensions --app=http://captive.apple.com
 }
 
 # vim: set ai ts=2 tw=79:
-

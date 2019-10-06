@@ -38,3 +38,16 @@ default, add SHIT_GOT_REAL=x before the script to make it do the real work.
 ## Tips
 
 - bash built-ins are normally faster than command line alternatives, e.g. bash regex match is ~50% quicker than grep
+
+
+## TODO
+
+### Features
+
+- apply XDG settings to non-terminal started apps
+
+### Bugs
+
+- google-chrome XDG support for both system and cmd line is hacked
+
+### Misc

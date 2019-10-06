@@ -6,7 +6,7 @@
 
 if ! hash conda > /dev/null 2>&1; then
   >&2 echo 'no conda detected, skipping addons'
-  return 0;
+  return 0
 fi
 
 if [[ -z $__conda_env_root ]]; then

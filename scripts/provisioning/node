@@ -54,8 +54,23 @@ install_node_apps(){
   # install node.js provider for neovim
   npm install --global neovim
 
+  # typescript ftw
+  npm install --global typescript
+
+  # linter for markdown
+  npm install --global markdownlint
+
+  # linter for text file
+  npm install --global textlint
+
+  # linter for better writing
+  npm install --global write-good
+
   # man for the impatient
   npm install --global tldr
+
+  # git tip of the day
+  npm install --global git-tip
 
   # handy websocket cli for testing
   npm install --global wscat

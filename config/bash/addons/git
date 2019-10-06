@@ -6,7 +6,7 @@
 
 if ! hash git > /dev/null 2>&1; then
   >&2 echo 'no git detected, skipping addons'
-  return 0;
+  return 0
 fi
 
 #

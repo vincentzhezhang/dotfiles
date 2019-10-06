@@ -6,19 +6,6 @@ if [[ -f ~/.bash.env ]]; then
   source ~/.bash.env
 fi
 
-# TODO
-# - update basic configurations according to latest ubuntu bashrc
-# - extra platform specific settings to a separate script
-
-# If not running interactively, don't do anything, common non-interactive shells including:
-# - login sheel
-# - vi visual mode for long commands in shell
-# - other app started shell
-case $- in
-  *i*) ;;
-  *) return;;
-esac
-
 if [[ -z $XDG_CONFIG_HOME ]]; then
   export XDG_CONFIG_HOME="$HOME/.config"
   >&2 echo "No \$XDG_CONFIG_HOME specified, using default: $XDG_CONFIG_HOME"
@@ -38,6 +25,21 @@ if [[ ! -w ${XDG_RUNTIME_DIR:="/run/user/$UID"} ]]; then
   >&2 echo "\$XDG_RUNTIME_DIR ($XDG_RUNTIME_DIR) not writable. Setting to /tmp." 
   XDG_RUNTIME_DIR=/tmp
 fi
+
+# TODO
+# - update basic configurations according to latest ubuntu bashrc
+# - extra platform specific settings to a separate script
+
+case $- in
+  *i*)
+    # don't don anything when running interactively
+    ;;
+  *)
+    # otherwise source the noninteractive scripts and return
+    export BASH_ENV="$XDG_CONFIG_HOME/bash/noninteractive"
+    return
+    ;;
+esac
 
 # handy box specific injection before we load the main part
 [[ -f "$XDG_CONFIG_HOME/bash/before" ]] && source "$XDG_CONFIG_HOME/bash/before"

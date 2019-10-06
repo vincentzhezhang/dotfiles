@@ -3,6 +3,91 @@
 #
 # Misc add-ons
 #
+
+__.venv.python.prefix()
+{
+  # main interface handling various Python virtual envs
+  # Priority
+  # - [ ] Python specified in the shebang line
+  # - [ ] Active conda environment
+  # - [ ] Detected conda environment
+  # - [ ] Whatever python available in path (maybe 2/3 detection?)
+  #
+  # TODO may need to rethink about the rationale of the priorities
+  #
+  # args:
+  # - str: path [optional] path to file/directory, default: pwd
+  #
+  # output:
+  # - str: path, path to detected python interpreter w w/o virtual env
+
+  local path
+  path=${1:-$PWD}
+
+  local py_exec
+
+  if [[ -f "$path" ]]; then
+    # shebang detection
+    local shebang_line;
+    shebang_line=$(head -1 "$path")
+
+    # XXX need to exclude /usr/bin/env python
+    if [[ "$shebang_line" =~ ^#\!.+/python[23]?$ ]]; then
+      py_exec=$(cut -c 3- <<< "$shebang_line")
+      >&2 echo 'got python from shebang_line!'
+      echo -n "$py_exec"
+      return 0
+    fi
+  fi
+
+  if hash __.conda.clever_prefix; then
+    py_exec=$(__.conda.clever_prefix "$path")
+    >&2 echo 'got python from __.conda.clever_prefix!'
+    echo -n "$py_exec"
+    return 0
+  fi
+}
+
+
+#
+# Share contrast across applications
+#
+# TODO use new system wide contrast settings to deprecate cli app detections
+# 0. Terminal color schemes
+#   - adaptive color scheme for gnome-terminal
+#
+# 1. Vim specific settings
+#   - vim adaptive color scheme DONE
+#   - airline adaptive color scheme
+#   - vim gutter related adaptive color scheme
+#   - fzf adaptive color scheme
+#
+# 2. Tmux
+#   - tmux adaptive color scheme for status line
+get_luminance() {
+  # feel free to overwrite luminance in places with consistently
+  # lighting, e.g. office
+  local luminance="$LUMINANCE_OVERRIDE"
+
+  if [[ -z "$luminance" ]]; then
+    local day=530
+    local night=1830
+    local owl=2359
+    time="$(date +%H%M)"
+
+    if ((day <= time && time < night)); then
+      luminance='high'
+    elif ((night <= time && time < owl)); then
+      luminance='normal'
+    else
+      luminance='low'
+    fi
+  fi
+
+  echo -n "$luminance"
+}
+
+
 # uncategorized addons go here
 
 if hash brew > /dev/null 2>&1; then

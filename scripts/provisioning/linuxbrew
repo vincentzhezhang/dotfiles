@@ -137,6 +137,15 @@ install_linuxbrew_apps(){
   # shell linter
   __.brew.upinstall shellcheck
 
+  # there is no cow level
+  __.brew.upinstall cowsay
+
+  # a bit vivid
+  __.brew.upinstall lolcat
+
+  # daily fortune
+  __.brew.upinstall fortune
+
   #
   # docker dev essentials
   #
@@ -146,13 +155,14 @@ install_linuxbrew_apps(){
   brew tap instrumenta/instrumenta
   __.brew.upinstall kubeval
 
+  unset BREW_OUTDATED
+
   # ctags.io
   # FIXME this is problematic now
   # brew tap universal-ctags/universal-ctags
-  # brew install --HEAD universal-ctags/universal-ctags/universal-ctags
-  __.brew.upinstall ctags
-
-  unset BREW_OUTDATED
+  return 0
+  brew install --HEAD --with-jansson universal-ctags/universal-ctags/universal-ctags
+  # __.brew.upinstall ctags
 }
 
 main

@@ -41,7 +41,7 @@
   untracked = cyan
 [credential]
   # cache credential for 30 days
-  helper = cache --timeout=2592000
+	helper = cache --timeout=2592000
 [diff]
   tool = meld
 [merge]
