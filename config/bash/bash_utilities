@@ -3,6 +3,52 @@
 # Uncategorized functions
 #
 
+blur_lock()
+{
+  # please set the lock screen background to
+  # /tmp/locked_screen.png
+  # before running this command
+  if [[ -z $DISPLAY ]]; then
+    >&2 echo 'not an interactive session, abort!'
+    return 1
+  fi
+
+  if ! hash ffmpeg 2>/dev/null; then
+    >&2 echo 'please install ffmepg!'
+    return 1
+  fi
+
+  if ! hash loginctl 2>/dev/null; then
+    >&2 echo 'not using systemd? Please configure manually!'
+    return 1
+  fi
+
+  #
+  # ffmpeg is much faster than the combination of scrot + imagemagick
+  # roughly 300 ms vs 1000 ms
+  #
+  image_file=/tmp/locked_screen.png
+  resolution='3200x1800'
+  # resolution=$(xdpyinfo | grep dimensions | awk '{print $2}')
+
+  # use blur filter
+  filters='gblur=sigma=8'
+
+  # use down sampling and upsampling
+  # filters='noise=alls=10,scale=iw*.05:-1,scale=iw*20:-1:flags=neighbor'
+
+  ffmpeg -y \
+    -loglevel 0 \
+    -s "$resolution" \
+    -f x11grab \
+    -i "$DISPLAY" \
+    -vframes 1 \
+    -vf "$filters" \
+    "$image_file"
+
+  loginctl lock-session
+}
+
 bm_cmd()
 {
   cmd="$1"

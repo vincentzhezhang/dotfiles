@@ -1,0 +1,43 @@
+#! /usr/bin/env bash
+
+#
+# Python add-ons
+#
+
+if ! hash python3 > /dev/null 2>&1; then
+  >&2 echo 'no python3 detected, skipping addons'
+  return 0
+fi
+
+# no pyc files and __pycache__ directories
+export PYTHONDONTWRITEBYTECODE=x
+
+__.python.egg_beater()
+{
+  path=${1:-$PWD}
+
+  if ! hash unzip; then
+    >&2 echo 'no unzip found, skipping...'
+    return 1
+  fi
+
+  (
+    cd "$path" || exit 1
+
+    find . -maxdepth 1 -type f -name '*.egg' | while read -r egg; do
+      zip=${egg//\.egg/.zip}
+
+      if [[ $SHIT_GOT_REAL == x ]]; then
+        mv "$egg" "$zip"
+        mkdir "$egg"
+        unzip -oq "$zip" -d "$egg"
+      else
+        >&2 echo "mv $egg $zip"
+        >&2 echo "mkdir $egg"
+        >&2 echo "unzip -oq $zip -d $egg"
+      fi
+    done
+  )
+}
+
+

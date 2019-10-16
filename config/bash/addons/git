@@ -12,6 +12,24 @@ fi
 #
 # public functions
 #
+git.old_branches()
+(
+  local since=${1:-'3.months'}
+  >&2 echo "Checking branches have no update in last ${since//./ }..."
+
+  ob()
+  (
+    for branch in $(git branch -r --no-merged master | sed 's/^\s*//' | sed 's/^remotes\///' | grep -v 'master$'); do
+      if [ -z "$(git log "$branch" --since "$1" -1)" ]; then
+        local_branch_name=${branch/#origin\/''}
+        echo "$local_branch_name"
+      fi
+    done
+  )
+
+  ob "$since" | sort -i
+)
+
 git.branches()
 {
   # branch with brief details ordered by last changed desc

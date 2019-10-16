@@ -45,6 +45,7 @@ default, add SHIT_GOT_REAL=x before the script to make it do the real work.
 ### Features
 
 - apply XDG settings to non-terminal started apps
+- system performance tuning according https://wiki.archlinux.org/index.php/Improving_performance
 
 ### Bugs
 

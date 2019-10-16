@@ -1,0 +1,35 @@
+#! /usr/bin/env bash
+
+set -eu
+
+source ../utils.sh
+
+main()
+{
+  __.log_info "Start tweaking system settings..."
+  tweak_swappiness
+}
+
+tweak_swappiness()
+{
+  local G=$((1000 * 1000))
+  local mem
+  local swappiness
+  mem=$(awk '/MemTotal/ {print $2}' /proc/meminfo)
+
+  if ((mem < 4 * G)); then
+    swappiness=30
+  elif ((mem >= 4 * G && mem < 8 * G)); then
+    swappiness=20
+  elif ((mem >= 8 * G && mem < 16 * G)); then
+    swappiness=10
+  else
+    swappiness=1
+  fi
+  __.log_info "Setting swappiness to: $swappiness"
+  sudo sysctl --write vm.swappiness=$swappiness
+  sudo mkdir --parents /etc/sysctl.d
+  echo "vm.swappiness=$swappiness" | sudo tee /etc/sysctl.d/66-vm-swappiness.conf
+}
+
+main

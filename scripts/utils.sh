@@ -7,7 +7,7 @@ __.log()
   local lineno="${BASH_LINENO[1]}"
   shift;
 
-  >&2 echo -e "\\e[${color_code}m>>> [$filename:$lineno] $@\\e[0m"
+  >&2 echo -e "\\e[${color_code}m>>> [$filename:$lineno] $*\\e[0m"
 }
 
 __.log_success()
