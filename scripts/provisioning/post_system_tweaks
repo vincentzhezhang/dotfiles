@@ -18,11 +18,11 @@ tweak_swappiness()
   mem=$(awk '/MemTotal/ {print $2}' /proc/meminfo)
 
   if ((mem < 4 * G)); then
-    swappiness=30
-  elif ((mem >= 4 * G && mem < 8 * G)); then
-    swappiness=20
-  elif ((mem >= 8 * G && mem < 16 * G)); then
     swappiness=10
+  elif ((mem >= 4 * G && mem < 8 * G)); then
+    swappiness=5
+  elif ((mem >= 8 * G && mem < 16 * G)); then
+    swappiness=2
   else
     swappiness=1
   fi
