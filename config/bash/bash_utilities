@@ -477,10 +477,6 @@ random_splash()
   esac
 }
 
-path() {
-  echo "${PATH//:/$'\n'}"
-}
-
 archive_photo()
 {
   # see https://developers.google.com/speed/docs/insights/OptimizeImages#optimizations-for-gif-png-and-jpeg-images
@@ -505,6 +501,35 @@ open_captive_portal()
   # FIXME
   # - [ ] it is surprisingly hard to specify a fixed window size
   /usr/bin/google-chrome --incognito --disable-extensions --app=http://captive.apple.com
+}
+
+__.bash.reset_locales()
+{
+  # TODO
+  # double check which one is the best practice
+  # lang="${1:-'en_US.UTF-8'}"
+  # >&2 echo "setting all the locales to $lang"
+  sudo dpkg-reconfigure locales
+  # sudo update-locale LANG="$lang"
+  # sudo update-locale LANGUAGE="$lang"
+  # sudo update-locale LC_CTYPE="$lang"
+  # sudo update-locale LC_NUMERIC="$lang"
+  # sudo update-locale LC_TIME="$lang"
+  # sudo update-locale LC_COLLATE="$lang"
+  # sudo update-locale LC_MONETARY="$lang"
+  # sudo update-locale LC_MESSAGES="$lang"
+  # sudo update-locale LC_PAPER="$lang"
+  # sudo update-locale LC_NAME="$lang"
+  # sudo update-locale LC_ADDRESS="$lang"
+  # sudo update-locale LC_TELEPHONE="$lang"
+  # sudo update-locale LC_MEASUREMENT="$lang"
+  # sudo update-locale LC_IDENTIFICATION="$lang"
+  # sudo update-locale LC_ALL="$lang"
+}
+
+# FIXME this has to be put here because it breaks syntax highlight
+path() {
+  echo "${PATH//:/$'\n'}"
 }
 
 # vim: set ai ts=2 tw=79:
