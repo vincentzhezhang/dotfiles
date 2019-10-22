@@ -7,7 +7,7 @@
 this_file="${BASH_SOURCE[0]}"
 this_dir=$(dirname "$this_file")
 
-# shellcheck source=/addons/conda
+# shellcheck source=./addons/conda
 source "$this_dir/addons/conda"
 # shellcheck source=./addons/misc
 source "$this_dir/addons/misc"
