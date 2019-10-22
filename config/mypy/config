@@ -13,5 +13,7 @@ warn_return_any = True
 warn_unused_configs = True
 warn_unreachable = True
 cache_dir = /sandbox/vincent.zhang/.cache/mypy
+# FIXME this should be solved per project
+ignore_missing_imports = True
 
 # vim: set ft=cfg :
