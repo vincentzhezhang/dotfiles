@@ -408,8 +408,10 @@ function! RenderPlantUML()
   let l:png_name = expand('%:r') . '.png'
   let l:png_path = l:file_dir . '/' . l:png_name
   let l:cmd = '!curl -sS "localhost:12345/png/$(puml encode ' . l:file_path . ')" -o ' . expand('%:r') . '.png'
-  " FIXME the behaviour of external picture viewer is not deterministic
-  let l:cmd = l:cmd . " && (ps x | pgrep -af '". l:png_path . "$' && : || xdg-open " . l:png_path . ' &)'
+  " FIXME
+  " - [ ] the behaviour of external picture viewer is not deterministic
+  " - [ ] find a better platform independent solution
+  " let l:cmd = l:cmd . " && (ps x | pgrep -af '". l:png_path . "$' && : || xdg-open " . l:png_path . ' &)'
   silent execute l:cmd
   redraw " FIXME any better way to deal with the messages?
   echo 'generated!'
