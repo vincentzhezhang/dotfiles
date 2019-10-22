@@ -880,8 +880,11 @@ endif
 " {{{ Initialization
 "
 augroup welcome
+  let has_piped_input = 0
+  autocmd StdinReadPost * let has_piped_input = 1
   autocmd VimEnter *
               \   if !argc()
+              \ && has_piped_input == 0
               \ |   Startify
               \ |   NERDTree
               \ |   wincmd w
