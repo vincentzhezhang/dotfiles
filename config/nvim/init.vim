@@ -1,20 +1,22 @@
-" TODO
-" - function for setting correct python path if a venv is available
-" - add contional loading for pluggins
-" - make use of prettier, yapf, and other fixers with ALE
-" - check if there is a way to only highlight search keywords in current buffer
-" - learn far.vim
-" - compare preview feature with fzf ag preview: https://github.com/junegunn/fzf.vim/blob/master/README.md#advanced-customization
-" - checkout defx.nvim as an alternative to nerdtree
-" - remove vim-jsx-typescript after vim-polyglot added support | not ready 23, Nov 2018
-" - try ncm2 as an alternative to YCM
-" - try coc.vim as an alternative to YCM
-" - think about the colorscheme crap
+" {{{ FIXME
+" - [ ] colorscheme load is delayed when open multiple files
+" - [ ] fix cursorline caused slowness, in fast scroll and gblame
+" - [ ] this is too buggy but the idea is great: Plug 'jiangmiao/auto-pairs'
+" }}}
 "
-" FIXME
-" - colorscheme load is delayed when open multiple files
-" - fix cursorline caused slowness, in fast scroll and gblame
-" - this is too buggy but the idea is great: Plug 'jiangmiao/auto-pairs'
+" {{{ TODO
+" - [ ] function for setting correct python path if a venv is available
+" - [ ] add contional loading for pluggins
+" - [ ] make use of prettier, yapf, and other fixers with ALE
+" - [ ] check if there is a way to only highlight search keywords in current buffer
+" - [ ] learn far.vim
+" - [ ] compare preview feature with fzf ag preview: https://github.com/junegunn/fzf.vim/blob/master/README.md#advanced-customization
+" - [ ] checkout defx.nvim as an alternative to nerdtree
+" - [ ] remove vim-jsx-typescript after vim-polyglot added support | not ready 23, Nov 2018
+" - [ ] try ncm2 as an alternative to YCM
+" - [ ] try coc.vim as an alternative to YCM
+" - [ ] think about the colorscheme crap
+" }}}
 "
 " {{{ handy selection of symbols
 " - poker suits:    ♠ ♥ ♣ ♦
@@ -52,6 +54,7 @@ let g:vim_conf_root  = $XDG_CONFIG_HOME
 if empty(g:vim_conf_root)
   let g:vim_conf_root = expand('<sfile>:p:h:h')
 endif
+" }}}
 
 " Make use of bash utilities in vim
 let $BASH_ENV = g:vim_conf_root . '/bash/noninteractive'
@@ -70,13 +73,10 @@ for f in split(glob(g:vim_conf_root . '/nvim/pluginrc.d/*.vim'), '\n')
   execute 'source' f
 endfor
 
-" FIXME polyglot not playing well with vim-markdown
-" https://github.com/sheerun/vim-polyglot/issues/152
 let g:polyglot_disabled = ['md', 'markdown']
 let g:tex_conceal = ''
 let g:vim_markdown_conceal = 0
 let g:vim_markdown_folding_disabled = 1
-let g:vim_markdown_math = 1
 let g:vim_markdown_math = 1
 let g:vim_markdown_strikethrough = 1
 let g:markdown_fenced_languages = [
@@ -91,16 +91,17 @@ let g:markdown_fenced_languages = [
       \ 'sql',
       \]
 
-let g:tagbar_type_markdown = {
-    \ 'ctagstype' : 'markdown',
-    \ 'kinds' : [
-        \ 'h:Heading_L1',
-        \ 'i:Heading_L2',
-        \ 'k:Heading_L3',
-        \ 'o:Heading_L4',
-        \ 'p:Heading_L5',
-    \ ]
-\ }
+" FIXME missing ctags config for markdown?
+"     \ 'ctagstype' : 'markdown',
+"     \ 'kinds' : [
+"         \ 'h:Heading_L1',
+"         \ 'i:Heading_L2',
+"         \ 'k:Heading_L3',
+"         \ 'o:Heading_L4',
+"         \ 'p:Heading_L5',
+"     \ ]
+" \ }
+"
 " {{{ Plugins
 call SetupVimPlug() " in case vim-plug is missing
 call plug#begin(g:vim_conf_root . '/nvim/plugged')
@@ -116,20 +117,22 @@ Plug 'cocopon/iceberg.vim'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'flazz/vim-colorschemes'
 Plug 'gyim/vim-boxdraw'
+Plug 'honza/vim-snippets'
 Plug 'jparise/vim-graphql' " TODO this is removed from vim-polyglot for now
 Plug 'jreybert/vimagit'
 Plug 'junegunn/fzf', { 'dir': g:vim_conf_root . '/fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'junegunn/vim-easy-align'
-Plug 'kristijanhusak/vim-carbon-now-sh'
 Plug 'Lokaltog/vim-easymotion'
+" TODO learn how to use vista
 Plug 'liuchengxu/vista.vim'
 Plug 'majutsushi/tagbar'
 Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
 Plug 'mhinz/vim-startify'
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'peitalin/vim-jsx-typescript', { 'for': ['ts', 'tsx'] }
-Plug 'plasticboy/vim-markdown' " FIXME Not playing well with polyglot, see above
+Plug 'plasticboy/vim-markdown' " FIXME [CAVEAT_1] Not playing well with polyglot
+" Plug 'python-rope/ropevim' TODO try rope vim
 Plug 'Raimondi/delimitMate'
 Plug 'romainl/flattened'
 Plug 'scrooloose/nerdcommenter'
@@ -144,7 +147,7 @@ Plug 'tpope/vim-surround'
 Plug 'Valloric/YouCompleteMe', { 'do': function('BuildYCM') }
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-Plug 'w0rp/ale'
+Plug 'dense-analysis/ale'
 Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'zxqfl/tabnine-vim'
 call plug#end()
@@ -292,7 +295,6 @@ let g:airline_symbols_ascii                    = 1
 
 " Trigger configuration. Do not use <tab> if you use https://github.com/Valloric/YouCompleteMe.
 " TODO get familiar with this
-" let g:UltiSnipsExpandTrigger='<c-e>'
 let g:UltiSnipsExpandTrigger='<A-e>'
 let g:UltiSnipsJumpForwardTrigger='<c-f>'
 let g:UltiSnipsJumpBackwardTrigger='<c-b>'
@@ -363,8 +365,8 @@ augroup general_enhancements
   autocmd BufCreate * call SetUpBuffer()
   autocmd BufEnter *.log set nospell " no spell check for log files
   autocmd BufEnter *.md,*.txt,*.doc,*.rst call TextMagic()
-  autocmd BufEnter,InsertLeave * set cursorline
-  autocmd BufLeave,InsertEnter * set nocursorline
+  autocmd BufEnter,InsertLeave * set cursorline cursorcolumn
+  autocmd BufLeave,InsertEnter * set nocursorline nocursorcolumn
   autocmd BufEnter * call CustomHighlights()
 
   " FIXME temporary workaround for Docker issue
@@ -379,6 +381,9 @@ augroup general_enhancements
 
   autocmd VimResized * wincmd =  " make panes responsive on window resize
   autocmd FocusGained,BufEnter * checktime " make autoread behave intuitively
+
+  " FIXME position hack for file opened with line number
+  " autocmd BufEnter * exe 'normal! zz'
 augroup END
 
 
@@ -386,14 +391,15 @@ augroup END
 " {{{ PlantUML enchancements
 "
 " dependencies:
-" - plantuml/plantuml-server docker image for set up the server
+" - plantuml/plantuml-server: docker image for set up the server
 "   docker run -d -p 8080:8080 plantuml/plantuml-server
-" - npm package node-plantuml for encode the uml file
+" - node-plantuml: for encode the uml file
 "   npm i -g node-plantuml
 "
 " the prototype will try to encode the uml file upon save, and communicate
 " with the server, then open a viewer if it's not opened yet
-" TODO need to make this asynchronous, checkout jobstart
+" TODO
+" - [ ] need to make this asynchronous, checkout jobstart
 "
 function! RenderPlantUML()
   echo 'generating PlantUML diagram...'
@@ -402,7 +408,8 @@ function! RenderPlantUML()
   let l:png_name = expand('%:r') . '.png'
   let l:png_path = l:file_dir . '/' . l:png_name
   let l:cmd = '!curl -sS "localhost:12345/png/$(puml encode ' . l:file_path . ')" -o ' . expand('%:r') . '.png'
-  let l:cmd = l:cmd . " && (ps x | pgrep -af '". l:png_path . "$' && : || xdg-open " . l:png_path . ')'
+  " FIXME the behaviour of external picture viewer is not deterministic
+  let l:cmd = l:cmd . " && (ps x | pgrep -af '". l:png_path . "$' && : || xdg-open " . l:png_path . ' &)'
   silent execute l:cmd
   redraw " FIXME any better way to deal with the messages?
   echo 'generated!'
@@ -438,6 +445,10 @@ let g:multi_cursor_quit_key            = '<Esc>'
 
 " {{{ Python Virtual Env Tweaks start
 "
+" Priority
+" - active conda environment
+" - clever_conda_path
+" - wherever the current python from
 "
 if isdirectory(glob("$__conda_env_root"))
   let s:py3_path = glob("$__conda_env_root/py3/bin/python")
@@ -473,6 +484,7 @@ let g:ycm_global_ycm_extra_conf = g:vim_conf_root . '/ycm_global_extra_conf.py'
 " XXX For historical reason, $VIRTUAL_ENV is used by many Python
 " plugins so we just have to abide by it for now
 let $VIRTUAL_ENV = s:py_virtual_env_dir
+let $PYTHONPATH = s:py_virtual_env_dir
 
 " disable ale's virtual env auto discover feature and use the envvar instead
 " because we know the environment better
@@ -508,7 +520,8 @@ vnoremap <C-r> "hy:%s/<C-r>h//c<left><left>
 vnoremap <C-s> :<C-r>0<Home><right>
 
 " NerdTree git plugin
-" TODO: find better icons, the previous one looks too bulky and not
+" TODO
+" - [ ] find better icons, the previous one looks too bulky and not
 " consistent, thus replaced by ascii characters
 let g:NERDTreeIndicatorMapCustom = {
     \ 'Modified'  : '*',
@@ -516,16 +529,17 @@ let g:NERDTreeIndicatorMapCustom = {
     \ 'Untracked' : 'u',
     \ 'Renamed'   : '»',
     \ 'Unmerged'  : '≠',
+    \ 'Deleted'   : 'x',
     \ 'Dirty'     : '*',
     \ 'Clean'     : '✓',
-    \ 'Removed'   : 'x',
+    \ 'Ignored'   : '_',
     \ 'Unknown'   : '?'
     \ }
 
 " Customize fzf colors to match your color scheme
 " FIXME fix ag colour
 let g:fzf_colors =
-\ { 'fg':      ['fg', 'Normal'],
+  \ { 'fg':      ['fg', 'Normal'],
   \ 'bg':      ['bg', 'Normal'],
   \ 'hl':      ['fg', 'Comment'],
   \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
@@ -546,6 +560,7 @@ let g:tmux_navigator_no_mappings = 1
 "
 "
 
+" let g:ale_sign_error = ' ■' " good on fantasque mono, but why it's so fucking huge in Ubuntu mono?
 " TODO
 " not sure if this is feasible but if we can merge linter symbols
 " and git status symbols it will look great!

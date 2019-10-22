@@ -110,7 +110,7 @@ gg()
     return 1
   fi
 
-  if ! hash fzf; then
+  if ! hash fzf 2>/dev/null; then
     >&2 echo 'fzf is missing, how can you miss that?'
     return 1
   fi
@@ -129,8 +129,8 @@ gg()
   fi
 
   if [[ "$branch_name" == 'remotes'* ]]; then
-    local_brach_name=$(echo "$branch_name" | cut -d '/' -f 3-)
-    git checkout -B "$local_brach_name" -t "$branch_name"
+    local_branch_name=$(echo "$branch_name" | cut -d '/' -f 3-)
+    git checkout -B "$local_branch_name" -t "$branch_name"
   else
     git checkout "$branch_name"
   fi
@@ -168,12 +168,24 @@ join_by()
   local d=$1; shift; echo -n "$1"; shift; printf "%s" "${@/#/$d}";
 }
 
-pg()
-{
-  ps -eo user,pid,ppid,bsdstart,etime,cmd --sort etime |\
-    grep -v 'grep' |\
-    grep -E --color=auto "PID|$1"
+pg() {
+  if [[ $# -eq 0 ]]; then
+    echo 'Usage:'
+    echo 'pg KEYWORDS'
+    return 0
+  fi
+  ps --format user,pid,tname,bsdstart,cmd | head -1
+  ps -e --format user,pid,tname,bsdstart,cmd | \
+    grep -vw 'grep' | \
+    grep --color=auto "$@"
 }
+
+# pg()
+# {
+#   ps -eo user,pid,ppid,bsdstart,etime,cmd --sort etime |\
+#     grep -v 'grep' |\
+#     grep -E --color=auto "PID|$1"
+# }
 
 get_dpi()
 {
@@ -420,7 +432,7 @@ bullshit()
   fi
 
   cow=$(find "$cow_path" -name '*.cow' | command $shuf -n1)
-  fortune | cowsay -f "$cow" | lolcat
+  cowsay -f "$cow" "$(fortune)" | lolcat
 }
 
 #
@@ -430,7 +442,7 @@ bulltruth()
 {
   cowstates=(b d g p s t w t y)
   cowstate=${cowstates[$RANDOM % ${#cowstates[@]}]}
-  git-tip | fold -s -w 80 | cowthink -"${cowstate}" -n | lolcat
+  git-tip | fold -s -w 60 | cowthink -"${cowstate}" -n | lolcat
 }
 
 #
@@ -439,7 +451,7 @@ bulltruth()
 #
 random_splash()
 {
-  magic_number=$RANDOM
+  magic_number=$((RANDOM + 1))
   local x
 
   if [[ $magic_number -gt 4096 ]]; then
@@ -453,7 +465,7 @@ random_splash()
   elif [[ $COLUMNS -lt 192 ]] || [[ $LINES -lt 48 ]]; then
     x=5
   else
-    x=9
+    x=1
   fi
 
   case $((magic_number % x)) in
@@ -462,7 +474,6 @@ random_splash()
     2) bullshit ;;
     3) retrogame invaders ;;
     4) retrogame pacman ;;
-    5) weather ;;
   esac
 }
 

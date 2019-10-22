@@ -35,6 +35,8 @@ alias egrep='egrep --color=auto'
 alias ag="\
 ag \
 --path-to-ignore=\$XDG_CONFIG_HOME/git/ignore \
+--ignore *.ipynb \
+--ignore package-lock.json \
 --follow \
 --color-match='1;33' \
 --color-line-number='0;35' \

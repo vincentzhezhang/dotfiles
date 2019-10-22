@@ -55,6 +55,8 @@ augroup END
 function! BuildYCM(...)
   " build YouCompleteMe using the same Python3 as used by
   " g:ycm_server_python_interpreter
+  " XXX only enable Python (default) and JS (ts-completer) for now to save
+  " compile time
   if a:0 < 1 || a:1.status ==? 'installed' || a:1.status ==? 'updated' || a:1.force
     execute '!' . g:ycm_server_python_interpreter . ' install.py --ts-completer'
   endif

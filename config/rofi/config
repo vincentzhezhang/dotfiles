@@ -1,27 +1,27 @@
 ! "Enabled modi" Set from: File
 rofi.modi:                           combi
 ! "Window width" Set from: Default
-rofi.width:                          30
+rofi.width:                          32
 ! "Number of lines" Set from: Default
-rofi.lines:                          20
+rofi.lines:                          18
 ! "Number of columns" Set from: Default
 ! rofi.columns:                        1
 ! "Font to use" Set from: File
-rofi.font:                           Ubuntu Mono 14
+rofi.font:                           Ubuntu Mono 20
 ! "Border width" Set from: Default
 ! rofi.bw:                             1
 ! "Location on screen" Set from: Default
-rofi.location:                         2
+rofi.location:                         0
 ! "Padding" Set from: Default
-! rofi.padding:                        5
+! rofi.padding:                        100
 ! "Y-offset relative to location" Set from: Default
-rofi.yoffset:                          200
+! rofi.yoffset:                          0
 ! "X-offset relative to location" Set from: Default
 ! rofi.xoffset:                        0
 ! "Always show number of lines" Set from: Default
 ! rofi.fixed-num-lines:                true
 ! "Whether to load and show icons" Set from: Default
-! rofi.show-icons:                     false
+rofi.show-icons:                     true
 ! "Terminal to use" Set from: Default
 ! rofi.terminal:                       rofi-sensible-terminal
 ! "Ssh client to use" Set from: Default
@@ -101,7 +101,7 @@ rofi.combi-modi:                     window,drun,ssh
 ! "Indicate how it match by underlining it." Set from: Default
 ! rofi.show-match:                     true
 ! "New style theme file" Set from: File
-rofi.theme:                          gruvbox-light-soft
+rofi.theme:                          gruvbox-light
 ! "Color scheme for normal row" Set from: Default
 ! rofi.color-normal:
 ! "Color scheme for urgent row" Set from: Default
@@ -272,3 +272,5 @@ rofi.theme:                          gruvbox-light-soft
 ! rofi.me-accept-entry:                MouseDPrimary
 ! "Accept hovered row with custom action" Set from: Default
 ! rofi.me-accept-custom:               Control+MouseDPrimary
+
+! vim: set filetype=xdefaults :

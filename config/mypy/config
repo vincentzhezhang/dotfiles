@@ -1,16 +1,17 @@
+# For full reference, see: https://mypy.readthedocs.io/en/latest/config_file.html
 #
 # Rule of thumb:
 # linter are better used for catching logical bugs not styling issues, which
 # should really be automagically fixed by formatters
 #
-# the loading order of mypy conf is:
-# - local mypy.ini
-# - local setup.cfg NOTE: section header is [mypy]
-# - $XDG_CONFIG_HOME/mypy/config
-# - ~/.config/mypy/config
-# - ~/.mypy.ini
-#
+# XXX mypy don't merge config files, it just take the first *file* it found, regardless
+# the existence of corresponding config section
 [mypy]
-ignore_missing_imports = True
+# New in PEP 420, since it works if you use it as a namespace package, someone may prefer it
+namespace_packages = True
+warn_return_any = True
+warn_unused_configs = True
+warn_unreachable = True
+cache_dir = /sandbox/vincent.zhang/.cache/mypy
 
-# vim: set ft=config :
+# vim: set ft=cfg :

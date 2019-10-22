@@ -3,6 +3,8 @@
 # linter are better used for catching logical bugs not styling issues, which
 # should really be automagically fixed by formatters
 #
+# FIXME
+# - set PYTHONPATH properly to solve the import-error
 [MESSAGES CONTROL]
 disable=
   bad-continuation,
