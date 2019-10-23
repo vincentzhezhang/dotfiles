@@ -311,6 +311,9 @@ function! SetUpBuffer()
   endif
 endfunction
 
+" silent on save when editing remote files
+let g:netrw_silent=1
+
 " https://vi.stackexchange.com/questions/744/can-i-pass-a-custom-string-to-the-gx-command/751
 function! EnhancedBrowseX()
   let l:keyword = expand('<cfile>')
