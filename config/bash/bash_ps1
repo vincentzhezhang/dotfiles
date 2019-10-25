@@ -42,24 +42,30 @@ __.ps1.status_line() {
 
   if [[ -n "$PS1_REMOTE_SESSION" ]]; then
     dash_color="$BYELLOW"
+    # not here
     host_str="$(hostname):"
   fi
 
+  # not here
   pwd_str=$(readlink -f "$PWD")
 
   if [[ ${#pwd_str} -gt $(( 2 * COLUMNS / 3 )) ]]; then
+    # not here
     echo -e "${dash_color}.../$(basename "$PWD")${COFF}\\n"
     return 0
   elif [[ ${#pwd_str} -gt $(( COLUMNS / 2)) ]]; then
     pwd_str="$(sed "s:\\([^/]\\)[^/]*/:\\1/:g" <<< "$pwd_str")"
   fi
 
+  # FIXME looks like this causes the issue at times in work setup:
+  # that real time >>> user time + sys time
+  # workaround, pure bash
+  time_str=$(printf '%(%H:%M:%S)T')
   time_str="$(date +'%H:%M:%S')"
 
   dash_line_width=$((COLUMNS - ${#host_str} - ${#pwd_str} - ${#time_str} - dash_line_padding))
 
-  while [[ $dash_line_width -gt 0 ]]
-  do
+  while [[ $dash_line_width -gt 0 ]]; do
     dash_line="-${dash_line}"
     ((dash_line_width-=1))
   done
