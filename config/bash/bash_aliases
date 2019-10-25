@@ -77,7 +77,11 @@ alias find_broken_symlink='find -L . -maxdepth 1 -type l'
 
 # NeoVim for the win
 # TODO should use update-alternative instead of aliases
-alias nvim='TERM=tmux-256color nvim'
+if hash nvim.appimage 2>/dev/null; then
+  alias nvim='TERM=tmux-256color nvim.appimage'
+else
+  alias nvim='TERM=tmux-256color nvim'
+fi
 alias vi='nvim'
 alias vim='nvim'
 alias emacs='nvim'
