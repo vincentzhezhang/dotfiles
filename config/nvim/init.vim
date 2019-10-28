@@ -815,6 +815,41 @@ nnoremap <silent> <leader>AG :Ag <C-R><C-A><CR>
 " find selection
 xnoremap <silent> <leader>rw y:Ag <C-R>"<CR>
 
+let g:fzf_buffers_jump = 1
+" FZF with floating window
+let $FZF_DEFAULT_OPTS=' --color=dark --color=fg:15,bg:-1,hl:1,fg+:#ffffff,bg+:0,hl+:1 --color=info:0,prompt:0,pointer:12,marker:4,spinner:11,header:-1 --layout=reverse  --margin=1,4'
+let g:fzf_layout = { 'window': 'call FloatingFZF()' }
+
+function! FloatingFZF()
+  let buf = nvim_create_buf(v:false, v:true)
+  call setbufvar(buf, '&signcolumn', 'no')
+
+  let min_height = 6
+  let max_height = 24
+  let dynamic_height = &lines * 2 / 3
+  let height = max([min([max_height, dynamic_height]), min_height])
+
+  let max_width = 120
+  let min_width = 60
+  let dynamic_width = &columns * 2 / 3
+  let width = max([min([max_width, dynamic_width]), min_width])
+
+  let horizontal = (&columns - width) / 2
+  let vertical = (&lines - height) / 3
+
+  let opts = {
+        \ 'relative': 'editor',
+        \ 'row': vertical,
+        \ 'col': horizontal,
+        \ 'width': width,
+        \ 'height': height,
+        \ 'style': 'minimal'
+        \ }
+
+  call nvim_open_win(buf, v:true, opts)
+endfunction
+
+
 " Fzf bindings
 function! SmartFindFiles()
   " FindRootDirectory from vim-rooter
@@ -843,7 +878,8 @@ function! SmartFindFiles()
 endfunction
 
 " FIXME why the hell the results does not show immediately after trigger?
-nnoremap <silent> <leader>f :call SmartFindFiles()<CR>
+" nnoremap <silent> <leader>f :call SmartFindFiles()<CR>
+nnoremap <silent> <leader>f :call fzf#vim#files('.', {'options': '--prompt "  "'})<CR>
 nnoremap <silent> <leader>B :Buffers<CR>
 " fast switch with previous buffer
 nnoremap <silent> <leader>b :b#<CR>
