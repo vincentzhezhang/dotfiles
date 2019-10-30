@@ -39,20 +39,34 @@ __.conda.clever_prefix()
   path=$(readlink --canonicalize-existing "${1:-$PWD}")
   conda_env_names=$(command ls -1 "$__conda_env_root")
 
-  # >&2 echo "$path"
   # >&2 echo "$conda_env_names"
 
   # perf_start=$(($(date +%s%3N)))
-  for conda_env_name in $conda_env_names; do
-    # perf_s=$(($(date +%s%3N)))
-    if [[ "$path" == *"$conda_env_name"* ]]; then
-      name=$conda_env_name
+  #
+  #
+  # match directory with conda env from bottom up
+  #
+  # currently ~6ms on:
+  # /home/vincent.zhang/env_test/photon/photon_web/photon/photon_server/bbq/adkafa/adjflkasdf/asdjkfasf/234kj/23ok23j5423
+  while read -r directory; do
+    for conda_env_name in $conda_env_names; do
+      # perf_s=$(($(date +%s%3N)))
+      # perf_pause=$(($(date +%s%3N)))
+      # elapsed=$((perf_pause - perf_s))
+      # >&2 echo "this round elapsed: $elapsed ms"
+      # >&2 echo "matching directory: $directory <---> env: $conda_env_name"
+      if [[ "$directory" == "$conda_env_name" ]]; then
+        # >&2 echo "Got $conda_env_name"
+        name=$conda_env_name
+        break
+      fi
+    done
+
+    if [[ -n $name ]]; then
       break
     fi
-    # perf_pause=$(($(date +%s%3N)))
-    # elapsed=$((perf_pause - perf_s))
-    # >&2 echo "this round elapsed: $elapsed ms"
-  done
+  done <<< "$(echo "${path////$'\n'}" | tac)"
+
   # perf_end=$(($(date +%s%3N)))
   # elapsed=$((perf_end - perf_start))
   # >&2 echo "clever_prefix elapsed: $elapsed ms"
