@@ -91,17 +91,6 @@ let g:markdown_fenced_languages = [
       \ 'sql',
       \]
 
-" FIXME missing ctags config for markdown?
-"     \ 'ctagstype' : 'markdown',
-"     \ 'kinds' : [
-"         \ 'h:Heading_L1',
-"         \ 'i:Heading_L2',
-"         \ 'k:Heading_L3',
-"         \ 'o:Heading_L4',
-"         \ 'p:Heading_L5',
-"     \ ]
-" \ }
-"
 " {{{ Plugins
 call SetupVimPlug() " in case vim-plug is missing
 call plug#begin(g:vim_conf_root . '/nvim/plugged')
@@ -124,9 +113,7 @@ Plug 'junegunn/fzf', { 'dir': g:vim_conf_root . '/fzf', 'do': './install --all' 
 Plug 'junegunn/fzf.vim'
 Plug 'junegunn/vim-easy-align'
 Plug 'Lokaltog/vim-easymotion'
-" TODO learn how to use vista
-Plug 'liuchengxu/vista.vim'
-Plug 'majutsushi/tagbar'
+Plug 'liuchengxu/vista.vim' " Beteralternative to TagBar. TODO more Vista tweaks
 Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
 Plug 'mhinz/vim-startify'
 Plug 'ntpeters/vim-better-whitespace'
@@ -178,6 +165,7 @@ set autowrite                             " Save changes before switching buffer
 set completeopt-=preview                  " Get rid of the annoying preview window on autocomplete
 set expandtab                             " Expand tabs to spaces
 set fillchars+=vert:│                     " Make vertical split bar prettier
+set foldopen+=jump                        " Open folded region when jump to it
 " set guicursor=                          " Seems buggy? Have to unset to mitigate junk chars
 set ignorecase                            " Make search case-insensitive
 set list                                  " Enable whitespace characters' display
@@ -270,6 +258,12 @@ let g:airline_mode_map = {
 "
 "   U+259x  ▐  ░  ▒  ▓  ▔  ▕  ▖  ▗  ▘  ▙  ▚  ▛  ▜  ▝  ▞  ▟
 "
+"
+
+function! NearestMethodOrFunction() abort
+  return get(b:, 'vista_nearest_method_or_function', '')
+endfunction
+
 let g:airline#extensions#branch#enabled        = 0
 let g:airline#extensions#tabline#enabled       = 0
 let g:airline#extensions#tabline#tab_nr_type   = 2
@@ -282,9 +276,9 @@ let g:airline_left_sep                         = ''
 let g:airline_powerline_fonts                  = 0
 let g:airline_right_alt_sep                    = ''
 let g:airline_right_sep                        = ''
-let g:airline_section_a                        = ''
-let g:airline_section_b                        = ''
-" let g:airline_section_c                        = ''
+let g:airline_section_a                        = '' " hide mode text
+let g:airline_section_b                        = '' " hide inactive mode text?
+let g:airline_section_c                        = ''
 let g:airline_section_x                        = ''
 " FIXME name of the virtualenv shows automagically
 " let g:airline_section_x                        = airline#section#create(['%{g:conda_venv_name}'])
@@ -351,12 +345,22 @@ function! TextMagic()
   " hi ColorColumn ctermbg=239 guibg=#242a32
 endfunction
 
+function! PythonMagic(state)
+  if a:state == 'on'
+    set cursorcolumn
+  else
+    set nocursorcolumn
+  endif
+endfunction
+
 "
 " Custom Highlight rules
 " XXX note vim-better-whitespace does not deal with leading tabs
 "
 function! CustomHighlights()
   syntax match PeskyTabs /\v\t+/
+  " Python docstring
+  " syntax region foldImports start='"""' end='"""' fold keepend
 endfunction
 
 "
@@ -368,8 +372,10 @@ augroup general_enhancements
   autocmd BufCreate * call SetUpBuffer()
   autocmd BufEnter *.log set nospell " no spell check for log files
   autocmd BufEnter *.md,*.txt,*.doc,*.rst call TextMagic()
-  autocmd BufEnter,InsertLeave * set cursorline cursorcolumn
-  autocmd BufLeave,InsertEnter * set nocursorline nocursorcolumn
+  autocmd BufEnter *.py call PythonMagic('on')
+  autocmd BufLeave *.py call PythonMagic('off')
+  autocmd BufEnter,InsertLeave * set cursorline
+  autocmd BufLeave,InsertEnter * set nocursorline
   autocmd BufEnter * call CustomHighlights()
 
   " FIXME temporary workaround for Docker issue
@@ -468,14 +474,20 @@ if isdirectory(glob("$__conda_env_root"))
   endif
 endif
 
+" active Python path is currently determined by CONDA_PREFIX
+" TODO
+" - [ ] should delegate this to the system function
 let s:py_virtual_env_dir = $CONDA_PREFIX
 
 if empty(s:py_virtual_env_dir)
-  let s:py_virtual_env_dir = system('2>/dev/null' . ' ' . '__.venv.python.prefix' . ' ' . expand('%'))
-endif
 
-if empty(s:py_virtual_env_dir)
-  let s:py_virtual_env_dir = substitute(trim(system('command -v python')), '/\+bin/python', '', 'g')
+  if argc()
+    let s:current_path = expand('%:p')
+  else
+    let s:current_path = getcwd()
+  endif
+
+  let s:py_virtual_env_dir = system('2>/dev/null' . ' ' . '__.venv.python.prefix' . ' ' . s:current_path)
 endif
 
 " see YCM official doc
@@ -490,6 +502,8 @@ let g:ycm_global_ycm_extra_conf = g:vim_conf_root . '/ycm_global_extra_conf.py'
 " plugins so we just have to abide by it for now
 let $VIRTUAL_ENV = s:py_virtual_env_dir
 let $PYTHONPATH = s:py_virtual_env_dir
+" XXX https://mypy.readthedocs.io/en/latest/running_mypy.html#finding-imports
+let $MYPYPATH = expand(s:py_virtual_env_dir . '/lib/*/site-packages')
 
 " disable ale's virtual env auto discover feature and use the envvar instead
 " because we know the environment better
@@ -774,8 +788,12 @@ nnoremap <silent> <F12> :set number!<CR>
 nnoremap <silent> <F8> :execute ':silent !google-chrome %'<CR>
 nnoremap <silent> <F4> :set ts=4 sw=4<CR>
 
-" Tagbar Toggle
-nnoremap <silent> <C-t> :TagbarToggle<CR>
+" Vista Toggle (better alternative of TagBar)
+nnoremap <silent> <C-t> :Vista!!<CR>
+" TODO
+" - [ ] maybe enable this again when find a good font
+let g:vista#renderer#enable_icon = 0
+let g:vista_sidebar_width = 48
 
 " jump to first match
 nnoremap <C-]> :YcmCompleter GoTo<CR>
@@ -817,6 +835,8 @@ xnoremap <silent> <leader>rw y:Ag <C-R>"<CR>
 
 let g:fzf_buffers_jump = 1
 " FZF with floating window
+" TODO
+" - FZF_DEFAULT_OPTS should follow vim colorscheme
 let $FZF_DEFAULT_OPTS=' --color=dark --color=fg:15,bg:-1,hl:1,fg+:#ffffff,bg+:0,hl+:1 --color=info:0,prompt:0,pointer:12,marker:4,spinner:11,header:-1 --layout=reverse  --margin=1,4'
 let g:fzf_layout = { 'window': 'call FloatingFZF()' }
 
@@ -835,7 +855,7 @@ function! FloatingFZF()
   let width = max([min([max_width, dynamic_width]), min_width])
 
   let horizontal = (&columns - width) / 2
-  let vertical = (&lines - height) / 3
+  let vertical = (&lines - height) / 2
 
   let opts = {
         \ 'relative': 'editor',

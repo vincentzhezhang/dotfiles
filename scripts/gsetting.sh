@@ -9,6 +9,7 @@ if hash gsettings; then
   gsettings set org.gnome.desktop.wm.keybindings minimize []
 
   >&2 echo 'setting up workspace short cuts'
+
   gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-down  "['<Ctrl><Alt>j']"
   gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-left  "['<Ctrl><Alt>h']"
   gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-right "['<Ctrl><Alt>l']"
@@ -26,6 +27,13 @@ if hash gsettings; then
   gsettings set org.gnome.desktop.wm.keybindings switch-windows "['<Alt>Tab']"
   gsettings set org.gnome.desktop.wm.keybindings switch-windows-backward "['<Shift><Alt>Tab']"
   gsettings set org.gnome.shell.app-switcher current-workspace-only true
+
+  >&2 echo 'setting tiling shortcuts'
+  # prefer gTile over mutter
+  # TODO
+  # - find a way to config gTile programmatically
+  gsettings set org.gnome.mutter.keybindings toggle-tiled-right []
+  gsettings set org.gnome.mutter.keybindings toggle-tiled-left []
 else
   >&2 echo 'gsettings not found!'
 fi

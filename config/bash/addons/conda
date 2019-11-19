@@ -19,64 +19,6 @@ if [[ -z $__conda_env_root ]]; then
   export __conda_env_root
 fi
 
-# handy automagical conda env
-#
-# XXX priority:
-# - shebang
-# - current active conda env
-# - existing conda env that partially matches the current path
-#
-# TODO
-# - [ ] add detection from shebang line
-# - [ ] add detection from common auto env file
-# shellcheck disable=SC2120  # default param
-__.conda.clever_prefix()
-{
-  local conda_env_names
-  local name
-  local path
-
-  path=$(readlink --canonicalize-existing "${1:-$PWD}")
-  conda_env_names=$(command ls -1 "$__conda_env_root")
-
-  # >&2 echo "$conda_env_names"
-
-  # perf_start=$(($(date +%s%3N)))
-  #
-  #
-  # match directory with conda env from bottom up
-  #
-  # currently ~6ms on:
-  # /home/vincent.zhang/env_test/photon/photon_web/photon/photon_server/bbq/adkafa/adjflkasdf/asdjkfasf/234kj/23ok23j5423
-  while read -r directory; do
-    for conda_env_name in $conda_env_names; do
-      # perf_s=$(($(date +%s%3N)))
-      # perf_pause=$(($(date +%s%3N)))
-      # elapsed=$((perf_pause - perf_s))
-      # >&2 echo "this round elapsed: $elapsed ms"
-      # >&2 echo "matching directory: $directory <---> env: $conda_env_name"
-      if [[ "$directory" == "$conda_env_name" ]]; then
-        # >&2 echo "Got $conda_env_name"
-        name=$conda_env_name
-        break
-      fi
-    done
-
-    if [[ -n $name ]]; then
-      break
-    fi
-  done <<< "$(echo "${path////$'\n'}" | tac)"
-
-  # perf_end=$(($(date +%s%3N)))
-  # elapsed=$((perf_end - perf_start))
-  # >&2 echo "clever_prefix elapsed: $elapsed ms"
-
-  if [[ -z $name ]]; then
-    return 1
-  fi
-
-  echo -n "$__conda_env_root/$name"
-}
 
 __.conda.ps1()
 {
@@ -88,6 +30,7 @@ __.conda.ps1()
   #
   # TODO
   # - [ ] replace hard-coded colour code with variables
+  # - [ ] rethink the prompt logic, current one looks unintuitive
   local active_conda_env
   local detected_conda_env
 
@@ -109,6 +52,7 @@ __.conda.ps1()
     echo -n "\\[\\e[2;38;5;2m\\]"
   fi
 
+  # delimeter
   echo -n ' # '
   echo -n "\\[\\e[0m\\]"
 
@@ -123,4 +67,60 @@ __.conda.ps1()
     echo -n "$active_conda_env"
     echo -n "\\[\\e[0m\\] "
   fi
+}
+
+#
+# handy automagical conda env
+#
+# please note only conda related checks are performed here, i.e.:
+#
+#   - guess prefix from the give file path or PWD
+#
+# other detections like shebang line and existing active env are in the main
+#
+#   __.venv.python.prefix function
+#
+# shellcheck disable=SC2120  # default param
+__.conda.clever_prefix()
+{
+  local path
+  local conda_env_names
+  local current_env_name
+
+  path=$(readlink --canonicalize-existing "${1:-$PWD}")
+  conda_env_names=$(command ls -1 "$__conda_env_root")
+
+  # >&2 echo "$conda_env_names"
+  # perf_start=$(($(date +%s%3N)))
+
+  #
+  # match directory with conda env from bottom up
+  #
+  # currently ~6ms on:
+  # /home/vincent.zhang/env_test/photon/photon_web/photon/photon_server/bbq/adkafa/adjflkasdf/asdjkfasf/234kj/23ok23j5423
+  while read -r directory; do
+    for conda_env_name in $conda_env_names; do
+      # perf_s=$(($(date +%s%3N)))
+      # perf_pause=$(($(date +%s%3N)))
+      # elapsed=$((perf_pause - perf_s))
+      # >&2 echo "this round elapsed: $elapsed ms"
+      # >&2 echo "matching directory: $directory <---> env: $conda_env_name"
+      if [[ "$directory" == "$conda_env_name" ]]; then
+        # >&2 echo "Got $conda_env_name"
+        current_env_name=$conda_env_name
+        break
+      fi
+    done
+
+    if [[ -n $current_env_name ]]; then
+      echo -n "$__conda_env_root/$current_env_name"
+      # perf_end=$(($(date +%s%3N)))
+      # elapsed=$((perf_end - perf_start))
+      # >&2 echo "clever_prefix elapsed: $elapsed ms"
+      break
+    fi
+
+  # FIXME this has to be put here because the new bash variable substitution
+  # syntax breaks the highlighting after it
+  done <<< "$(echo "${path////$'\n'}" | tac)"
 }

@@ -147,11 +147,13 @@ __.ps1() {
     return
   fi
 
-  # perf
-  local perf_start
-  local perf_end
-  local t
-  perf_start=$(date +%s%3N)
+  if [[ $__perf_ps1 == 1 ]]; then
+    # perf
+    local perf_start
+    local perf_end
+    local t
+    perf_start=$(date +%s%3N)
+  fi
 
   PS1=''
 
@@ -180,11 +182,13 @@ __.ps1() {
     PS1+="$line_3"
   fi
 
-  perf_end=$(date +%s%3N)
-  t=$((perf_end - perf_start))
+  if [[ $__perf_ps1 == 1 ]]; then
+    perf_end=$(date +%s%3N)
+    t=$((perf_end - perf_start))
 
-  if [[ $t -gt 100 ]]; then
-    >&2 echo "PS1 took $t ms!"
+    if [[ $t -gt 100 ]]; then
+      >&2 echo "PS1 took $t ms!"
+    fi
   fi
 }
 

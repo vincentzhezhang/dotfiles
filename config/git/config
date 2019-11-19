@@ -83,5 +83,4 @@
   newHighlight = green bold 22
 [http]
   sslVerify = false
-
 # vim: set ft=gitconfig :

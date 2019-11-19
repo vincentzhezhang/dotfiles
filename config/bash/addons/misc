@@ -8,12 +8,9 @@ __.venv.python.prefix()
 {
   # main interface handling various Python virtual envs
   # Priority
-  # - [ ] Python specified in the shebang line
-  # - [ ] Active conda environment
-  # - [ ] Detected conda environment
-  # - [ ] Whatever python available in path (maybe 2/3 detection?)
-  #
-  # TODO may need to rethink about the rationale of the priorities
+  # 1. Python specified in the shebang line
+  # 2. Whatever virtual env detector returns
+  # 3. System Python as last resort
   #
   # args:
   # - str: path [optional] path to file/directory, default: pwd
@@ -22,30 +19,44 @@ __.venv.python.prefix()
   # - str: path, path to detected python interpreter w w/o virtual env
 
   local path
-  path=${1:-$PWD}
-
   local py_exec
+  local py_prefix
 
+  path=$(readlink --canonicalize-existing "${1:-$PWD}")
+
+  # 1. Python specified in the shebang line
   if [[ -f "$path" ]]; then
     # shebang detection
     local shebang_line;
     shebang_line=$(head -1 "$path")
 
-    # XXX need to exclude /usr/bin/env python
     if [[ "$shebang_line" =~ ^#\!.+/python[23]?$ ]]; then
-      py_exec=$(cut -c 3- <<< "$shebang_line")
-      >&2 echo 'got python from shebang_line!'
-      echo -n "$py_exec"
+      py_prefix="${shebang_line###! }"
+      py_prefix="${py_prefix%%/bin/python}"
+
+      if [[ -n "$py_prefix" ]]; then
+        >&2 echo 'got python from shebang line'
+        echo -n "$py_prefix"
+        return 0
+      fi
+    fi
+  fi
+
+  # 2. Whatever virtual env detector returns
+  # - only have conda support for now
+  if hash __.conda.clever_prefix; then
+    py_prefix=$(__.conda.clever_prefix "$path")
+    if [[ -n "$py_prefix" ]]; then
+      >&2 echo "got python from __.conda.clever_prefix!: $py_prefix"
+      echo -n "$py_prefix"
       return 0
     fi
   fi
 
-  if hash __.conda.clever_prefix; then
-    py_exec=$(__.conda.clever_prefix "$path")
-    >&2 echo 'got python from __.conda.clever_prefix!'
-    echo -n "$py_exec"
-    return 0
-  fi
+  # 3. System Python as last resort
+  py_exec=$(command -v python)
+  >&2 echo 'got python from system default!'
+  echo -n "${py_exec%%/bin/python}"
 }
 
 
