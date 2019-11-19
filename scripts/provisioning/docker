@@ -21,8 +21,11 @@ install_docker(){
   #
   # group hack without logout
   #
-  newgrp docker
-  newgrp "$USER"
+  # FIXME this hack won't work because newgrp gives you a new shell
+  #(
+  #  newgrp docker
+  #  newgrp "$USER"
+  #)
   __.log_warning "Added $USER to docker group, you need to logout and log in again to make it permanent."
 
 

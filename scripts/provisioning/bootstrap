@@ -26,11 +26,13 @@ install_prerequisites(){
   for app in \
     build-essential \
     cmake \
+    curl \
     git \
     net-tools \
     openssh-server \
     software-properties-common \
-    stow;\
+    stow \
+    tree;\
   do
     if [[ -z "$(dpkg --get-selections "$app" 2>/dev/null)" ]]; then
       prerequisites+="$app "
