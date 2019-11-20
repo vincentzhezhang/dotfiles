@@ -19,7 +19,7 @@
 " }}}
 "
 " {{{ handy selection of symbols
-" - poker suits:    ♠ ♥ ♣ ♦
+" - poker suits:    [♠ ♥ ♣ ♦ ]
 " - common symbols: • ￭
 " - white space:    ] [(em) XXX needed as leading whitespace in sign column
 "
@@ -199,7 +199,6 @@ set undofile                              " Persistent undo, note undodir defaul
 set updatetime=128                        " Make update related events slightly faster
 let &showbreak='↪ '                       " Make soft wrap visually appealing FIXME not showing up?
 " }}}
-
 
 " {{{ airline
 "
@@ -894,12 +893,15 @@ function! SmartFindFiles()
   endif
 
   echo 'searching using "' . l:cmd . '" ...'
-  call fzf#run(fzf#wrap({'source': l:cmd, 'dir': l:dir, 'down': '~18'}))
+  call fzf#run(fzf#wrap({
+    \ 'source': l:cmd,
+    \ 'dir': l:dir,
+    \ 'window': 'call FloatingFZF()',
+    \ }
+  \ ))
 endfunction
 
-" FIXME why the hell the results does not show immediately after trigger?
-" nnoremap <silent> <leader>f :call SmartFindFiles()<CR>
-nnoremap <silent> <leader>f :call fzf#vim#files('.', {'options': '--prompt "  "'})<CR>
+nnoremap <silent> <leader>f :call SmartFindFiles()<CR>
 nnoremap <silent> <leader>B :Buffers<CR>
 " fast switch with previous buffer
 nnoremap <silent> <leader>b :b#<CR>
