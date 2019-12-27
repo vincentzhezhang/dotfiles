@@ -316,7 +316,7 @@ __.git.ps1()
   diff="${tracking_state}${dirty_state}"
 
   if [[ -n "$diff" ]]; then
-    diff=" ${BYELLOW}∗ ${COFF} ${diff}"
+    diff=" ${BYELLOW}∗${COFF} ${diff}"
   fi
 
   git_dir=$(git rev-parse --git-dir)

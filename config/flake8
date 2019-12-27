@@ -15,7 +15,13 @@ ignore =
   E702,
   # W503: line break before binary operator, this disagree with black
   W503,
-exclude = .git,__pycache__,docs/source/conf.py,old,build,dist
+exclude =
+  .git,
+  __pycache__,
+  docs/source/conf.py,
+  old,
+  build,
+  dist
 max-complexity = 12
 
 # vim: set ft=config :

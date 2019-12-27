@@ -23,6 +23,7 @@
 " - common symbols: • ￭
 " - white space:    ] [(em) XXX needed as leading whitespace in sign column
 "
+"
 " - Box Drawing Characters table (as of Unicode version 11.0)
 "
 "           0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F
@@ -259,10 +260,13 @@ let g:airline_mode_map = {
 "
 "
 
-function! NearestMethodOrFunction() abort
-  return get(b:, 'vista_nearest_method_or_function', '')
-endfunction
+" function! NearestMethodOrFunction() abort
+"   return get(b:, 'vista_nearest_method_or_function', '')
+" endfunction
+"
+" autocmd VimEnter * call vista#RunForNearestMethodOrFunction()
 
+let g:airline#extensions#vista#enabled = 1
 let g:airline#extensions#branch#enabled        = 0
 let g:airline#extensions#tabline#enabled       = 0
 let g:airline#extensions#tabline#tab_nr_type   = 2
@@ -277,10 +281,9 @@ let g:airline_right_alt_sep                    = ''
 let g:airline_right_sep                        = ''
 let g:airline_section_a                        = '' " hide mode text
 let g:airline_section_b                        = '' " hide inactive mode text?
-let g:airline_section_c                        = ''
+" let g:airline_section_c                        = ''
+" let g:airline_section_c                        = airline#section#create(["%{NearestMethodOrFunction()}"])
 let g:airline_section_x                        = ''
-" FIXME name of the virtualenv shows automagically
-" let g:airline_section_x                        = airline#section#create(['%{g:conda_venv_name}'])
 let g:airline_section_z                        = airline#section#create(["%{col('.')}:%{line('.')}"])
 let g:airline_symbols_ascii                    = 1
 " }}}
@@ -501,8 +504,9 @@ let g:ycm_global_ycm_extra_conf = g:vim_conf_root . '/ycm_global_extra_conf.py'
 " plugins so we just have to abide by it for now
 let $VIRTUAL_ENV = s:py_virtual_env_dir
 let $PYTHONPATH = s:py_virtual_env_dir
+let $PATH = s:py_virtual_env_dir . '/bin' . ':' . $PATH
 " XXX https://mypy.readthedocs.io/en/latest/running_mypy.html#finding-imports
-let $MYPYPATH = expand(s:py_virtual_env_dir . '/lib/*/site-packages')
+" let $MYPYPATH = expand(s:py_virtual_env_dir . '/lib/*/site-packages')
 
 " disable ale's virtual env auto discover feature and use the envvar instead
 " because we know the environment better
@@ -586,7 +590,9 @@ let g:tmux_navigator_no_mappings = 1
 " let g:linter_sign = ' ￭'   " good on Ubuntu mono
 let g:linter_sign = ' •'   " good on Ubuntu mono
 " let g:git_sign = '┃ '      " good on Ubuntu mono
-let g:git_sign = '│ '      " good on Ubuntu mono
+" let g:git_sign = '│ '      " good on Ubuntu mono
+" let g:git_sign = '▐ '      " good on Ubuntu mono
+let g:git_sign = '┃ '      " good on Ubuntu mono
 
 " FIXME still buggy 23 Nov, now check again 2019
 " let g:ale_completion_enabled = 1
@@ -605,8 +611,8 @@ let g:gitgutter_override_sign_column_highlight = 0
 let g:gitgutter_sign_added = g:git_sign
 let g:gitgutter_sign_modified = g:git_sign
 let g:gitgutter_sign_modified_removed = g:git_sign
-let g:gitgutter_sign_removed = g:git_sign
-let g:gitgutter_sign_removed_first_line = g:git_sign
+let g:gitgutter_sign_removed = '‣ '
+let g:gitgutter_sign_removed_first_line = '‣ '
 
 let g:ycm_error_symbol = g:linter_sign
 let g:ycm_warning_symbol = g:linter_sign
@@ -687,6 +693,7 @@ let g:show_spaces_that_precede_tabs=1
 " Adapt sign color upon color theme change
 augroup colorscheme_tweaks
   autocmd!
+  autocmd ColorSchemePre syntax off
   autocmd ColorScheme * call ColorSchemeTweaks()
 augroup END
 " }}}
@@ -733,7 +740,8 @@ map q <Nop>
 nnoremap Y y$
 
 " Git Fugititve key mapping
-nnoremap <leader>gb :Gblame<CR>
+" Check out if there are any floating window alternatives
+nnoremap <leader>gb :Gblame <Bar> wincmd = <CR>
 nnoremap <leader>gs :Gstatus<CR>
 
 " vim-easy-align
@@ -788,11 +796,16 @@ nnoremap <silent> <F8> :execute ':silent !google-chrome %'<CR>
 nnoremap <silent> <F4> :set ts=4 sw=4<CR>
 
 " Vista Toggle (better alternative of TagBar)
-nnoremap <silent> <C-t> :Vista!!<CR>
+" FIXME why wincmd not working here
+nnoremap <silent><C-t> :Vista!! <Bar> wincmd =<CR>
+nnoremap <silent><leader>t :Vista finder<CR>
 " TODO
 " - [ ] maybe enable this again when find a good font
 let g:vista#renderer#enable_icon = 0
-let g:vista_sidebar_width = 48
+let g:vista_sidebar_width = 60
+" FIXME consistent styling of floating window
+let g:vista_echo_cursor_strategy = 'floating_win'
+let g:vista_keep_fzf_colors = 1
 
 " jump to first match
 nnoremap <C-]> :YcmCompleter GoTo<CR>
