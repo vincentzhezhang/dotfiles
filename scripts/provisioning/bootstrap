@@ -51,7 +51,7 @@ install_prerequisites(){
 
 set_up_system_directories(){
   sudo mkdir --parents "$__sandbox_path"
-  sudo chown "$USER:$USER" "$__sandbox_path"
+  sudo chown "$(id --user):$(id --group)" "$__sandbox_path"
 }
 
 main
