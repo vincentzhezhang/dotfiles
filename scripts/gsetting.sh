@@ -34,6 +34,12 @@ if hash gsettings; then
   # - find a way to config gTile programmatically
   gsettings set org.gnome.mutter.keybindings toggle-tiled-right []
   gsettings set org.gnome.mutter.keybindings toggle-tiled-left []
+
+  #
+  # Themes
+  #
+  gsettings set org.gnome.desktop.interface gtk-theme "Nordic-Polar"
+  gsettings set org.gnome.desktop.wm.preferences theme "Nordic-Polar"
 else
   >&2 echo 'gsettings not found!'
 fi

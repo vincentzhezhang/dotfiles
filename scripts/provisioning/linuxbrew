@@ -160,9 +160,10 @@ install_linuxbrew_apps(){
   # ctags.io
   # FIXME this is problematic now
   # brew tap universal-ctags/universal-ctags
-  return 0
-  brew install --HEAD --with-jansson universal-ctags/universal-ctags/universal-ctags
-  # __.brew.upinstall ctags
+  # brew install --HEAD --with-jansson --without-xml universal-ctags/universal-ctags/universal-ctags
+
+  # TODO for now we keep both since the apt one is struggling publishing the latest version
+  __.brew.upinstall neovim
 }
 
 main
