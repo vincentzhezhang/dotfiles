@@ -782,10 +782,10 @@ endfunction
 "
 nnoremap <silent> <CR> :nohlsearch<CR><CR>
 nnoremap <silent> gg ggzz
-nnoremap <A-]> :GitGutterNextHunk<CR>
-nnoremap <A-[> :GitGutterPrevHunk<CR>
-" nmap <silent> <A-[> <Plug>(ale_previous_wrap)
-" nmap <silent> <A-]> <Plug>(ale_next_wrap)
+nnoremap <silent> <A-}> :GitGutterNextHunk <CR> zz
+nnoremap <silent> <A-{> :GitGutterPrevHunk <CR> zz
+nnoremap <silent> <A-[> :ALEPreviousWrap <CR> zz
+nnoremap <silent> <A-]> :ALENextWrap <CR> zz
 
 "
 " more intuitive next/prev result keymapping
