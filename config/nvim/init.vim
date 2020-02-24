@@ -279,12 +279,17 @@ let g:airline_left_sep                         = ''
 let g:airline_powerline_fonts                  = 0
 let g:airline_right_alt_sep                    = ''
 let g:airline_right_sep                        = ''
-let g:airline_section_a                        = '' " hide mode text
-let g:airline_section_b                        = '' " hide inactive mode text?
-" let g:airline_section_c                        = ''
+let g:airline_section_a                        = '' " (mode, crypt, paste, spell, iminsert)
+let g:airline_section_b                        = '' " (hunks, branch)[*]
+" FIXME looks like there is a bug on virtualenv
+" let g:airline_section_c                        = '' " (bufferline or filename, readonly)
 " let g:airline_section_c                        = airline#section#create(["%{NearestMethodOrFunction()}"])
-let g:airline_section_x                        = ''
-let g:airline_section_z                        = airline#section#create(["%{col('.')}:%{line('.')}"])
+" let g:airline_section_gutter                   = ' ' (csv)
+let g:airline_section_x                        = '' " (tagbar, filetype, virtualenv)
+let g:airline_section_y                        = '' " (fileencoding, fileformat)
+let g:airline_section_z                        = airline#section#create(["%{col('.')}:%{line('.')}"]) " (percentage, line number, column number)
+" let g:airline_section_error                  = '' (ycm_error_count, syntastic-err, eclim, languageclient_error_count)
+" let g:airline_section_warning                = '' (ycm_warning_count, syntastic-warn, languageclient_warning_count, whitespace)
 let g:airline_symbols_ascii                    = 1
 " }}}
 
