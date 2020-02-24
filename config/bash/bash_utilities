@@ -118,7 +118,7 @@ gg()
   current_branch=$(git rev-parse --abbrev-ref HEAD)
   branch_name=$(
     git branch --no-color -a |\
-    grep -v "$current_branch" |\
+    grep -vP "${current_branch}$" |\
     sed -r 's/^\s+//g' |\
     fzf --height=50% --reverse
   )
