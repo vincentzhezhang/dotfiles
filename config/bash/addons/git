@@ -138,8 +138,10 @@ __.git.ps1()
   #
   # git prompt snippet, use plumbing commands for reliable states parsing
   #
-  # TODO this worth a rework, should be able to make it much simpler without
+  # TODO
+  # - this worth a rework, should be able to make it much simpler without
   # using anything else other than bash & git
+  # - break down this monster
   #
   # XXX
   # last perf: avg 44.36ms
@@ -282,9 +284,8 @@ __.git.ps1()
   if [[ -n "$tracking_branch" ]]; then
     remote_name=${tracking_branch%"/$current_branch"}
 
-    # XXX may break
     if [[ "$branch_info" == *'gone'* ]]; then
-      remote_name+="[gone]"
+      remote_name="[gone]"
     else
       # XXX no global match support yet in bash
       # ⭠ ⭢ ⭡ ⭣  ⭤ ⭥  ⭦ ⭧ ⭨ ⭩  🠀 🠂 🠁 🠃  🠄 🠆 🠅 🠇 🠠 🠢 🠡 🠣 🠐 🠒 🠑 🠓  🠔 🠖 🠕 🠗  🠘 🠚 🠙 🠛 ⭎ ⭏ ↑↓
