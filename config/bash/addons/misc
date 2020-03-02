@@ -4,6 +4,10 @@
 # Misc add-ons
 #
 
+if hash rg 2>/dev/null; then
+  export RIPGREP_CONFIG_PATH=$XDG_CONFIG_HOME/ripgrep/rgrc
+fi
+
 __.venv.python.prefix()
 {
   # main interface handling various Python virtual envs
