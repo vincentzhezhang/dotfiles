@@ -85,7 +85,7 @@ let g:gruvbox_contrast_light = 'soft'
 let g:gruvbox_contrast_dark = 'soft'
 
 function SunnyDays()
-  colorscheme flattened_light
+  colorscheme PaperColor
   set background=light
 endfunction
 
@@ -94,7 +94,6 @@ let g:nord_italic_comments = 1
 let g:nord_underline = 1
 function InDoor()
   colorscheme deus
-  " colorscheme nord
   set background=dark
 endfunction
 
@@ -109,6 +108,7 @@ function! CycleTheme()
   let g:theme_index = (g:theme_index + 1) % len(l:themes)
   let l:t = l:themes[g:theme_index]
   call {l:t}()
+  let &syntax = &syntax
 endfunction
 nmap <silent> <F5> :call CycleTheme() <CR>
 

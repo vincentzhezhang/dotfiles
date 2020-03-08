@@ -99,13 +99,10 @@ Plug 'airblade/vim-gitgutter'
 Plug 'airblade/vim-rooter'
 Plug 'ajmwagar/vim-deus'
 Plug 'AndrewRadev/splitjoin.vim'
-Plug 'arcticicestudio/nord-vim'
 Plug 'ap/vim-css-color', { 'for': ['css', 'sass', 'scss'] }
 Plug 'brooth/far.vim'
 Plug 'christoomey/vim-tmux-navigator'
-Plug 'cocopon/iceberg.vim'
 Plug 'editorconfig/editorconfig-vim'
-Plug 'flazz/vim-colorschemes'
 Plug 'gyim/vim-boxdraw'
 Plug 'honza/vim-snippets'
 Plug 'jparise/vim-graphql' " TODO this is removed from vim-polyglot for now
@@ -117,12 +114,12 @@ Plug 'Lokaltog/vim-easymotion'
 Plug 'liuchengxu/vista.vim' " Beteralternative to TagBar. TODO more Vista tweaks
 Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
 Plug 'mhinz/vim-startify'
+Plug 'NLKNguyen/papercolor-theme'
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'peitalin/vim-jsx-typescript', { 'for': ['ts', 'tsx'] }
 Plug 'plasticboy/vim-markdown' " FIXME [CAVEAT_1] Not playing well with polyglot
 " Plug 'python-rope/ropevim' TODO try rope vim
 Plug 'Raimondi/delimitMate'
-Plug 'romainl/flattened'
 Plug 'scrooloose/nerdcommenter'
 Plug 'scrooloose/nerdtree'
 Plug 'sheerun/vim-polyglot', { 'for': ['jsx'] }
@@ -135,6 +132,7 @@ Plug 'tpope/vim-surround'
 Plug 'Valloric/YouCompleteMe', { 'do': function('BuildYCM') }
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
+Plug 'vim-scripts/chlordane.vim'
 Plug 'dense-analysis/ale'
 Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'zxqfl/tabnine-vim'
