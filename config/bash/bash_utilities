@@ -306,6 +306,8 @@ esac
 # make sure we output to a dir to avoid surprises
 # TODO
 # - double check if cmds other than tar extract to directly
+# - even better UX: detect if there is a top level folder in the archive
+#   then create a directory only if necessary
 #
 extract () {
   if [ -f "$1" ] ; then

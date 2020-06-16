@@ -8,21 +8,17 @@ fi
 
 if [[ -z $XDG_CONFIG_HOME ]]; then
   export XDG_CONFIG_HOME="$HOME/.config"
-  >&2 echo "No \$XDG_CONFIG_HOME specified, using default: $XDG_CONFIG_HOME"
 fi
 
 if [[ -z $XDG_CACHE_HOME ]]; then
   export XDG_CACHE_HOME="$HOME/.cache"
-  >&2 echo "No \$XDG_CACHE_HOME specified, using default: $XDG_CACHE_HOME"
 fi
 
 if [[ -z $XDG_DATA_HOME ]]; then
   export XDG_DATA_HOME="$HOME/.local/share"
-  >&2 echo "No \$XDG_DATA_HOME specified, using default: $XDG_DATA_HOME"
 fi
 
 if [[ ! -w ${XDG_RUNTIME_DIR:="/run/user/$UID"} ]]; then
-  >&2 echo "\$XDG_RUNTIME_DIR ($XDG_RUNTIME_DIR) not writable. Setting to /tmp." 
   XDG_RUNTIME_DIR=/tmp
 fi
 
@@ -42,7 +38,7 @@ case $- in
 esac
 
 # handy box specific injection before we load the main part
-[[ -f "$XDG_CONFIG_HOME/bash/before" ]] && source "$XDG_CONFIG_HOME/bash/before"
+# [[ -f "$XDG_CONFIG_HOME/bash/before" ]] && source "$XDG_CONFIG_HOME/bash/before"
 
 #
 # load bash related script modules
@@ -103,14 +99,16 @@ export TERM='xterm-256color'
 set -o vi
 
 # make less more friendly for non-text input files, see lesspipe(1)
-[[ -x $(command -v lesspipe) ]] && eval "$(lesspipe)"
+if hash lesspipe 2>/dev/null; then
+  eval "$(lesspipe)"
+fi
 
 BCMP_PATH=/usr/share/bash-completion/bash_completion
 [[ -f $BCMP_PATH ]] && source $BCMP_PATH
 [[ -f ~/.git-completion.bash ]] && source ~/.git-completion.bash
 
 # enable color support
-if [[ -x dircolors ]]; then
+if hash dircolors 2>/dev/null; then
   if [[ -f "$XDG_CONFIG_HOME/dircolors" ]]; then
     eval "$(dircolors -b "$XDG_CONFIG_HOME/dircolors")"
   else
@@ -121,7 +119,11 @@ unset color_prompt force_color_prompt
 
 # TODO
 # - smart scope, e.g. use current directory or git root depends on the context
-read -r -d '' GIT_DEFAULT_LS_COMMAND <<BASH
+# FIXME this is not working when no delete file
+# git ls-files --cached --others --exclude-standard | grep -vE $(git ls-files --deleted | paste -sd'|')
+# FIXME for some reason this won't work when invoked via a variable
+# comm -13 <(git ls-files --deleted | sort) <(git ls-files --cached --others --exclude-standard | sort
+read -r -d '' GIT_DEFAULT_LS_COMMAND <<'BASH'
   git ls-files --cached --others --exclude-standard
 BASH
 export GIT_DEFAULT_LS_COMMAND
@@ -130,9 +132,8 @@ export GIT_DEFAULT_LS_COMMAND
 # to manage fzf installation from outsite of vim
 [[ -f ~/.fzf.bash ]] && source ~/.fzf.bash
 
-
 # handy box specific injection after we load the main part
-[[ -f "$XDG_CONFIG_HOME/bash/after" ]] && source "$XDG_CONFIG_HOME/bash/after"
+# [[ -f "$XDG_CONFIG_HOME/bash/after" ]] && source "$XDG_CONFIG_HOME/bash/after"
 
 #
 # load addons

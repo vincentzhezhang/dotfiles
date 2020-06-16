@@ -99,7 +99,6 @@ Plug 'airblade/vim-gitgutter'
 Plug 'airblade/vim-rooter'
 Plug 'ajmwagar/vim-deus'
 Plug 'AndrewRadev/splitjoin.vim'
-Plug 'ap/vim-css-color', { 'for': ['css', 'sass', 'scss'] }
 Plug 'brooth/far.vim'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'editorconfig/editorconfig-vim'
@@ -115,6 +114,7 @@ Plug 'liuchengxu/vista.vim' " Beteralternative to TagBar. TODO more Vista tweaks
 Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
 Plug 'mhinz/vim-startify'
 Plug 'NLKNguyen/papercolor-theme'
+Plug 'norcalli/nvim-colorizer.lua'
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'peitalin/vim-jsx-typescript', { 'for': ['ts', 'tsx'] }
 Plug 'plasticboy/vim-markdown' " FIXME [CAVEAT_1] Not playing well with polyglot
@@ -180,6 +180,7 @@ set nowrap                                " Don't wrap on long lines
 set nowritebackup                         " Write file in place
 set number                                " Display line numbers on the left
 set pastetoggle=<F2>                      " bind paste mode for ease of use
+set pumblend=9                            " Pseudo transparency for pop-up menu
 set scrolloff=6                           " Have some context around the current line always on screen
 set signcolumn=yes                        " always display the sign column to avoid content flickering
 set shiftwidth=2                          " Number of spaces to use for each step of (auto)indent
@@ -196,6 +197,7 @@ set tags=./.tags,./tags,.tags,tags;       " Use hidden tags files
 " set undodir="$XDG_DATA_HOME/nvim/undo/" " Persistent undo directory FIXME default to XDG_DATA_HOME
 set undofile                              " Persistent undo, note undodir default to xdg data
 set updatetime=128                        " Make update related events slightly faster
+set winblend=9                            " Pseudo transparency for floating window
 let &showbreak='↪ '                       " Make soft wrap visually appealing FIXME not showing up?
 " }}}
 
@@ -852,7 +854,7 @@ let g:fzf_buffers_jump = 1
 " FZF with floating window
 " TODO
 " - FZF_DEFAULT_OPTS should follow vim colorscheme
-let $FZF_DEFAULT_OPTS=' --color=dark --color=fg:15,bg:-1,hl:1,fg+:#ffffff,bg+:0,hl+:1 --color=info:0,prompt:0,pointer:12,marker:4,spinner:11,header:-1 --layout=reverse  --margin=1,4'
+let $FZF_DEFAULT_OPTS=' --color=dark --color=fg:15,bg:-1,hl:1,fg+:#ffffff,bg+:0,hl+:1 --color=info:0,prompt:0,pointer:12,marker:4,spinner:11,header:-1 --layout=reverse --margin=1,4'
 let g:fzf_layout = { 'window': 'call FloatingFZF()' }
 
 function! FloatingFZF()
@@ -890,28 +892,47 @@ function! SmartFindFiles()
   " FindRootDirectory from vim-rooter
   let l:dir = FindRootDirectory()
   let l:cwd = getcwd()
+  let l:options = ''
 
   if empty(l:dir)
     let l:dir = l:cwd
+    " TODO maybe replace with rg
+    " XXX the reason why we are not using find here even it's faster it's because
+    " find won't ignore common ignored files
     let l:cmd = 'ag --nocolor -l'
   else
     let l:cmd = $GIT_DEFAULT_LS_COMMAND
 
     if empty(l:cmd)
-      let l:cmd = 'git ls-files --cached --others --exclude-standard'
-      echo '$GIT_DEFAULT_LS_COMMAND is not set'
-      return
+      " this shouldn't happen but anyway
+      " FIXME for some reason this won't work when invoked via a variable
+      let l:cmd = 'comm -13 <(git ls-files --deleted | sort) <(git ls-files --cached --others --exclude-standard | sort)'
     endif
 
     if l:cwd !~? l:dir " remove leading path that duplicates with cwd
-      let l:cmd = l:cmd . " | awk '$0=\"" . l:dir . "/\"$0'"
+      let l:cmd .= " | awk '$0=\"" . l:dir . "/\"$0'"
     endif
+
+
+    " XXX experimenting handle sort manually for git projects, order:
+    " - file in the same directory first
+    " - file in children directory
+    " - file in parent directory
+    " - file is ordered by levels of directories and then file name
+    " TODO
+    " - [ ] in this way, we will want to ls-files use relative path
+    " let l:cmd .= " |
+    "   \ awk --field-separator '[/.]' '{print NF-1\" \"$0}' |
+    "   \ sort --key=1n --key=2i |
+    "   \ cut --delimiter=' ' --fields=2"
+    let l:options = l:options . ' --no-sort --tiebreak=index'
   endif
 
-  echo 'searching using "' . l:cmd . '" ...'
+  " echo 'searching using "' . l:cmd . '" ...'
   call fzf#run(fzf#wrap({
-    \ 'source': l:cmd,
     \ 'dir': l:dir,
+    \ 'options': l:options,
+    \ 'source': l:cmd,
     \ 'window': 'call FloatingFZF()',
     \ }
   \ ))
@@ -953,6 +974,24 @@ highlight! link NonText deusBg3
 if filereadable(g:after_hook)
   execute 'source' g:after_hook
 endif
+
+hi Comment cterm=italic
+
+" FIXME no lowercase color name supported yet, check later
+function! LuaColorizer()
+lua << EOF
+require 'colorizer'.setup({
+  '*';
+  css = { names = true };
+  scss = { names = true };
+  html = { names = true };
+}, {
+  rgb_fn = true;
+})
+EOF
+endfunction
+
+call LuaColorizer()
 
 " {{{ Initialization
 "

@@ -7,6 +7,9 @@
 # email      development@arcticicestudio.com                   +
 # copyright  Copyright (C) 2017                                +
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#
+# FIXME
+# - [ ] the colour pallette was not really used so it's not fine tuned to my perfection
 
 COLOR tty
 
@@ -71,7 +74,7 @@ CHR 33
 ORPHAN 31
 MISSING 01;37;41
 
-EXEC 01;36
+EXEC 01;32
 
 SETUID 01;04;37
 SETGID 01;04;37

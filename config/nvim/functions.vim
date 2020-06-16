@@ -32,14 +32,14 @@ augroup END
 " function! PreferLocalNodeBinaries()
 "   let l:local_eslint = $PWD . '/node_modules/.bin/eslint'
 "   let l:global_eslint = system('which eslint')
-" 
+"
 "   if executable(l:local_eslint)
 "     let g:neomake_javascript_eslint_exe = l:local_eslint
 "   elseif executable(l:global_eslint)
 "     let g:neomake_javascript_eslint_exe = l:global_eslint
 "   endif
 " endfunction
-" 
+"
 " augroup node_path_hack
 "   autocmd BufEnter *.js* call PreferLocalNodeBinaries()
 " augroup END
