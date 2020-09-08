@@ -10,7 +10,7 @@ if ! hash python3 > /dev/null 2>&1; then
 fi
 
 # no pyc files and __pycache__ directories
-export PYTHONDONTWRITEBYTECODE=x
+export PYTHONDONTWRITEBYTECODE=1
 
 __.python.egg_beater()
 {

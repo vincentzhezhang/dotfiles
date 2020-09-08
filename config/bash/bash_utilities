@@ -80,8 +80,15 @@ weather()
 }
 
 #
-# Goto Definition of a bash function
+# Show/Goto Definition of a bash function
 #
+
+sd()
+{
+  type $1 | bat --language bash
+}
+complete -F __complete_gd -o nospace sd
+
 gd()
 {
   if [[ -z $1 ]]; then
@@ -90,6 +97,7 @@ gd()
 
   shopt -s extdebug; declare -F "$1" | awk '{ print $3" +"$2 }' | xargs --no-run-if-empty nvim
 }
+
 __complete_gd()
 {
   if [ "${#COMP_WORDS[@]}" != "2" ]; then
@@ -297,9 +305,10 @@ history_magic() {
 }
 # only do this for interactive shell
 # referred in Vim
-case $- in
-  *i*) trap history_magic EXIT;;
-esac
+# FIXME this is buggy will lost histories
+# case $- in
+#   *i*) trap history_magic EXIT;;
+# esac
 
 #
 # easy extract
@@ -532,6 +541,10 @@ __.bash.reset_locales()
 # FIXME this has to be put here because it breaks syntax highlight
 path() {
   echo "${PATH//:/$'\n'}"
+}
+
+pp() {
+  python -m pytest -sxvvv "$@"
 }
 
 # vim: set ai ts=2 tw=79:

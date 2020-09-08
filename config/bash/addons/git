@@ -158,6 +158,7 @@ __.git.ps1()
     return 1
   fi
 
+  # FIXME rebase_head is not removed under work tree folder
   if [[ -f "$git_dir/REBASE_HEAD" ]]; then
     echo "${BRED}[-R-]${COFF}"
     return 0

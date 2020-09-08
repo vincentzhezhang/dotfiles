@@ -117,9 +117,5 @@ alias cleanup='sudo apt-get autoclean && sudo apt-get autoremove && sudo apt-get
 alias updatedb='sudo updatedb'
 alias u='sudo apt update && sudo apt upgrade && sudo apt full-upgrade -y'
 
-# apt-get
-alias si='sudo apt-get install'
-alias sd='sudo apt-get update'
-
 # just fuck it
 alias fuck='sudo "$BASH" -c "$(history -p !!)"'
