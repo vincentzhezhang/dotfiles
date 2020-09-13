@@ -39,8 +39,7 @@ default, add SHIT_GOT_REAL=x before the script to make it do the real work.
 
 - bash built-ins are normally faster than command line alternatives, e.g. bash regex match is ~50% quicker than grep
 
-
-## TODO
+## TOOD
 
 ### Features
 
@@ -51,4 +50,27 @@ default, add SHIT_GOT_REAL=x before the script to make it do the real work.
 
 - google-chrome XDG support for both system and cmd line is hacked
 
-### Misc
+### Missing apps
+
+- rofi
+- universal-ctags
+- numix-icon-theme-circle
+- flameshot
+
+### Needs dynamic version / upgrades
+
+- virtual_box
+
+### Change installation method
+
+- fzf, better to be managed by brew
+
+### Post installation tweaks
+
+- chrome-gnome-shell
+- sync app settings
+- gsettings: unbind system defaults:
+  - e.g. ESC
+- rofi config
+
+# vim: set autoindent expandtab nowrap number textwidth=119 tabstop=2 shiftwidth=2 :
