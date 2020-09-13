@@ -550,7 +550,7 @@ vnoremap <C-s> :<C-r>0<Home><right>
 " TODO
 " - [ ] find better icons, the previous one looks too bulky and not
 " consistent, thus replaced by ascii characters
-let g:NERDTreeIndicatorMapCustom = {
+let g:NERDTreeGitStatusIndicatorMapCustom = {
     \ 'Modified'  : '*',
     \ 'Staged'    : '+',
     \ 'Untracked' : 'u',

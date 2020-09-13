@@ -24,9 +24,9 @@ if [[ "$SHIT_GOT_REAL" == 'x' ]]; then
   TARGET_HOME=$HOME
 
   if [[ -n $XDG_CONFIG_HOME ]]; then
-    __.log_info ">>> Using existing \$XDG_CONFIG_HOME: $XDG_CONFIG_HOME"
+    __.log_info "Using existing \$XDG_CONFIG_HOME: $XDG_CONFIG_HOME"
   else
-    __.log_info ">>> \$XDG_CONFIG_HOME is not set, using default: \$HOME/.config"
+    __.log_info "\$XDG_CONFIG_HOME is not set, using default: \$HOME/.config"
     XDG_CONFIG_HOME="$HOME/.config"
   fi
 else
@@ -35,30 +35,30 @@ else
   mkdir -p "$XDG_CONFIG_HOME"
 fi
 
-__.log_info ">>> \$source_dir: $source_dir"
-__.log_info ">>> \$XDG_CONFIG_HOME: $XDG_CONFIG_HOME"
+__.log_info "\$source_dir: $source_dir"
+__.log_info "\$XDG_CONFIG_HOME: $XDG_CONFIG_HOME"
 
-__.log_info '>>> Installing dot files...'
+__.log_info 'Installing dot files...'
 stow --no-fold --dir="$source_dir" --target="$XDG_CONFIG_HOME" config
-__.log_info '>>> Installed dot files!'
+__.log_info 'Installed dot files!'
 
-__.log_info '>>> Hacking for non-standard apps'
+__.log_info 'Hacking for non-standard apps'
 # XXX hack can be:
 # - use environment or variable to override the config loading path (prefered)
 # - link config file back to $HOME
 # - others?
 
-__.log_info '>>> Hacking for bash...'
+__.log_info 'Hacking for bash...'
 ln -nsf "$XDG_CONFIG_HOME/bash/bash.env" "$TARGET_HOME/.bash.env"
 ln -nsf "$XDG_CONFIG_HOME/bash/bashrc" "$TARGET_HOME/.bashrc"
 
-__.log_info '>>> hacking for tmux tpm...'
+__.log_info 'hacking for tmux tpm...'
 mkdir -p "$TARGET_HOME/.tmux/plugins"
 ln -nsf "$XDG_CONFIG_HOME/tmux/tmux.conf" "$TARGET_HOME/.tmux.conf"
 ln -nsf "$XDG_CONFIG_HOME/tmux/plugins/my" "$TARGET_HOME/.tmux/plugins/my"
 
-__.log_info '>>> TODO: hacking for vim...'
-__.log_info '>>> Hacked!'
+__.log_info 'TODO: hacking for vim...'
+__.log_info 'Hacked!'
 
 if [[ "$SHIT_GOT_REAL" == 'x' ]]; then
   find "$TARGET_HOME" -maxdepth 5 -type l -mmin -5 2>/dev/null | xargs stat --printf '%N\n' | sort | column -t

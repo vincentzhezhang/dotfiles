@@ -42,6 +42,9 @@
 [credential]
   # cache credential for 30 days
   helper = cache --timeout=2592000
+[url "https://"]
+  # prefer https over git
+  insteadOf = git://
 [diff]
   tool = meld
 [merge]
@@ -84,3 +87,4 @@
 [http]
   sslVerify = false
 # vim: set ft=gitconfig :
+
