@@ -30,4 +30,4 @@ __.log_error()
   __.log '1;31' "$@"
 }
 
-# vim: set autoindent expandtab number textwidth=119 tabstop=2 shiftwidth=2 :
+# vim: set autoindent expandtab nowrap number textwidth=119 tabstop=2 shiftwidth=2 :

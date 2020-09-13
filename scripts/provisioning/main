@@ -40,7 +40,7 @@ set -eu
 ./linuxbrew
 ./conda
 ./node
+./ruby
+./post_system_tweaks
 
-# XXX vim is likely not set up when running this script, so make use of mode
-# line below to get some basic editing behaviours correct
-# vim: set autoindent expandtab number textwidth=119 tabstop=2 shiftwidth=2 :
+# vim: set autoindent expandtab nowrap number textwidth=119 tabstop=2 shiftwidth=2 :

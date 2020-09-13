@@ -26,6 +26,13 @@ install_nvm(){
     return 0
   fi
 
+  if [[ -f "${__prefix_nvm:?}/nvm.sh" ]]; then
+    source "${__prefix_nvm:?}/nvm.sh" --no-use
+    __.log_info 'nvm is installed but not sourced, skipping...'
+    nvm --version
+    return 0
+  fi
+
   __.log_info 'Installing nvm...'
   (
     git clone https://github.com/nvm-sh/nvm.git "$__prefix_nvm"
@@ -34,10 +41,15 @@ install_nvm(){
   )
   # shellcheck source=/sandbox/.nvm/nvm.sh
   source "${__prefix_nvm:?}/nvm.sh" --no-use
-  nvm --vesion
+
+  __.log_info '>>>>>>>>>>>>> Checking nvm version'
+    # HACK nvm returns non-zero code: https://github.com/nvm-sh/nvm/issues/993
+  __.log_info $(nvm --version)
 }
 
 install_node(){
+  __.log_info 'installing node'
+
   if [[ $(command -v node) == *'nvm'* ]]; then
     __.log_info 'node is installed, skipping...'
     return 0
@@ -48,40 +60,33 @@ install_node(){
 }
 
 install_node_apps(){
-  # upgrade npm first
+  #
+  # also checkout ./linuxbrew
+  # XXX some packages are available both in npm and brew, prefer npm in this case
+  #
+
   npm install --global npm
 
-  # install node.js provider for neovim
-  npm install --global neovim
+  # Dev essentials
+  npm install --global neovim     # neovim js plugin
+  npm install --global typescript # TypeScript support
+  npm install --global prettier   # Code formatter for JavaScript, CSS, JSON, GraphQL, Markdown, YAML
 
-  # typescript ftw
-  npm install --global typescript
+  # Linters
+  npm install --global markdownlint         # Markdown
+  npm install --global textlint             # General text
+  npm install --global write-good           # Better writting
+  npm install --global bash-language-server # lsp for bash, see also shellcheck
 
-  # linter for markdown
-  npm install --global markdownlint
+  # CLI essentials
+  npm install --global tldr           # Simplified and community-driven man pages
+  npm install --global git-tip        # git tip of the day
+  npm install --global diff-so-fancy  # better git diff
 
-  # linter for text file
-  npm install --global textlint
-
-  # linter for better writing
-  npm install --global write-good
-
-  # man for the impatient
-  npm install --global tldr
-
-  # git tip of the day
-  npm install --global git-tip
-
-  # handy websocket cli for testing
-  npm install --global wscat
-
-  # better git diff
-  npm install --global diff-so-fancy
-
-  # lsp for bash, see also shellcheck
-  npm install --global bash-language-server
+  # Web dev tools
+  npm install --global wscat  # handy websocket cli for testing
 }
 
 main
 
-# vim: set autoindent expandtab number textwidth=119 tabstop=2 shiftwidth=2 :
+# vim: set autoindent expandtab nowrap number textwidth=119 tabstop=2 shiftwidth=2 :

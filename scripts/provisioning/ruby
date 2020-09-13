@@ -5,7 +5,8 @@ set -eu
 source ../utils.sh
 
 main(){
-  check_system_config
+  __.log_warning 'TODO: skip ruby for now!'
+  return 0
   install_rbenv
   install_ruby
   install_ruby_apps
@@ -49,4 +50,4 @@ install_ruby_apps(){
 
 main
 
-# vim: set autoindent expandtab number textwidth=119 tabstop=2 shiftwidth=2 :
+# vim: set autoindent expandtab nowrap number textwidth=119 tabstop=2 shiftwidth=2 :

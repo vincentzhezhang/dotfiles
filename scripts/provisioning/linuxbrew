@@ -27,9 +27,17 @@ install_linuxbrew(){
   sudo mkdir --parents "$__prefix_linuxbrew"
   sudo chown --recursive "$(whoami):linuxbrew" "$__prefix_linuxbrew"
 
-  git clone --quiet --depth 1 https://github.com/Homebrew/brew "$__prefix_linuxbrew"
   (
     cd "$__prefix_linuxbrew"
+
+    git init --quiet
+    git config remote.origin.url https://github.com/Homebrew/brew
+    git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
+    git config core.autocrlf false
+    git fetch origin --force
+    git fetch origin --tags --force
+    git reset --hard origin/master
+
     sudo mkdir --parents \
       Cellar \
       etc \
@@ -69,7 +77,7 @@ __.brew.upinstall(){
   fi
 
   if brew ls --versions "$app_name" >/dev/null; then
-    if grep -q "$app_name" <<< "$BREW_OUTDATED"; then
+    if grep -q "$app_name" <<< "${BREW_OUTDATED:-}"; then
       >&2 echo "Upgrading $app_name"
       HOMEBREW_NO_AUTO_UPDATE=1 brew upgrade "$app_name"
     fi
@@ -80,92 +88,113 @@ __.brew.upinstall(){
 }
 
 install_linuxbrew_apps(){
-  brew update > /dev/null
-  BREW_OUTDATED=$(brew outdated)
+  #
+  # Args for easier installation, these should be also be exported in dotfiles
+  #
+  # also if we need proxy:
+  # export all_proxy=socks5://$HOST:$PORT
+  export HOMEBREW_BAT=1
+  export HOMEBREW_CURLRC=1
+  export HOMEBREW_CURL_RETRIES=3
+  export HOMEBREW_FORCE_BREWED_CURL=1
+  export HOMEBREW_FORCE_BREWED_GIT=1
+  export HOMEBREW_NO_AUTO_UPDATE=1
+  export GIT_SSL_NO_VERIFY=true
+  export GIT_CURL_VERBOSE=1
 
-  # better alternative to find
-  __.brew.upinstall fd
-
-  # better alternative to grep
-  __.brew.upinstall ag
-
-  # another better alternative to grep
-  __.brew.upinstall rg
-
+  #
+  # homebrew prerequisites
+  #
   # newer than system git
   __.brew.upinstall git
 
-  # newer than system tmux
-  __.brew.upinstall tmux
+  # newer than system curl
+  __.brew.upinstall curl
 
-  # TODO
-  # - find a better way to handle pre/post install
+  which -a git curl
+
+  #
+  # HACK workaround self-signed certificates, should have better injectable solutions
+  #
+  echo insecure >> ~/.curlrc
+  git config --global http.sslVerify false
+
+  #
+  # extra taps
+  #
+  # kubeeval
+  brew tap --verbose instrumenta/instrumenta
+
+  # ctags.io
+  brew tap --verbose universal-ctags/universal-ctags
+
+  #
+  # update before install
+  #
+  brew update > /dev/null
+  BREW_OUTDATED=$(brew outdated)
+
+  #
+  # actual homebrew apps
+  #
+
+  # Dev essentials
+  __.brew.upinstall tmux
+  # TODO find a better way to handle pre/post install
   if [[ -d ~/.tmux/plugins/tpm ]]; then
     git -C ~/.tmux/plugins/tpm pull
   else
     git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
   fi
 
-  # open source alternative to the Cisco AnyConnect Client
-  __.brew.upinstall openconnect
+  # Linters
+  # TODO migrate all linters to use LSP
+  __.brew.upinstall hadolint    # Dockerfile
+  __.brew.upinstall shellcheck  # shell
+  __.brew.upinstall yamllint    # yaml
 
-  # better alternative for curl
-  __.brew.upinstall httpie
+  # Web dev tools
+  __.brew.upinstall httpie        # better alternative for curl
+  __.brew.upinstall iperf3        # measures TCP, UDP, and SCTP bandwidth
+  __.brew.upinstall speedtest-cli # Test Internet speed from CLI
+  __.brew.upinstall wrk           # website pressure test (better than ab)
 
-  # handy spark lines
-  __.brew.upinstall spark
+  # CLI essentials
+  __.brew.upinstall bat     # Rust alternative for cat
+  __.brew.upinstall cowsay  # moo
+  __.brew.upinstall dfc     # df with colour
+  __.brew.upinstall exa     # Rust alternative for ls
+  __.brew.upinstall fd      # Rust alternative for find
+  __.brew.upinstall fortune # fortune teller
+  __.brew.upinstall jq      # Lightweight and flexible command-line JSON processor
+  __.brew.upinstall lnav    # Curses-based tool for viewing and analyzing log files
+  __.brew.upinstall lolcat  # better alternative to toilet
+  __.brew.upinstall nyancat # Nyan
+  __.brew.upinstall rg      # Rust alternative for grep
+  __.brew.upinstall spark   # handy CLI spark line
 
-  # YGNI
-  __.brew.upinstall youtube-dl
+  # Docker dev essentials
+  # FIXME docker-compose over socks5 proxy has installation problems
+  # __.brew.upinstall docker-compose  # Isolated development environments using Docker
+  __.brew.upinstall kubectl         # Kubernetes command-line interface
+  __.brew.upinstall kubectx         # Quick switch between kubectl contexts and create aliases
+  __.brew.upinstall kubeval         # Validate your Kubernetes configurations
+  __.brew.upinstall kubeseal        # Kubernetes controller and tool for one-way encrypted Secrets
+  __.brew.upinstall kustomize       # Template-free customization of Kubernetes YAML manifests
 
-  # JSON for cli
-  __.brew.upinstall jq
-  # interactive cli JSON utility
+  # ctags.io: maintained fork of ctags
+  # TODO also need upinstall for ctags
+  # HACK fix cpan issue
+  sudo ln -sf /usr/include/locale.h /usr/include/xlocale.h
+  brew install --HEAD universal-ctags/universal-ctags/universal-ctags
 
-  __.brew.upinstall fx
-  # website pressure test (better than ab)
-
-  __.brew.upinstall wrk
-  # docker file linter
-
-  __.brew.upinstall hadolint
-  # linter for yaml
-
-  __.brew.upinstall yamllint
-  # FIXME shellcheck, no ideal way to install on a restricted machine yet
-
-  # shell linter
-  __.brew.upinstall shellcheck
-
-  # there is no cow level
-  __.brew.upinstall cowsay
-
-  # a bit vivid
-  __.brew.upinstall lolcat
-
-  # daily fortune
-  __.brew.upinstall fortune
-
-  #
-  # docker dev essentials
-  #
-  __.brew.upinstall minikube
-  __.brew.upinstall kubectl
-  __.brew.upinstall kubectx
-  brew tap instrumenta/instrumenta
-  __.brew.upinstall kubeval
+  # misc
+  __.brew.upinstall aria2       # Download with resuming and segmented downloading
+  __.brew.upinstall youtube-dl  # Download YouTube videos from the command-line
 
   unset BREW_OUTDATED
-
-  # ctags.io
-  # FIXME this is problematic now
-  # brew tap universal-ctags/universal-ctags
-  # brew install --HEAD --with-jansson --without-xml universal-ctags/universal-ctags/universal-ctags
-
-  # TODO for now we keep both since the apt one is struggling publishing the latest version
-  __.brew.upinstall neovim
 }
 
 main
 
-# vim: set autoindent expandtab number textwidth=119 tabstop=2 shiftwidth=2 :
+# vim: set autoindent expandtab nowrap number textwidth=119 tabstop=2 shiftwidth=2 :

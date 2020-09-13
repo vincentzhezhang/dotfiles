@@ -30,29 +30,48 @@ install_conda(){
   conda --version
 }
 
-create_conda_envs(){
+pip_check_proxy() {
+  #
+  # pip won't work with socks proxy unless pysocoks is installed
+  #
+  if [[ ! $all_proxy = socks* ]]; then
+    return
+  fi
 
+  __.log_info "socks proxy: $all_proxy detected, installing dependencies..."
+
+  python_path=${1:?}
+  __all_proxy="$all_proxy"
+  unset all_proxy
+
+  "$python_path" -m pip install --upgrade pysocks
+
+  export all_proxy="$__all_proxy"
+}
+
+create_conda_envs(){
   if [[ -d "${__prefix_conda:?}/envs/py3" ]]; then
     __.log_info 'Conda env py3 already exists, skipping...'
   else
     __.log_info 'Creating conda env py3...'
     conda create --yes --name py3 python=3
   fi
-  (
-    "${__prefix_conda:?}/envs/py3/bin/pip" install --upgrade pynvim
-  )
 
+  pip_check_proxy "${__prefix_conda:?}/envs/py3/bin/python"
+  "${__prefix_conda:?}/envs/py3/bin/python" -m pip install --upgrade pynvim
+
+  # TODO maybe get ride of py2 support
   if [[ -d "${__prefix_conda:?}/envs/py2" ]]; then
     __.log_info 'Conda env py2 already exists, skipping...'
   else
     __.log_info 'Creating conda env py2...'
     conda create --yes --name py2 python=2
   fi
-  (
-    "${__prefix_conda:?}/envs/py2/bin/pip" install --upgrade pynvim
-  )
+
+  pip_check_proxy "${__prefix_conda:?}/envs/py2/bin/python"
+  "${__prefix_conda:?}/envs/py2/bin/pip" install --upgrade pynvim
 }
 
 main
 
-# vim: set autoindent expandtab number textwidth=119 tabstop=2 shiftwidth=2 :
+# vim: set autoindent expandtab nowrap number textwidth=119 tabstop=2 shiftwidth=2 :
