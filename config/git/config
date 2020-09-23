@@ -70,7 +70,7 @@
 [pager]
   diff = diff-so-fancy | less --tabs=4 --RAW-CONTROL-CHARS --quit-if-one-screen --no-init
   show = diff-so-fancy | less --tabs=4 --RAW-CONTROL-CHARS --quit-if-one-screen --no-init
-  tag = fzf
+  tag = sort -V | fzf --height=50% --reverse --no-sort --tac
 [mergetool]
   cmd = nvim -f -c \"Gdiff\" \"$MERGED\"
 [log]
@@ -85,6 +85,6 @@
   newNormal = green bold
   newHighlight = green bold 22
 [http]
-  sslVerify = false
+	sslVerify = false
 # vim: set ft=gitconfig :
 
