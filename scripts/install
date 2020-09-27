@@ -5,8 +5,6 @@ this_file="${BASH_SOURCE[0]}"
 this_dir=$(dirname "$this_file")
 source_dir="$(readlink -f "$this_dir/..")"
 
-# TODO
-# - dependencies should be handled in provisioning script
 if ! hash stow; then
   >&2 echo 'Please install stow first!'
   exit 1
