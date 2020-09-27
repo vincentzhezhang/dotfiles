@@ -166,6 +166,7 @@ install_linuxbrew_apps(){
   __.brew.upinstall exa     # Rust alternative for ls
   __.brew.upinstall fd      # Rust alternative for find
   __.brew.upinstall fortune # fortune teller
+  __.brew.upinstall hexyl   # Command-line hex viewer, alternative to xxd
   __.brew.upinstall jq      # Lightweight and flexible command-line JSON processor
   __.brew.upinstall lnav    # Curses-based tool for viewing and analyzing log files
   __.brew.upinstall lolcat  # better alternative to toilet
@@ -190,6 +191,8 @@ install_linuxbrew_apps(){
 
   # misc
   __.brew.upinstall aria2       # Download with resuming and segmented downloading
+  __.brew.upinstall inxi        # Full featured CLI system information tool
+  __.brew.upinstall neofetch    # Fast, highly customisable system info script
   __.brew.upinstall youtube-dl  # Download YouTube videos from the command-line
 
   unset BREW_OUTDATED
