@@ -862,12 +862,12 @@ function! FloatingFZF()
   call setbufvar(buf, '&signcolumn', 'no')
 
   let min_height = 6
-  let max_height = 24
-  let dynamic_height = &lines * 2 / 3
+  let max_height = &lines - 36
+  let dynamic_height = &lines * 1 / 2
   let height = max([min([max_height, dynamic_height]), min_height])
 
-  let max_width = 120
   let min_width = 60
+  let max_width = &columns - 24
   let dynamic_width = &columns * 2 / 3
   let width = max([min([max_width, dynamic_width]), min_width])
 
