@@ -34,7 +34,7 @@ pip_check_proxy() {
   #
   # pip won't work with socks proxy unless pysocoks is installed
   #
-  if [[ ! $all_proxy = socks* ]]; then
+  if [[ ! ${all_proxy:-x} = socks* ]]; then  # bash 5.0 has stricter unbound variables check
     return
   fi
 

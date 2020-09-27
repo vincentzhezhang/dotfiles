@@ -3,6 +3,9 @@
 # TODO
 # - change default docker data dir path
 
+# FIXME
+# - the service could failed to start if installed via VPN, to verify, run: `sudo dockerd -D`
+
 set -eu
 
 source ../utils.sh

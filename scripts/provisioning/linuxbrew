@@ -166,6 +166,7 @@ install_linuxbrew_apps(){
   __.brew.upinstall exa     # Rust alternative for ls
   __.brew.upinstall fd      # Rust alternative for find
   __.brew.upinstall fortune # fortune teller
+  __.brew.upinstall fzf     # Command-line fuzzy finder written in Go
   __.brew.upinstall hexyl   # Command-line hex viewer, alternative to xxd
   __.brew.upinstall jq      # Lightweight and flexible command-line JSON processor
   __.brew.upinstall lnav    # Curses-based tool for viewing and analyzing log files

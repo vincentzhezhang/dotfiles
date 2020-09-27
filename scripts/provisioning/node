@@ -56,7 +56,11 @@ install_node(){
   fi
 
   __.log_info 'installing latest lts node...'
+
+  # XXX /sandbox/vincent/.nvm/nvm.sh may raise unbound variable error when using bash 5
+  set +u
   nvm install --lts
+  set -u
 }
 
 install_node_apps(){
