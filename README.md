@@ -45,6 +45,7 @@ default, add SHIT_GOT_REAL=x before the script to make it do the real work.
 
 - apply XDG settings to non-terminal started apps
 - system performance tuning according https://wiki.archlinux.org/index.php/Improving_performance
+- checkout https://github.com/zdcthomas/dmux (Rust alternative to tmuxinator)
 
 ### Bugs
 
@@ -52,10 +53,50 @@ default, add SHIT_GOT_REAL=x before the script to make it do the real work.
 
 ### Missing apps
 
-- rofi
+- mainline: convenient kernel installer
+- rofi: launcher for Gnome (best still goes to KRunner in KDE), needs a few add-ons to catch-up:
+  - https://github.com/tcode2k16/rofi-chrome
 - universal-ctags
 - numix-icon-theme-circle
-- flameshot
+- flameshot: best screenshot and annotation software on Linux
+- mpv (video player, better alternative to VLC)
+- ffmpeg (for archiving videos and blurred lock screen)
+- peek (screen recorder) sudo add-apt-repository ppa:peek-developers/stable
+
+
+### Missing gadgets
+
+- better weather forecasting text widget, that has:
+  - temperature
+  - location
+  - summary
+  - short minutes forecast if weather is not good
+
+### RICE
+
+- Color scheme: currently using Nord
+
+### Environment specific add-ons
+
+I am distro hopper so need a bunch of apps
+
+#### Gnome
+
+- luncher: rofi
+- window manager (kinda): GTile https://github.com/gTile/gTile
+- gsettings script:
+  - which can automatically set the shortcut keys (really annoying to do it manually), and default system settings don't have it
+
+#### KDE
+
+Note KDE is still superior imo because:
+
+- still better performance
+- better default apps
+- consistent behaviour and appearance
+- waaaaaaaaaaaay more customizable options by default
+
+- ???
 
 ### Needs dynamic version / upgrades
 
