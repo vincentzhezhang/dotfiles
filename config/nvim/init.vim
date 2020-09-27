@@ -135,7 +135,9 @@ Plug 'vim-airline/vim-airline-themes'
 Plug 'vim-scripts/chlordane.vim'
 Plug 'dense-analysis/ale'
 Plug 'Xuyuanp/nerdtree-git-plugin'
-Plug 'zxqfl/tabnine-vim'
+" TODO compare tabnine with https://www.kite.com/integrations/vim/
+" - though I highly doubt if they could boost my productivity in anyway
+" Plug 'zxqfl/tabnine-vim'
 call plug#end()
 " }}}
 
