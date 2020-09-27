@@ -75,7 +75,7 @@ install_virtualbox() {
     $(lsb_release --codename --short) \
     contrib"
   sudo apt update
-  sudo apt install --yes --no-install-recommends virtualbox-6.0
+  sudo apt install --yes --no-install-recommends virtualbox
 }
 
 install_htop() {
