@@ -160,20 +160,21 @@ install_linuxbrew_apps(){
   __.brew.upinstall wrk           # website pressure test (better than ab)
 
   # CLI essentials
-  __.brew.upinstall bat     # Rust alternative for cat
-  __.brew.upinstall cowsay  # moo
-  __.brew.upinstall dfc     # df with colour
-  __.brew.upinstall exa     # Rust alternative for ls
-  __.brew.upinstall fd      # Rust alternative for find
-  __.brew.upinstall fortune # fortune teller
+  __.brew.upinstall bat         # Rust alternative to cat
+  __.brew.upinstall cowsay      # moo
+  __.brew.upinstall dfc         # df with colour
+  __.brew.upinstall diff-delta  # Rust alternative to diff-so-fancy
+  __.brew.upinstall exa         # Rust alternative to ls
+  __.brew.upinstall fd          # Rust alternative to find
+  __.brew.upinstall fortune     # fortune teller
   __.brew.upinstall fzf     # Command-line fuzzy finder written in Go
-  __.brew.upinstall hexyl   # Command-line hex viewer, alternative to xxd
-  __.brew.upinstall jq      # Lightweight and flexible command-line JSON processor
-  __.brew.upinstall lnav    # Curses-based tool for viewing and analyzing log files
-  __.brew.upinstall lolcat  # better alternative to toilet
-  __.brew.upinstall nyancat # Nyan
-  __.brew.upinstall rg      # Rust alternative for grep
-  __.brew.upinstall spark   # handy CLI spark line
+  __.brew.upinstall hexyl       # Command-line hex viewer, alternative to xxd
+  __.brew.upinstall jq          # Lightweight and flexible command-line JSON processor
+  __.brew.upinstall lnav        # Curses-based tool for viewing and analyzing log files
+  __.brew.upinstall lolcat      # better alternative to toilet
+  __.brew.upinstall nyancat     # Nyan
+  __.brew.upinstall rg          # Rust alternative to grep
+  __.brew.upinstall spark       # handy CLI spark line
 
   # Docker dev essentials
   # FIXME docker-compose over socks5 proxy has installation problems

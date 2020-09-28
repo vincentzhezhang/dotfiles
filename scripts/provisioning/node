@@ -85,7 +85,6 @@ install_node_apps(){
   # CLI essentials
   npm install --global tldr           # Simplified and community-driven man pages
   npm install --global git-tip        # git tip of the day
-  npm install --global diff-so-fancy  # better git diff
 
   # Web dev tools
   npm install --global wscat  # handy websocket cli for testing

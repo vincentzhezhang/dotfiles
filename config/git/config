@@ -2,6 +2,7 @@
   br = branch -vv
   ci = commit -v
   co = checkout
+  df = diff
   last = log -1 HEAD
   lg = log --graph --decorate --stat --date=relative-local --pretty=fuller
   root = rev-parse --show-toplevel
@@ -22,6 +23,9 @@
   editor = nvim
   autocrlf = input
   excludesfile = ~/.config/git/ignore
+  pager = delta
+[interactive]
+  diffFilter = delta --color-only
 [color]
   ui = true
 [color "branch"]
@@ -53,23 +57,19 @@
   date = format:%Y-%m-%d %H:%M
 [push]
   default = simple
-[cola]
-  fontdiff = Ubuntu Mono,10,-1,5,50,0,0,0,0,0
-  tabwidth = 2
-  textwidth = 80
-  boldheaders = true
-  savewindowsettings = true
-  blameviewer = git gui blame
-  spellcheck = true
-  expandtab = true
-  safemode = true
+[delta]
+  features = line-numbers decorations
+  whitespace-error-style = 22 reverse
+[delta "decorations"]
+  commit-decoration-style = bold yellow box ul
+  file-style = bold yellow ul
+  file-decoration-style = none
+  syntax-theme = ansi-dark
 [filter "lfs"]
   clean = git-lfs clean %f
   smudge = git-lfs smudge %f
   required = true
 [pager]
-  diff = diff-so-fancy | less --tabs=4 --RAW-CONTROL-CHARS --quit-if-one-screen --no-init
-  show = diff-so-fancy | less --tabs=4 --RAW-CONTROL-CHARS --quit-if-one-screen --no-init
   tag = sort -V | fzf --height=50% --reverse --no-sort --tac
 [mergetool]
   cmd = nvim -f -c \"Gdiff\" \"$MERGED\"
@@ -85,6 +85,5 @@
   newNormal = green bold
   newHighlight = green bold 22
 [http]
-	sslVerify = false
+  sslVerify = false
 # vim: set ft=gitconfig :
-
