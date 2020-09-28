@@ -49,10 +49,6 @@
 [url "https://"]
   # prefer https over git
   insteadOf = git://
-[diff]
-  tool = meld
-[merge]
-  tool = meld
 [blame]
   date = format:%Y-%m-%d %H:%M
 [push]
