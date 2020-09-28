@@ -29,8 +29,17 @@
 [push]
   default = simple
 [delta]
-  features = line-numbers decorations
+  features = unobtrusive-line-numbers decorations
   whitespace-error-style = 22 reverse
+[delta "unobtrusive-line-numbers"]
+  line-numbers = true
+  line-numbers-minus-style = "#993333"
+  line-numbers-zero-style = "#666666"
+  line-numbers-plus-style = "#339933"
+  line-numbers-left-format = "{nm:>4}┊"
+  line-numbers-right-format = "{np:>4}│"
+  line-numbers-left-style = blue
+  line-numbers-right-style = blue
 [delta "decorations"]
   commit-decoration-style = bold yellow box ul
   file-style = bold yellow ul
