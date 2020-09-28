@@ -3,22 +3,14 @@
   ci = commit -v
   co = checkout
   df = diff
-  last = log -1 HEAD
   lg = log --graph --decorate --stat --date=relative-local --pretty=fuller
-  root = rev-parse --show-toplevel
   st = status -sb
-  test = !bash -c bbq
-  un = reset HEAD --
   unstage = reset HEAD --
 [user]
   name = Vincent Zhang
   email = v.zh@msn.com
 [github]
   user = vincentzhezhang
-[gui]
-  editor = gedit
-  historybrowser = gitk
-  diffcontext = 10
 [core]
   editor = nvim
   autocrlf = input
@@ -26,23 +18,6 @@
   pager = delta
 [interactive]
   diffFilter = delta --color-only
-[color]
-  ui = true
-[color "branch"]
-  current = cyan reverse
-  local = cyan
-  remote = magenta
-[color "diff"]
-  meta = yellow
-  frag = magenta bold
-  old = red bold
-  new = green bold
-  commit = yellow bold
-  whitespace = red reverse
-[color "status"]
-  added = yellow
-  changed = green
-  untracked = cyan
 [credential]
   # cache credential for 30 days
   helper = cache --timeout=2592000
@@ -75,11 +50,4 @@
   rebase = true
 [submodule]
   recurse = true
-[color "diff-highlight"]
-  oldNormal = red bold
-  oldHighlight = red bold 52
-  newNormal = green bold
-  newHighlight = green bold 22
-[http]
-  sslVerify = false
-# vim: set ft=gitconfig :
+# vim: set filetype=gitconfig :
