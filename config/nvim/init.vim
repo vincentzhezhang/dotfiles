@@ -858,15 +858,13 @@ function! FloatingFZF()
   let buf = nvim_create_buf(v:false, v:true)
   call setbufvar(buf, '&signcolumn', 'no')
 
-  let min_height = 6
-  let max_height = &lines - 36
-  let dynamic_height = &lines * 1 / 2
-  let height = max([min([max_height, dynamic_height]), min_height])
+  let max_height = 60
+  let dynamic_height = &lines * 1 / 3
+  let height = max([dynamic_height, max_height])
 
-  let min_width = 60
-  let max_width = &columns - 24
+  let max_width = 180
   let dynamic_width = &columns * 2 / 3
-  let width = max([min([max_width, dynamic_width]), min_width])
+  let width = max([dynamic_width, max_width])
 
   let horizontal = (&columns - width) / 2
   let vertical = (&lines - height) / 2
