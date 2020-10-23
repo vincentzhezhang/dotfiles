@@ -12,7 +12,6 @@
 " - [ ] learn far.vim
 " - [ ] compare preview feature with fzf ag preview: https://github.com/junegunn/fzf.vim/blob/master/README.md#advanced-customization
 " - [ ] checkout defx.nvim as an alternative to nerdtree
-" - [ ] remove vim-jsx-typescript after vim-polyglot added support | not ready 23, Nov 2018
 " - [ ] try ncm2 as an alternative to YCM
 " - [ ] try coc.vim as an alternative to YCM
 " - [ ] think about the colorscheme crap
@@ -74,7 +73,6 @@ for f in split(glob(g:vim_conf_root . '/nvim/pluginrc.d/*.vim'), '\n')
   execute 'source' f
 endfor
 
-let g:polyglot_disabled = ['md', 'markdown']
 let g:tex_conceal = ''
 let g:vim_markdown_conceal = 0
 let g:vim_markdown_folding_disabled = 1
@@ -104,7 +102,6 @@ Plug 'christoomey/vim-tmux-navigator'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'gyim/vim-boxdraw'
 Plug 'honza/vim-snippets'
-Plug 'jparise/vim-graphql' " TODO this is removed from vim-polyglot for now
 Plug 'jreybert/vimagit'
 Plug 'junegunn/fzf', { 'dir': g:vim_conf_root . '/fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
@@ -116,13 +113,11 @@ Plug 'mhinz/vim-startify'
 Plug 'NLKNguyen/papercolor-theme'
 Plug 'norcalli/nvim-colorizer.lua'
 Plug 'ntpeters/vim-better-whitespace'
-Plug 'peitalin/vim-jsx-typescript', { 'for': ['ts', 'tsx'] }
-Plug 'plasticboy/vim-markdown' " FIXME [CAVEAT_1] Not playing well with polyglot
 " Plug 'python-rope/ropevim' TODO try rope vim
 Plug 'Raimondi/delimitMate'
 Plug 'scrooloose/nerdcommenter'
 Plug 'scrooloose/nerdtree'
-Plug 'sheerun/vim-polyglot', { 'for': ['jsx'] }
+Plug 'sheerun/vim-polyglot'
 Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
 Plug 'terryma/vim-multiple-cursors'
 Plug 'tmux-plugins/vim-tmux-focus-events'
@@ -172,7 +167,7 @@ set ignorecase                            " Make search case-insensitive
 set list                                  " Enable whitespace characters' display
 set listchars=nbsp:¬,tab:»·,trail:·       " Better whitespace symbols
 set mouse=a                               " Grab mouse event within tmux
-set lazyredraw                            " FIXME mitigate with jsx until find a fix
+" set lazyredraw                            " FIXME mitigate with jsx until find a fix
 set nobackup                              " Be environment friendly
 set backupcopy=no                         " Be environment friendly
 set noshowmode                            " Hide the default mode text cause we have *whatever*line

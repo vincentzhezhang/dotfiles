@@ -46,6 +46,7 @@ default, add SHIT_GOT_REAL=x before the script to make it do the real work.
 - apply XDG settings to non-terminal started apps
 - system performance tuning according https://wiki.archlinux.org/index.php/Improving_performance
 - checkout https://github.com/zdcthomas/dmux (Rust alternative to tmuxinator)
+- vim global words list
 
 ### Bugs
 
