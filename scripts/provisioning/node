@@ -18,6 +18,8 @@ main(){
 #
 # migrate global packages while installing
 # nvm install node --reinstall-packages-from=node
+# TODO
+# - some of the npm apps are quite slow, find alternatives
 #
 install_nvm(){
   if hash nvm 2>/dev/null; then
@@ -83,7 +85,6 @@ install_node_apps(){
   npm install --global bash-language-server # lsp for bash, see also shellcheck
 
   # CLI essentials
-  npm install --global tldr           # Simplified and community-driven man pages
   npm install --global git-tip        # git tip of the day
 
   # Web dev tools

@@ -92,7 +92,6 @@ alias vimdiff='nvim -d'
 alias ftp='ncftp Personal'
 alias wget='wget -c'
 alias scrot='scrot -c -d 7'
-alias tldr='tldr -t ocean'
 
 ## Easy script callin'
 alias show-info='~/.bin/info.pl'

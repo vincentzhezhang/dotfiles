@@ -176,6 +176,7 @@ install_linuxbrew_apps(){
   __.brew.upinstall nyancat     # Nyan
   __.brew.upinstall rg          # Rust alternative to grep
   __.brew.upinstall spark       # handy CLI spark line
+  __.brew.upinstall tealdeer    # Rust alternative to tldr
 
   # Docker dev essentials
   # FIXME docker-compose over socks5 proxy has installation problems
