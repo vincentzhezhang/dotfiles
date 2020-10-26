@@ -59,4 +59,6 @@
   rebase = true
 [submodule]
   recurse = true
+[include]
+  path = ~/.config/git/local
 # vim: set filetype=gitconfig :
