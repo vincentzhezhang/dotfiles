@@ -153,8 +153,8 @@ far() {
     return 1
   fi
 
-  if ! hash ag; then
-    >&2 echo 'ag is missing, please install it first.'
+  if ! hash rg; then
+    >&2 echo 'rg is missing, please install it first.'
     return 1
   fi
 
@@ -163,7 +163,9 @@ far() {
     return 1
   fi
 
-  ag -Q "$1" -l | xargs -r sed -i "s|$1|$2|g"
+  rg --files-with-matches --fixed-strings "$1" | \
+    xargs --no-run-if-empty \
+    sed --in-place "s|$1|$2|g"
 }
 
 split_pdf()
@@ -545,6 +547,12 @@ path() {
 
 pp() {
   python -m pytest -sxvvv "$@"
+}
+
+diff_dir() {
+  src_dir=$1
+  tgt_dir=$2
+  diff -Naur "${src_dir:?}" "${tgt_dir:?}" | delta --side-by-side
 }
 
 # vim: set ai ts=2 tw=79:
