@@ -12,6 +12,13 @@ if hash bat 2>/dev/null; then
   alias cat=bat
 fi
 
+if hash exa 2>/dev/null; then
+  alias ls=exa
+  alias ll='exa --long'
+  alias la='exa --all'
+  alias tree='exa --long --tree --level=3'
+fi
+
 __.venv.python.prefix()
 {
   # main interface handling various Python virtual envs
