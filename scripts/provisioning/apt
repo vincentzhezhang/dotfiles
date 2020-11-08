@@ -84,6 +84,17 @@ install_mpv() {
   sudo apt install --fix-broken --yes --no-install-recommends mpv
 }
 
+install_peek() {
+  if hash peek 2>/dev/null; then
+    __.log_info 'peek is installed, skipping...'
+    return 0
+  fi
+
+  __.log_info 'Installing peek...'
+  sudo add-apt-repository --yes ppa:peek-developers/stable
+  sudo apt install --fix-broken --yes --no-install-recommends peek
+}
+
 install_virtualbox() {
   if hash virtualbox 2>/dev/null; then
     __.log_info 'virtualbox is installed, skipping ...'

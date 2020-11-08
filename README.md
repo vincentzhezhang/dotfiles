@@ -56,7 +56,6 @@ default, add SHIT_GOT_REAL=x before the script to make it do the real work.
 - rofi: launcher for Gnome (best still goes to KRunner in KDE), needs a few add-ons to catch-up:
   - https://github.com/tcode2k16/rofi-chrome
 - numix-icon-theme-circle
-- peek (screen recorder) sudo add-apt-repository ppa:peek-developers/stable
 
 
 ### Missing gadgets
