@@ -115,4 +115,4 @@ Note KDE is still superior imo because:
   - e.g. ESC
 - rofi config
 
-# vim: set autoindent expandtab nowrap number textwidth=119 tabstop=2 shiftwidth=2 :
+<!-- vim: set autoindent expandtab nowrap number textwidth=119 tabstop=2 shiftwidth=2 : -->
