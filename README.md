@@ -103,8 +103,6 @@ Note KDE is still superior imo because:
 
 - chrome-gnome-shell
 - sync app settings
-- gsettings: unbind system defaults:
-  - e.g. ESC
 - rofi config
 
 <!-- vim: set autoindent expandtab nowrap number textwidth=119 tabstop=2 shiftwidth=2 : -->
