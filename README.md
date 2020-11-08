@@ -56,7 +56,6 @@ default, add SHIT_GOT_REAL=x before the script to make it do the real work.
 - rofi: launcher for Gnome (best still goes to KRunner in KDE), needs a few add-ons to catch-up:
   - https://github.com/tcode2k16/rofi-chrome
 - numix-icon-theme-circle
-- flameshot: best screenshot and annotation software on Linux
 - mpv (video player, better alternative to VLC)
 - ffmpeg (for archiving videos and blurred lock screen)
 - peek (screen recorder) sudo add-apt-repository ppa:peek-developers/stable

@@ -99,6 +99,16 @@ install_htop() {
   sudo apt install --fix-broken --yes --no-install-recommends htop
 }
 
+install_flameshot() {
+  if hash flameshot 2>/dev/null; then
+    __.log_info 'flameshot is installed, skipping...'
+    return 0
+  fi
+
+  __.log_info 'Installing flameshot...'
+  sudo apt install --fix-broken --yes --no-install-recommends flameshot
+}
+
 main
 
 # vim: set autoindent expandtab nowrap number textwidth=119 tabstop=2 shiftwidth=2 :
