@@ -138,16 +138,6 @@ install_linuxbrew_apps(){
   # actual homebrew apps
   #
 
-  # Dev essentials
-  __.brew.upinstall tmux
-  # TODO find a better way to handle pre/post install
-  local tpm_dir="$XDG_CONFIG_HOME/tmux/plugins/tpm"
-  if [[ -d "$tpm_dir" ]]; then
-    git -C "$tpm_dir" pull
-  else
-    git clone https://github.com/tmux-plugins/tpm "$tpm_dir"
-  fi
-
   # Linters
   # TODO migrate all linters to use LSP
   __.brew.upinstall hadolint    # Dockerfile
@@ -180,6 +170,7 @@ install_linuxbrew_apps(){
   __.brew.upinstall skim        # Rust alternative to fzf, TODO: try this out
   __.brew.upinstall spark       # handy CLI spark line
   __.brew.upinstall tealdeer    # Rust alternative to tldr
+  __.brew.upinstall tmux        # Terminal multiplexer
 
   # Docker dev essentials
   # FIXME docker-compose over socks5 proxy has installation problems
@@ -201,6 +192,22 @@ install_linuxbrew_apps(){
   __.brew.upinstall inxi        # Full featured CLI system information tool
   __.brew.upinstall neofetch    # Fast, highly customisable system info script
   __.brew.upinstall youtube-dl  # Download YouTube videos from the command-line
+
+  #
+  # Brew post-installation chores
+  # TODO
+  # - find a better way to handle pre/post install
+
+  # set up tpm for tmux
+  local tpm_dir="$XDG_CONFIG_HOME/tmux/plugins/tpm"
+  if [[ -d "$tpm_dir" ]]; then
+    git -C "$tpm_dir" pull
+  else
+    git clone https://github.com/tmux-plugins/tpm "$tpm_dir"
+  fi
+
+  # set up fzf
+  "$HOMEBREW_PREFIX/opt/fzf/install" --xdg --key-bindings --completion --no-update-rc --no-zsh --no-fish
 
   unset BREW_OUTDATED
 }

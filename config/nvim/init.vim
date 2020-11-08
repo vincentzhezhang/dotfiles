@@ -68,6 +68,11 @@ endif
 execute 'source' g:vim_conf_root . '/nvim/variables.vim'
 execute 'source' g:vim_conf_root . '/nvim/functions.vim'
 
+" Prefer Homebrew managed fzf
+if isdirectory(glob("$HOMEBREW_PREFIX"))
+  exec 'set runtimepath+=' . "$HOMEBREW_PREFIX/opt/fzf"
+endif
+
 " load my personal plugins
 for f in split(glob(g:vim_conf_root . '/nvim/pluginrc.d/*.vim'), '\n')
   execute 'source' f
@@ -103,7 +108,7 @@ Plug 'editorconfig/editorconfig-vim'
 Plug 'gyim/vim-boxdraw'
 Plug 'honza/vim-snippets'
 Plug 'jreybert/vimagit'
-Plug 'junegunn/fzf', { 'dir': g:vim_conf_root . '/fzf', 'do': './install --all' }
+Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
 Plug 'junegunn/vim-easy-align'
 Plug 'Lokaltog/vim-easymotion'

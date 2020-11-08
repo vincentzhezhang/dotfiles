@@ -128,9 +128,8 @@ read -r -d '' GIT_DEFAULT_LS_COMMAND <<'BASH'
 BASH
 export GIT_DEFAULT_LS_COMMAND
 
-# FIXME decouple fzf with other bash scripts, may need
-# to manage fzf installation from outsite of vim
-[[ -f ~/.fzf.bash ]] && source ~/.fzf.bash
+# Load fzf
+[[ -f "${XDG_CONFIG_HOME:-$HOME/.config}"/fzf/fzf.bash ]] && source "${XDG_CONFIG_HOME:-$HOME/.config}"/fzf/fzf.bash
 
 # handy box specific injection after we load the main part
 # [[ -f "$XDG_CONFIG_HOME/bash/after" ]] && source "$XDG_CONFIG_HOME/bash/after"

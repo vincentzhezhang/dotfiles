@@ -95,10 +95,6 @@ Note KDE is still superior imo because:
 
 - virtual_box
 
-### Change installation method
-
-- fzf, better to be managed by brew
-
 ### Post installation tweaks
 
 - chrome-gnome-shell
