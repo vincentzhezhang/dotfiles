@@ -60,5 +60,7 @@
 [submodule]
   recurse = true
 [include]
+  # handy injection point for environment specific override, e.g.
+  # - workspace boxes have different settings for username/email
   path = ~/.config/git/local
 # vim: set filetype=gitconfig :
