@@ -114,12 +114,6 @@ install_linuxbrew_apps(){
   which -a git curl
 
   #
-  # HACK workaround self-signed certificates, should have better injectable solutions
-  #
-  echo insecure >> ~/.curlrc
-  git config --global http.sslVerify false
-
-  #
   # extra taps
   #
   # kubeeval
