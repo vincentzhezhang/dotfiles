@@ -1,120 +1,27 @@
 #! /usr/bin/env bash
-# TODO
-# - ditch alias in favour of functions because:
+#
+# Any non-trival alias that not straightforward enough need to be functions, because:
 #   - functions are more powerful
 #   - functions are easy to trace, e.g. declare -F EXAMPLE_FUNCTION
+#
 shopt -s expand_aliases
 
-# you can never be too lazy
-alias c='clear'
-
-#
-# handy ls aliases
-#
-# XXX
-# some params, e.g.:
-# -a/--almost-all
-# -l/--format=verbose
-# -h/--reverse
-# are too common and orthogonal so it's ignored here mostly
-alias ls='ls -C --classify --human-readable --color=auto --group-directories-first' # h is not effective here but can be re-use by other aliases
-alias sl='ls'  # :(
-alias l='ls'
-alias ll='ls --format=verbose'
-alias lt='ll --sort=time'
-alias lh='ll --sort=size'
-alias tree='tree -CF'
-
-# handy grep aliases
-alias grep='grep --color=auto'
-alias fgrep='fgrep --color=auto'
-alias egrep='egrep --color=auto'
-
-# TODO ag sucks at configuration
-# see if agrc is fixed or if we can use ENVVAR properly
-alias ag="\
-ag \
---path-to-ignore=\$XDG_CONFIG_HOME/git/ignore \
---ignore *.ipynb \
---ignore package-lock.json \
---follow \
---color-match='1;33' \
---color-line-number='0;35' \
---pager='less --RAW-CONTROL-CHARS --quit-if-one-screen' \
-"
-
-# TODO
-# 1. batch search and replace
-# 2. should add two versions, one is search recursively within current diretory
-# 2. and the other search and replace, might including case options
-# ag -l $1 | xargs sed -ri.bak -e "s/$1/$2/g"
-
-alias mux="tmuxinator"
-
-alias vtop='vtop -t dark'
-
-## Keeping things organized
-alias biggest='BLOCKSIZE=1048576; du -x | sort -nr | head -10'
-alias cp='cp -i'
-alias df='df -h'
-alias du='du -h -c'
-alias fsort='~/workspace/personal/auto_sorter/sort'
-alias mkdir='mkdir --parents --verbose'
-alias mv='mv -i'
-alias reload='source ~/.bashrc'
-
-## Moving around & all that jazz
-alias back='cd $OLDPWD'
-alias ..="cd .."
-alias ...="cd ../.."
-alias ....="cd ../../.."
-alias .....="cd ../../../.."
 alias ......="cd ../../../../.."
-
-## Dir shortcuts
-alias localhost='cd /var/www'
-alias find_broken_symlink='find -L . -maxdepth 1 -type l'
-
-# NeoVim for the win
-# TODO should use update-alternative instead of aliases
-if hash nvim.appimage 2>/dev/null; then
-  alias nvim='TERM=tmux-256color nvim.appimage'
-else
-  alias nvim='TERM=tmux-256color nvim'
-fi
-alias vi='nvim'
-alias vim='nvim'
-alias emacs='nvim'
-alias nano='nvim'
-alias vimdiff='nvim -d'
-
-## App-specific
-alias ftp='ncftp Personal'
-alias wget='wget -c'
-alias scrot='scrot -c -d 7'
-
-## Easy script callin'
-alias show-info='~/.bin/info.pl'
-alias show-colors='~/.bin/colors.sh'
-
-# some development quick n dirty shortcuts
-alias cap='bundle exec cap'
-alias rake='bundle exec rake'
-alias pyserver='python -m SimpleHTTPServer'
-alias ipython='ipython --colors=linux'
-alias git-root='cd $(git rev-parse --show-toplevel)'
-
+alias .....="cd ../../../.."
+alias ....="cd ../../.."
+alias ...="cd ../.."
+alias ..="cd .."
+alias c='clear'
+alias cp='cp --interactive'
+alias df='df --human-readable'
+alias du='du -human-readable --total'
+alias l='ls'
+alias lh='ll --sort=size'
+alias ll='ls --format=verbose'
+alias ls='ls -C --classify --human-readable --color=auto --group-directories-first'
+alias lt='ll --sort=time'
+alias mkdir='mkdir --parents --verbose'
+alias mv='mv --interactive'
+alias sl='ls'  # :(
+alias tree='tree -CF'
 alias x='cd $XDG_CONFIG_HOME'
-
-# use most recent version of git-cola
-alias cola='git-cola'
-alias config_change='git --no-pager diff --no-color | xclip -sel clip | xclip -o -sel clip'
-
-# Sudo fixes
-alias orphand='sudo deborphan | xargs sudo apt-get -y remove --purge'
-alias cleanup='sudo apt-get autoclean && sudo apt-get autoremove && sudo apt-get clean && sudo apt-get remove && orphand'
-alias updatedb='sudo updatedb'
-alias u='sudo apt update && sudo apt upgrade && sudo apt full-upgrade -y'
-
-# just fuck it
-alias fuck='sudo "$BASH" -c "$(history -p !!)"'
