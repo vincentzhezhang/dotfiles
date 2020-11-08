@@ -62,6 +62,17 @@ install_tlp() {
   sudo apt install --fix-broken --yes --no-install-recommends tlp
 }
 
+install_mainline() {
+  if hash mainline 2>/dev/null; then
+    __.log_info 'mainline is installed, skipping...'
+    return 0
+  fi
+
+  __.log_info 'Installing mainline...'
+  sudo add-apt-repository --yes ppa:cappelikan/ppa
+  sudo apt install --fix-broken --yes --no-install-recommends mainline
+}
+
 install_virtualbox() {
   if hash virtualbox 2>/dev/null; then
     __.log_info 'virtualbox is installed, skipping ...'
