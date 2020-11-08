@@ -57,7 +57,6 @@ default, add SHIT_GOT_REAL=x before the script to make it do the real work.
   - https://github.com/tcode2k16/rofi-chrome
 - numix-icon-theme-circle
 - mpv (video player, better alternative to VLC)
-- ffmpeg (for archiving videos and blurred lock screen)
 - peek (screen recorder) sudo add-apt-repository ppa:peek-developers/stable
 
 
