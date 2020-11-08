@@ -89,12 +89,6 @@ Note KDE is still superior imo because:
 - consistent behaviour and appearance
 - waaaaaaaaaaaay more customizable options by default
 
-- ???
-
-### Needs dynamic version / upgrades
-
-- virtual_box
-
 ### Post installation tweaks
 
 - chrome-gnome-shell
