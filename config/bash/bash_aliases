@@ -14,7 +14,7 @@ alias ..="cd .."
 alias c='clear'
 alias cp='cp --interactive'
 alias df='df --human-readable'
-alias du='du -human-readable --total'
+alias du='du --human-readable --total'
 alias l='ls'
 alias lh='ll --sort=size'
 alias ll='ls --format=verbose'
