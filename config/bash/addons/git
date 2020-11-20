@@ -158,14 +158,13 @@ __.git.ps1()
     return 1
   fi
 
-  # FIXME rebase_head is not removed under work tree folder
-  if [[ -f "$git_dir/REBASE_HEAD" ]]; then
-    echo "${BRED}[-R-]${COFF}"
+  if [[ -d "$git_dir/rebase-merge" ]]; then
+    echo "${BRED}<RIP>${COFF}"
     return 0
   fi
 
   if [[ -f "$git_dir/MERGE_HEAD" ]]; then
-    echo "${BRED}[-M-]${COFF}"
+    echo "${BRED}<MIP>${COFF}"
     return 0
   fi
 
