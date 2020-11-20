@@ -41,7 +41,6 @@ __.ps1.status_line() {
   local dash_color="$BASE00"
 
   if [[ -n "$PS1_REMOTE_SESSION" ]]; then
-    dash_color="$BYELLOW"
     # not here
     host_str="$(hostname):"
   fi
