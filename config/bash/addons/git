@@ -322,23 +322,23 @@ __.git.ps1()
 
   git_dir=$(git rev-parse --git-dir)
 
-  fetch_head="$git_dir/FETCH_HEAD"
-  if [[ -f $fetch_head ]]; then
-    last_updated_at=$(stat -c %Y "$fetch_head")
+  git_index="$git_dir/index"
+  if [[ -f $git_index ]]; then
+    last_updated_at=$(stat -c %Y "$git_index")
     now=$(date +%s)
     seconds_elapsed=$((now - last_updated_at))
 
-    mins=$((seconds_elapsed / 60))
+    hours=$((seconds_elapsed / 3600))
+    mins=$((seconds_elapsed % 3600 / 60))
     seconds_elapsed=$((seconds_elapsed % 60))
 
-    # TODO better name
-    bbq=" ${BASE0}$mins:$(printf "%02d" $seconds_elapsed)${COFF}"
+    time_since_last_update=" ${BASE0}$hours:$mins:$(printf "%02d" $seconds_elapsed)${COFF}"
   else
-    bbq=''
+    time_since_last_update=''
   fi
 
   # perf_track=$(date +%s%3N)
   # >&2 echo "$((perf_track - perf_start))"
   # XXX < 60ms til here (deep nested repo webapp/lib/py/webcommon/webcommon/handlers)
-  echo "${local_prompt}${remote_prompt}${diff}${bbq}"
+  echo "${local_prompt}${remote_prompt}${diff}${time_since_last_update}"
 }
