@@ -1,12 +1,12 @@
 [style.description]
-foreground = "yellow"
+foreground = "purple"
 underline = false
 bold = false
 
 [style.command_name]
-foreground = "cyan"
+foreground = "blue"
 underline = false
-bold = false
+bold = true
 
 [style.example_text]
 foreground = "green"
@@ -14,12 +14,12 @@ underline = false
 bold = false
 
 [style.example_code]
-foreground = "cyan"
+foreground = "blue"
 underline = false
-bold = false
+bold = true
 
 [style.example_variable]
-foreground = "purple"
+foreground = "yellow"
 underline = false
 bold = false
 
@@ -28,5 +28,5 @@ compact = false
 use_pager = false
 
 [updates]
-auto_update = false
-auto_update_interval_hours = 720
+auto_update = true
+auto_update_interval_hours = 72
