@@ -50,7 +50,7 @@
   smudge = git-lfs smudge %f
   required = true
 [pager]
-  tag = sort -V | fzf --height=50% --reverse --no-sort --tac
+  tag = sort --version-sort --reverse | fzf --no-sort --height=50% --reverse
 [mergetool]
   cmd = nvim -f -c \"Gdiff\" \"$MERGED\"
 [log]
