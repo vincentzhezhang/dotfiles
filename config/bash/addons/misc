@@ -99,7 +99,7 @@ get_luminance() {
     local day=530
     local night=1830
     local owl=2359
-    time="$(date +%H%M)"
+    printf -v time '%(%H%M)T'
 
     if ((day <= time && time < night)); then
       luminance='high'

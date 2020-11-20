@@ -234,9 +234,11 @@ get_font_size_by_dpi()
 # Greeting message
 #
 greeting () {
-  day="$(date +%u)"
-  local prefix; prefix=$([[ $day -ge 5 ]] && echo 'happy' || echo 'good')
-  echo "Have a ${prefix} $(date +%A), $(whoami)!"
+  printf -v day '%(%u)T'
+  printf -v day_name '%(%A)T'
+  local prefix
+  prefix=$([[ $day -ge 5 ]] && echo 'happy' || echo 'good')
+  echo "Have a $prefix $day_name, $USER!"
 }
 
 # file stats

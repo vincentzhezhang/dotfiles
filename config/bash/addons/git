@@ -52,14 +52,14 @@ git.today()
     --no-merges \
     --oneline \
     --reverse \
-    --since="$(date -u +'%Y-%m-%dT00:00:00')" \
+    --since="$(printf '%(%Y-%m-%d)TT00:00:00')" \
     --use-mailmap
 }
 
 git.snapshot()
 {
   # check out a snapshot repo for quick n dirty work or as a handy backup
-  git checkout -b "snapshot_$(/usr/bin/env date '+%y%m%d_%H%M%S')"
+  git checkout -b "snapshot_$(printf '%(%s)T')"
 }
 
 git.birth_info()
@@ -322,10 +322,15 @@ __.git.ps1()
 
   git_dir=$(git rev-parse --git-dir)
 
+  # TODO
+  # still not ideal as index will update on switching branch, may
+  # have better detection e.g.:
+  # - if has remote, check how long the remote is updated
+  # - otherwise last commit time
   git_index="$git_dir/index"
   if [[ -f $git_index ]]; then
     last_updated_at=$(stat -c %Y "$git_index")
-    now=$(date +%s)
+    printf -v now '%(%s)T'
     seconds_elapsed=$((now - last_updated_at))
 
     hours=$((seconds_elapsed / 3600))
