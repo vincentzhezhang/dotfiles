@@ -6,12 +6,12 @@ source ../utils.sh
 
 main()
 {
-  __.log_info "Start tweaking system settings..."
   tweak_swappiness
 }
 
 tweak_swappiness()
 {
+  __.log_info "Setting optimal swappiness..."
   local G=$((1000 * 1000))
   local mem
   local swappiness
@@ -26,6 +26,13 @@ tweak_swappiness()
   else
     swappiness=1
   fi
+
+  current_swappiness=$(sysctl vm.swappiness | awk '{print $NF}')
+
+  if [[ $swappiness -eq $current_swappiness ]]; then
+    return 0
+  fi
+
   __.log_info "Setting swappiness to: $swappiness"
   sudo sysctl --write vm.swappiness=$swappiness
   sudo mkdir --parents /etc/sysctl.d
