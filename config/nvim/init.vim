@@ -395,9 +395,6 @@ augroup general_enhancements
 
   autocmd VimResized * wincmd =  " make panes responsive on window resize
   autocmd FocusGained,BufEnter * checktime " make autoread behave intuitively
-
-  " FIXME position hack for file opened with line number
-  " autocmd BufEnter * exe 'normal! zz'
 augroup END
 
 
