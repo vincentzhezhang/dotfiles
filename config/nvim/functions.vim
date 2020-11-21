@@ -25,25 +25,6 @@ augroup vimrc
   autocmd BufEnter *.txt call s:helptab()
 augroup END
 
-" Use local node binaries if possible, with fallback to global binaries
-" Currently just for eslint, will add other stuff
-" FIXME neomake is deprecated by ale, need to update accordingly
-" - make it path agnostic
-" function! PreferLocalNodeBinaries()
-"   let l:local_eslint = $PWD . '/node_modules/.bin/eslint'
-"   let l:global_eslint = system('which eslint')
-"
-"   if executable(l:local_eslint)
-"     let g:neomake_javascript_eslint_exe = l:local_eslint
-"   elseif executable(l:global_eslint)
-"     let g:neomake_javascript_eslint_exe = l:global_eslint
-"   endif
-" endfunction
-"
-" augroup node_path_hack
-"   autocmd BufEnter *.js* call PreferLocalNodeBinaries()
-" augroup END
-
 "
 " Vim Plug callback functions
 "
