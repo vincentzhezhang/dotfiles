@@ -119,8 +119,5 @@ __.conda.clever_prefix()
       # >&2 echo "clever_prefix elapsed: $elapsed ms"
       break
     fi
-
-  # FIXME this has to be put here because the new bash variable substitution
-  # syntax breaks the highlighting after it
   done <<< "$(echo "${path////$'\n'}" | tac)"
 }

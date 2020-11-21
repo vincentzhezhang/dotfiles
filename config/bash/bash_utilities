@@ -542,7 +542,6 @@ __.bash.reset_locales()
   # sudo update-locale LC_ALL="$lang"
 }
 
-# FIXME this has to be put here because it breaks syntax highlight
 path() {
   echo "${PATH//:/$'\n'}"
 }
