@@ -388,11 +388,6 @@ augroup general_enhancements
   autocmd BufLeave,InsertEnter * set nocursorline
   autocmd BufEnter * call CustomHighlights()
 
-  " FIXME temporary workaround for Docker issue
-  autocmd BufEnter *Dockerfile      set filetype=dockerfile
-  autocmd BufEnter Jenkinsfile      set filetype=groovy
-  autocmd BufEnter *.bin,*.pcap     set binary
-
   " FIXME use filetype to disable cursorline within fugitiveblame
 
   " temporary disabled during the refactoring period
