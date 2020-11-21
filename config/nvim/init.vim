@@ -96,7 +96,7 @@ let g:markdown_fenced_languages = [
       \]
 
 " {{{ Plugins
-call SetupVimPlug() " in case vim-plug is missing
+call EnsureVimPlug()
 call plug#begin(g:vim_conf_root . '/nvim/plugged')
 Plug 'airblade/vim-gitgutter'
 Plug 'airblade/vim-rooter'
@@ -139,6 +139,7 @@ Plug 'Xuyuanp/nerdtree-git-plugin'
 " - though I highly doubt if they could boost my productivity in anyway
 " Plug 'zxqfl/tabnine-vim'
 call plug#end()
+call EnsureVimPlugPlugins()
 " }}}
 
 " {{{ Basic settings
@@ -475,11 +476,6 @@ if isdirectory(glob("$__conda_env_root"))
   if executable(s:py3_path)
     let g:python3_host_prog = s:py3_path
     let g:ycm_server_python_interpreter = s:py3_path
-  endif
-
-  let s:py2_path = glob("$__conda_env_root/py2/bin/python")
-  if executable(s:py2_path)
-    let g:python_host_prog = s:py2_path
   endif
 endif
 

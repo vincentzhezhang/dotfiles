@@ -34,29 +34,27 @@ augroup END
 " - force:  set on PlugInstall! or PlugUpdate!
 "
 function! BuildYCM(...)
-  " build YouCompleteMe using the same Python3 as used by
-  " g:ycm_server_python_interpreter
-  " XXX only enable Python (default) and JS (ts-completer) for now to save
-  " compile time
+  " XXX
+  " - g:ycm_server_python_interpreter is current set to g:python3_host_prog
+  " - only enable certain completer for now:
+  "   - Python (default)
+  "   - JS/TS
   if a:0 < 1 || a:1.status ==? 'installed' || a:1.status ==? 'updated' || a:1.force
     execute '!' . g:ycm_server_python_interpreter . ' install.py --ts-completer'
   endif
 endfunction
 
-function! InstallRubySupport(...)
-  if a:0 < 1 || a:1.status ==? 'installed' || a:1.force
-    !gem install neovim
-  endif
+function! EnsureRubySupport(...)
+  " TODO
+  " - add rbenv support if necessary
+  !gem install neovim
 endfunction
+command! EnsureRubySupport call EnsureRubySupport()
 
-" TODO: might need to check conda related python env management
-function! InstallPythonSupport(...)
-  if a:0 < 1 || a:1.status ==? 'installed' || a:1.force
-    !pip  install --upgrade --user neovim
-    !pip2 install --upgrade --user neovim
-    !pip3 install --upgrade --user neovim
-  endif
+function! EnsurePythonSupport(...)
+  execute '!' . g:python3_host_prog . '-m pip  install --upgrade --user neovim'
 endfunction
+command! EnsurePythonSupport call EnsurePythonSupport()
 
 "
 " quick switch between color schemes
@@ -106,25 +104,29 @@ endfunction
 nmap <silent> <C-F12> :call ToggleSyntax()<CR>
 
 " Install plug for Vim/NeoVim if not exist
-" FIXME: could extract the common part
-function SetupVimPlug()
-  let l:need_init = 0
-  if has('nvim') && empty(glob('~/.config/nvim/autoload/plug.vim'))
-    let l:need_init = 1
-    silent !curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs
-          \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-  elseif empty(glob('~/.vim/autoload/plug.vim'))
-    let l:need_init = 1
-    silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
-          \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+function EnsureVimPlug()
+  if has('nvim')
+    let l:plug_path='~/.config/nvim/autoload/plug.vim'
   else
-    " do nothing
+    let l:plug_path='~/.vim/autoload/plug.vim'
+  endif
+
+  if empty(glob(l:plug_path))
+    echo 'Installing Vim Plug ...'
+    execute '!curl
+          \ --fail
+          \ --silent
+          \ --location
+          \ --create-dirs
+          \ --output ' . l:plug_path . '
+          \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
   endif
 endfunction
 
-" TODO: try to iterate through g:plug_orders and auto load options for vim
-function Z(...)
-  Plug(a:000)
+function EnsureVimPlugPlugins()
+  if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
+    autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+  endif
 endfunction
 
 " file type detection for templates
