@@ -1,7 +1,7 @@
 ---
 # You can find the default configuration file with documentation for all
 # available fields on the GitHub releases page for each release.
-# https://github.com/alacritty/alacritty
+# https://github.com/alacritty/alacritty/blob/master/alacritty.yml
 env:
   WINIT_HIDPI_FACTOR: "1.0"
 window:
