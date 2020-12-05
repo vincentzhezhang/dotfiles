@@ -12,7 +12,6 @@
 " - [ ] check if there is a way to only highlight search keywords in current buffer
 " - [ ] learn far.vim
 " - [ ] compare preview feature with fzf ag preview: https://github.com/junegunn/fzf.vim/blob/master/README.md#advanced-customization
-" - [ ] checkout defx.nvim as an alternative to nerdtree
 " - [ ] think about the colorscheme crap
 " }}}
 "
@@ -417,22 +416,6 @@ let $PATH = g:py_virtual_env_dir . '/bin' . ':' . $PATH
 vnoremap <C-r> "hy:%s/<C-r>h//c<left><left>
 
 vnoremap <C-s> :<C-r>0<Home><right>
-
-" TODO
-" - [ ] find better icons, the previous one looks too bulky and not
-" consistent, thus replaced by ascii characters
-let g:NERDTreeGitStatusIndicatorMapCustom = {
-    \ 'Modified'  : '*',
-    \ 'Staged'    : '+',
-    \ 'Untracked' : 'u',
-    \ 'Renamed'   : '»',
-    \ 'Unmerged'  : '≠',
-    \ 'Deleted'   : 'x',
-    \ 'Dirty'     : '*',
-    \ 'Clean'     : '✓',
-    \ 'Ignored'   : '_',
-    \ 'Unknown'   : '?'
-    \ }
 
 " Customize fzf colors to match your color scheme
 " FIXME fix ag colour
