@@ -14,6 +14,9 @@
 " - think about the colorscheme crap
 " }}}
 
+" force utf-8 encoding cause we have multi-bytes chars here
+scriptencoding utf-8
+
 let g:vim_conf_root  = $XDG_CONFIG_HOME
 if empty(g:vim_conf_root)
   let g:vim_conf_root = expand('<sfile>:p:h:h')
@@ -84,25 +87,6 @@ call EnsureVimPlugPlugins()
 " }}}
 
 " {{{ Basic settings
-if !has('nvim')
-  " TODO check out VIM8 see if any default option values been changed
-  " Backwards compatibility for Vim, most of them are set by default in NeoVim
-  " vint: -ProhibitSetNoCompatible
-  set autoindent
-  set autoread                   " Autoreload buffers, note this works differently, see :checktime
-  set backspace=indent,eol,start " Make backspace behave more normally
-  set encoding=utf-8             " Use UTF-8 encoding
-  set hlsearch                   " Highlight search results
-  set laststatus=2               " Always display the statusline in all windows
-  set nocompatible               " be advanced
-  set smarttab
-  set softtabstop=0              " moved up from below
-  set ttyfast
-  syntax on                      " Enable syntax highlight
-endif
-
-" force utf-8 encoding cause we have multi-bytes chars here
-scriptencoding utf-8
 
 set autowrite                             " Save changes before switching buffers
 set completeopt-=preview                  " Get rid of the annoying preview window on autocomplete
