@@ -636,22 +636,6 @@ for config in split(glob(g:vim_conf_root . '/nvim/pluginrc.d/*.vim'), '\n')
   endif
 endfor
 
-" see: https://github.com/norcalli/nvim-colorizer.lua#customization
-function! LuaColorizer()
-lua << EOF
-require 'colorizer'.setup({
-  'css';
-  'scss';
-  'sass';
-  'html';
-  'javascript';
-  'typescript';
-})
-EOF
-endfunction
-
-call LuaColorizer()
-
 " {{{ Initialization
 "
 augroup welcome
