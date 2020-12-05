@@ -1,58 +1,23 @@
 " {{{ FIXME
-" - [ ] colorscheme load is delayed when open multiple files
-" - [ ] fix cursorline caused slowness, in fast scroll and gblame
-" - [ ] this is too buggy but the idea is great: Plug 'jiangmiao/auto-pairs'
-" - [ ] follow styleguide: https://google.github.io/styleguide/vimscriptguide.xml
+" - colorscheme load is delayed when open multiple files
+" - fix cursorline caused slowness, in fast scroll and gblame
+" - this is too buggy but the idea is great: Plug 'jiangmiao/auto-pairs'
+" - follow styleguide: https://google.github.io/styleguide/vimscriptguide.xml
 " }}}
-"
+
 " {{{ TODO
-" - [ ] function for setting correct python path if a venv is available
-" - [ ] add contional loading for pluggins
-" - [ ] make use of prettier, yapf, and other fixers with ALE
-" - [ ] check if there is a way to only highlight search keywords in current buffer
-" - [ ] learn far.vim
-" - [ ] think about the colorscheme crap
+" - function for setting correct python path if a venv is available
+" - add contional loading for pluggins
+" - make use of prettier, yapf, and other fixers with ALE
+" - check if there is a way to only highlight search keywords in current buffer
+" - learn far.vim
+" - think about the colorscheme crap
 " }}}
-"
-"
-" {{{ handy selection of symbols
-" - poker suits:    [♠ ♥ ♣ ♦ ]
-" - common symbols: • ￭
-" - white space:    ] [(em) XXX needed as leading whitespace in sign column
-"
-"
-" - Box Drawing Characters table (as of Unicode version 11.0)
-"
-"           0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F
-"   U+250x  ─  ━  │  ┃  ┄  ┅  ┆  ┇  ┈  ┉  ┊  ┋  ┌  ┍  ┎  ┏
-"
-"   U+251x  ┐  ┑  ┒  ┓  └  ┕  ┖  ┗  ┘  ┙  ┚  ┛  ├  ┝  ┞  ┟
-"
-"   U+252x  ┠  ┡  ┢  ┣  ┤  ┥  ┦  ┧  ┨  ┩  ┪  ┫  ┬  ┭  ┮  ┯
-"
-"   U+253x  ┰  ┱  ┲  ┳  ┴  ┵  ┶  ┷  ┸  ┹  ┺  ┻  ┼  ┽  ┾  ┿
-"
-"   U+254x  ╀  ╁  ╂  ╃  ╄  ╅  ╆  ╇  ╈  ╉  ╊  ╋  ╌  ╍  ╎  ╏
-"
-"   U+255x  ═  ║  ╒  ╓  ╔  ╕  ╖  ╗  ╘  ╙  ╚  ╛  ╜  ╝  ╞  ╟
-"
-"   U+256x  ╠  ╡  ╢  ╣  ╤  ╥  ╦  ╧  ╨  ╩  ╪  ╫  ╬  ╭  ╮  ╯
-"
-"   U+257x  ╰  ╱  ╲  ╳  ╴  ╵  ╶  ╷  ╸  ╹  ╺  ╻  ╼  ╽  ╾  ╿
-"
-" - block elements (as of Unicode version 11.0)
-"
-"           0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F
-"   U+258x  ▀  ▁  ▂  ▃  ▄  ▅  ▆  ▇  █  ▉  ▊  ▋  ▌  ▍  ▎  ▏
-"
-"   U+259x  ▐  ░  ▒  ▓  ▔  ▕  ▖  ▗  ▘  ▙  ▚  ▛  ▜  ▝  ▞  ▟
-"   }}}
 
 let g:vim_conf_root  = $XDG_CONFIG_HOME
 if empty(g:vim_conf_root)
   let g:vim_conf_root = expand('<sfile>:p:h:h')
 endif
-" }}}
 
 " Make use of bash utilities in vim
 let $BASH_ENV = g:vim_conf_root . '/bash/noninteractive'
@@ -180,40 +145,6 @@ set winblend=9                            " Pseudo transparency for floating win
 let &showbreak='↪ '                       " Make soft wrap visually appealing FIXME not showing up?
 " }}}
 
-
-" handy selection of symbols
-" - poker suits:    ♠ ♥ ♣ ♦
-" - common symbols: •
-" - white space:    ] [(em) XXX needed as leading whitespace in sign column
-"
-" - Box Drawing Characters table (as of Unicode version 11.0)
-"
-"           0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F
-"   U+250x  ─  ━  │  ┃  ┄  ┅  ┆  ┇  ┈  ┉  ┊  ┋  ┌  ┍  ┎  ┏
-"
-"   U+251x  ┐  ┑  ┒  ┓  └  ┕  ┖  ┗  ┘  ┙  ┚  ┛  ├  ┝  ┞  ┟
-"
-"   U+252x  ┠  ┡  ┢  ┣  ┤  ┥  ┦  ┧  ┨  ┩  ┪  ┫  ┬  ┭  ┮  ┯
-"
-"   U+253x  ┰  ┱  ┲  ┳  ┴  ┵  ┶  ┷  ┸  ┹  ┺  ┻  ┼  ┽  ┾  ┿
-"
-"   U+254x  ╀  ╁  ╂  ╃  ╄  ╅  ╆  ╇  ╈  ╉  ╊  ╋  ╌  ╍  ╎  ╏
-"
-"   U+255x  ═  ║  ╒  ╓  ╔  ╕  ╖  ╗  ╘  ╙  ╚  ╛  ╜  ╝  ╞  ╟
-"
-"   U+256x  ╠  ╡  ╢  ╣  ╤  ╥  ╦  ╧  ╨  ╩  ╪  ╫  ╬  ╭  ╮  ╯
-"
-"   U+257x  ╰  ╱  ╲  ╳  ╴  ╵  ╶  ╷  ╸  ╹  ╺  ╻  ╼  ╽  ╾  ╿
-"
-" - block elements (as of Unicode version 11.0)
-"
-"           0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F
-"   U+258x  ▀  ▁  ▂  ▃  ▄  ▅  ▆  ▇  █  ▉  ▊  ▋  ▌  ▍  ▎  ▏
-"
-"   U+259x  ▐  ░  ▒  ▓  ▔  ▕  ▖  ▗  ▘  ▙  ▚  ▛  ▜  ▝  ▞  ▟
-"
-"
-
 " make some commands case-insensitive
 command! Q q
 command! W w
@@ -308,9 +239,6 @@ augroup general_enhancements
   autocmd FocusGained,BufEnter * checktime " make autoread behave intuitively
 augroup END
 
-
-
-
 " should add proper ability detection
 if empty($TERMINATOR_UUID) && empty($SESSION_TYPE)
   if exists('+termguicolors')
@@ -372,22 +300,8 @@ vnoremap <C-s> :<C-r>0<Home><right>
 " seamless vim/tmux navigation
 let g:tmux_navigator_no_mappings = 1
 
-" {{{ Sign Column Tweaks
-"
-"
-
-" TODO
-" not sure if this is feasible but if we can merge linter symbols
-" and git status symbols it will look great!
-" let g:linter_sign = '┃•' " good on Ubuntu mono
-" let g:linter_sign = ' ￭'   " good on Ubuntu mono
-let g:linter_sign = ' •'   " good on Ubuntu mono
-" let g:git_sign = '┃ '      " good on Ubuntu mono
-" let g:git_sign = '│ '      " good on Ubuntu mono
-" let g:git_sign = '▐ '      " good on Ubuntu mono
-let g:git_sign = '┃ '      " good on Ubuntu mono
-
-
+let g:linter_sign = ' •'
+let g:git_sign = '┃ '
 
 "
 " color tweaks

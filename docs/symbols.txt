@@ -1,0 +1,38 @@
+ascii alt + 251           |√|
+check mark                |✓|
+heavy check mark          |✔|
+white heavy check mark    |✅|
+Ballot Box with Check     |☑|
+Circled Ideograph Correct |㊣|
+plus minus sign           |±|
+
+poker suits:    [♠ ♥ ♣ ♦ ]
+common symbols: • ￭
+white space:    ] [(em) XXX needed as leading whitespace in sign column
+
+
+Box Drawing Characters table (as of Unicode version 11.0)
+
+        0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F
+U+250x  ─  ━  │  ┃  ┄  ┅  ┆  ┇  ┈  ┉  ┊  ┋  ┌  ┍  ┎  ┏
+
+U+251x  ┐  ┑  ┒  ┓  └  ┕  ┖  ┗  ┘  ┙  ┚  ┛  ├  ┝  ┞  ┟
+
+U+252x  ┠  ┡  ┢  ┣  ┤  ┥  ┦  ┧  ┨  ┩  ┪  ┫  ┬  ┭  ┮  ┯
+
+U+253x  ┰  ┱  ┲  ┳  ┴  ┵  ┶  ┷  ┸  ┹  ┺  ┻  ┼  ┽  ┾  ┿
+
+U+254x  ╀  ╁  ╂  ╃  ╄  ╅  ╆  ╇  ╈  ╉  ╊  ╋  ╌  ╍  ╎  ╏
+
+U+255x  ═  ║  ╒  ╓  ╔  ╕  ╖  ╗  ╘  ╙  ╚  ╛  ╜  ╝  ╞  ╟
+
+U+256x  ╠  ╡  ╢  ╣  ╤  ╥  ╦  ╧  ╨  ╩  ╪  ╫  ╬  ╭  ╮  ╯
+
+U+257x  ╰  ╱  ╲  ╳  ╴  ╵  ╶  ╷  ╸  ╹  ╺  ╻  ╼  ╽  ╾  ╿
+
+block elements (as of Unicode version 11.0)
+
+        0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F
+U+258x  ▀  ▁  ▂  ▃  ▄  ▅  ▆  ▇  █  ▉  ▊  ▋  ▌  ▍  ▎  ▏
+
+U+259x  ▐  ░  ▒  ▓  ▔  ▕  ▖  ▗  ▘  ▙  ▚  ▛  ▜  ▝  ▞  ▟
