@@ -13,8 +13,6 @@
 " - [ ] learn far.vim
 " - [ ] compare preview feature with fzf ag preview: https://github.com/junegunn/fzf.vim/blob/master/README.md#advanced-customization
 " - [ ] checkout defx.nvim as an alternative to nerdtree
-" - [ ] try ncm2 as an alternative to YCM
-" - [ ] try coc.vim as an alternative to YCM
 " - [ ] think about the colorscheme crap
 " }}}
 "
@@ -387,19 +385,15 @@ let g:mapleader=' '
 " - wherever the current python from
 "
 if isdirectory(glob("$__conda_env_root"))
-  let s:py3_path = glob("$__conda_env_root/py3/bin/python")
-  if executable(s:py3_path)
-    let g:python3_host_prog = s:py3_path
-    let g:ycm_server_python_interpreter = s:py3_path
-  endif
+  let g:py3_path = glob("$__conda_env_root/py3/bin/python")
 endif
 
 " active Python path is currently determined by CONDA_PREFIX
 " TODO
 " - [ ] should delegate this to the system function
-let s:py_virtual_env_dir = $CONDA_PREFIX
+let g:py_virtual_env_dir = $CONDA_PREFIX
 
-if empty(s:py_virtual_env_dir)
+if empty(g:py_virtual_env_dir)
 
   if argc()
     let s:current_path = expand('%:p')
@@ -407,24 +401,16 @@ if empty(s:py_virtual_env_dir)
     let s:current_path = getcwd()
   endif
 
-  let s:py_virtual_env_dir = system('2>/dev/null' . ' ' . '__.venv.python.prefix' . ' ' . s:current_path)
+  let g:py_virtual_env_dir = system('2>/dev/null' . ' ' . '__.venv.python.prefix' . ' ' . s:current_path)
 endif
 
-" see YCM official doc
-let g:ycm_python_interpreter_path = s:py_virtual_env_dir . '/bin/python'
-let g:ycm_python_sys_path = []
-let g:ycm_extra_conf_vim_data = [
-  \  'g:ycm_python_interpreter_path',
-  \  'g:ycm_python_sys_path'
-  \]
-let g:ycm_global_ycm_extra_conf = g:vim_conf_root . '/ycm_global_extra_conf.py'
 " XXX For historical reason, $VIRTUAL_ENV is used by many Python
 " plugins so we just have to abide by it for now
-let $VIRTUAL_ENV = s:py_virtual_env_dir
-let $PYTHONPATH = s:py_virtual_env_dir
-let $PATH = s:py_virtual_env_dir . '/bin' . ':' . $PATH
+let $VIRTUAL_ENV = g:py_virtual_env_dir
+let $PYTHONPATH = g:py_virtual_env_dir
+let $PATH = g:py_virtual_env_dir . '/bin' . ':' . $PATH
 " XXX https://mypy.readthedocs.io/en/latest/running_mypy.html#finding-imports
-" let $MYPYPATH = expand(s:py_virtual_env_dir . '/lib/*/site-packages')
+" let $MYPYPATH = expand(g:py_virtual_env_dir . '/lib/*/site-packages')
 
 " disable ale's virtual env auto discover feature and use the envvar instead
 " because we know the environment better
@@ -432,12 +418,6 @@ let g:ale_virtualenv_dir_names = []
 "
 " }}}
 
-" typescript setup for YCM
-if !exists('g:ycm_semantic_triggers')
-  let g:ycm_semantic_triggers = {}
-endif
-let g:ycm_semantic_triggers['typescript'] = ['.']
-let g:ycm_max_num_candidates = 18
 
 let g:NERDTreeMinimalUI = 1
 let g:NERDTreeStatusline = '%#NonText#'
@@ -524,8 +504,6 @@ let g:ale_sign_warning = g:linter_sign
 " https://github.com/neovim/neovim/issues/9388
 let g:ale_sign_offset = 1000
 
-let g:ycm_error_symbol = g:linter_sign
-let g:ycm_warning_symbol = g:linter_sign
 
 "
 " color tweaks
@@ -569,9 +547,6 @@ function! ColorSchemeTweaks()
 
   highlight ALEErrorSign          guifg=#FB4934 guibg=NONE
   highlight ALEWarningSign        guifg=#FABD2F guibg=NONE
-
-  highlight YcmErrorSign          guifg=#FB4934 guibg=NONE
-  highlight YcmWarningSign        guifg=#FABD2F guibg=NONE
 
   highlight SignColumn            guibg=NONE
   highlight VertSplit             guibg=NONE guifg=#666666
@@ -707,9 +682,6 @@ let g:vista_sidebar_width = 60
 let g:vista_echo_cursor_strategy = 'floating_win'
 let g:vista_keep_fzf_colors = 1
 
-" jump to first match
-nnoremap <C-]> :YcmCompleter GoTo<CR>
-
 " Quick edit .vimrc
 nnoremap <leader>V :e $MYVIMRC<CR>
 
@@ -718,12 +690,6 @@ nnoremap <leader>j i<return><esc>
 
 " NERDTree
 map <C-\> :NERDTreeFind <Bar> wincmd =<CR>
-
-" FIXME this only works with Python (hopefully), will need a proper
-" implementation
-" let g:ycm_collect_identifiers_from_tags_files = 1
-" map <F10> :!ctags -R -f ./tags `python -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())"`<CR>
-
 
 " TODO
 " - add more precise ext based matching instead of the naïve one below
