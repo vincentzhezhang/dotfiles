@@ -1,6 +1,7 @@
 "
 " https://github.com/vim-airline/vim-airline
 "
+" TODO replace with https://github.com/itchyny/lightline.vim
 
 " call airline#parts#define_accent('file', 'bold')
 
@@ -37,7 +38,7 @@ let g:airline_left_sep                         = ''
 let g:airline_powerline_fonts                  = 0
 let g:airline_right_alt_sep                    = ''
 let g:airline_right_sep                        = ''
-let g:airline_section_a                        = '' " (mode, crypt, paste, spell, iminsert)
+let g:airline_section_a                        = split(expand(g:py_virtual_env_dir), '/')[-1] " (mode, crypt, paste, spell, iminsert)
 let g:airline_section_b                        = '' " (hunks, branch)[*]
 " FIXME looks like there is a bug on virtualenv
 " let g:airline_section_c                        = '' " (bufferline or filename, readonly)

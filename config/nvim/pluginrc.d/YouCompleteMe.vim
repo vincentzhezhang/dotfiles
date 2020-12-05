@@ -6,14 +6,18 @@
 " - try ncm2 as an alternative to YCM
 " - try coc.vim as an alternative to YCM
 
-" see YCM official doc
+" The YCM Python path settings with virtual environment is based on the YCM
+" official doc with my own virtual path hacks, so that it will automatically
+" load the correct virtual environment by the current file or working
+" directory path
+"
+" https://github.com/ycm-core/YouCompleteMe#configuring-through-vim-options
 let g:ycm_python_interpreter_path = g:py_virtual_env_dir . '/bin/python'
 let g:ycm_python_sys_path = []
 let g:ycm_extra_conf_vim_data = [
   \  'g:ycm_python_interpreter_path',
   \  'g:ycm_python_sys_path'
   \]
-let g:ycm_global_ycm_extra_conf = g:vim_conf_root . '/ycm_global_extra_conf.py'
 
 " typescript setup for YCM
 if !exists('g:ycm_semantic_triggers')

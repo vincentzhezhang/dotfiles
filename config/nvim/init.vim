@@ -1,8 +1,4 @@
 " {{{ FIXME
-" - colorscheme load is delayed when open multiple files
-" - fix cursorline caused slowness, in fast scroll and gblame
-" - this is too buggy but the idea is great: Plug 'jiangmiao/auto-pairs'
-" - follow styleguide: https://google.github.io/styleguide/vimscriptguide.xml
 " }}}
 
 " {{{ TODO
@@ -17,13 +13,17 @@
 " force utf-8 encoding cause we have multi-bytes chars here
 scriptencoding utf-8
 
+" {{{ Environments
 let g:vim_conf_root  = $XDG_CONFIG_HOME
+
 if empty(g:vim_conf_root)
   let g:vim_conf_root = expand('<sfile>:p:h:h')
 endif
 
 " Make use of bash utilities in vim
 let $BASH_ENV = g:vim_conf_root . '/bash/noninteractive'
+" }}}
+
 let g:before_hook = g:vim_conf_root . '/nvim/before.vim'
 let g:after_hook = g:vim_conf_root . '/nvim/after.vim'
 
@@ -48,26 +48,23 @@ Plug 'ajmwagar/vim-deus'
 Plug 'AndrewRadev/splitjoin.vim'
 Plug 'brooth/far.vim'
 Plug 'christoomey/vim-tmux-navigator'
+Plug 'dense-analysis/ale'
 Plug 'editorconfig/editorconfig-vim'
-Plug 'gyim/vim-boxdraw'
 Plug 'honza/vim-snippets'
-Plug 'jreybert/vimagit'
 Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
 Plug 'junegunn/vim-easy-align'
-Plug 'Lokaltog/vim-easymotion'
 Plug 'liuchengxu/vista.vim'
-Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
+Plug 'Lokaltog/vim-easymotion'
 Plug 'mhinz/vim-startify'
 Plug 'NLKNguyen/papercolor-theme'
 Plug 'norcalli/nvim-colorizer.lua'
 Plug 'ntpeters/vim-better-whitespace'
-" Plug 'python-rope/ropevim' TODO try rope vim
 Plug 'Raimondi/delimitMate'
 Plug 'scrooloose/nerdcommenter'
 Plug 'scrooloose/nerdtree'
 Plug 'sheerun/vim-polyglot'
-Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
+Plug 'SirVer/ultisnips'
 Plug 'terryma/vim-multiple-cursors'
 Plug 'tmux-plugins/vim-tmux-focus-events'
 Plug 'tpope/vim-endwise'
@@ -77,28 +74,22 @@ Plug 'Valloric/YouCompleteMe', { 'do': function('BuildYCM') }
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'vim-scripts/chlordane.vim'
-Plug 'dense-analysis/ale'
 Plug 'Xuyuanp/nerdtree-git-plugin'
-" TODO compare tabnine with https://www.kite.com/integrations/vim/
-" - though I highly doubt if they could boost my productivity in anyway
-" Plug 'zxqfl/tabnine-vim'
 call plug#end()
 call EnsureVimPlugPlugins()
 " }}}
 
 " {{{ Basic settings
-
 set autowrite                             " Save changes before switching buffers
+set cursorline                            " Highlight the screen line of the cursor with CursorLine
 set completeopt-=preview                  " Get rid of the annoying preview window on autocomplete
 set expandtab                             " Expand tabs to spaces
 set fillchars+=vert:│                     " Make vertical split bar prettier
 set foldopen+=jump                        " Open folded region when jump to it
-" set guicursor=                          " Seems buggy? Have to unset to mitigate junk chars
 set ignorecase                            " Make search case-insensitive
 set list                                  " Enable whitespace characters' display
 set listchars=nbsp:¬,tab:»·,trail:·       " Better whitespace symbols
 set mouse=a                               " Grab mouse event within tmux
-" set lazyredraw                            " FIXME mitigate with jsx until find a fix
 set nobackup                              " Be environment friendly
 set backupcopy=no                         " Be environment friendly
 set noshowmode                            " Hide the default mode text cause we have *whatever*line
@@ -122,27 +113,26 @@ set splitright                            " Split to right when doing vertical s
 set synmaxcol=512                         " Limit syntax color for long lines to improve rendering speed
 set tabstop=2                             " Number of spaces that a <Tab> in the file counts for
 set tags=./.tags,./tags,.tags,tags;       " Use hidden tags files
-" set undodir="$XDG_DATA_HOME/nvim/undo/" " Persistent undo directory FIXME default to XDG_DATA_HOME
+set termguicolors                         " Enables 24-bit RGB color in the TUI.  Uses GUI highlight
 set undofile                              " Persistent undo, note undodir default to xdg data
 set updatetime=128                        " Make update related events slightly faster
 set winblend=9                            " Pseudo transparency for floating window
 let &showbreak='↪ '                       " Make soft wrap visually appealing FIXME not showing up?
 " }}}
 
+" change leader key
+let g:mapleader=' '
+
 " make some commands case-insensitive
 command! Q q
 command! W w
 
-function! SetUpBuffer()
-  if &modifiable == 1
-    setlocal signcolumn=auto
-  else
-    setlocal signcolumn=yes
-  endif
-endfunction
-
 " silent on save when editing remote files
 let g:netrw_silent=1
+
+" global variables shared by plugins
+let g:linter_sign = ' •'
+let g:git_sign = '┃ '
 
 " https://vi.stackexchange.com/questions/744/can-i-pass-a-custom-string-to-the-gx-command/751
 function! EnhancedBrowseX()
@@ -163,119 +153,54 @@ xnoremap gx :call EnhancedBrowseX()<CR>
 vmap <LeftRelease> "*ygv
 
 function! TextMagic()
-  set textwidth=0
-  set wrapmargin=0
-  " set colorcolumn=79
-  " FIXME
-  " - this will get reset on window resize, need to prevent that
-  " - columns are buggy with multiple buffers
-  " set columns=100
-  set linebreak
-  set nolist
+  " make editing text files more intuitive
   set wrap
   nmap j gj
   nmap k gk
   nmap 0 g0
   nmap $ g$
-  " FIXME can't link to LineNr due to a bug
-  " hi ColorColumn ctermbg=239 guibg=#242a32
 endfunction
 
-"
-" Custom Highlight rules
-" XXX note vim-better-whitespace does not deal with leading tabs
-"
-function! CustomHighlights()
-  syntax match PeskyTabs /\v\t+/
-  " Python docstring
-  " syntax region foldImports start='"""' end='"""' fold keepend
-endfunction
-
-"
-" auto commands that make your life easier
-"
-" XXX no space is allowed between events
 augroup general_enhancements
   autocmd!
-  autocmd BufCreate * call SetUpBuffer()
-  autocmd BufEnter *.log set nospell " no spell check for log files
+  autocmd FileType tagbar,nerdtree,help setlocal signcolumn=no
+  autocmd BufEnter *.log setlocal nospell
   autocmd BufEnter *.md,*.txt,*.doc,*.rst call TextMagic()
-  autocmd BufEnter,InsertLeave * set cursorline
-  autocmd BufLeave,InsertEnter * set nocursorline
-  autocmd BufEnter * call CustomHighlights()
-
-  " FIXME use filetype to disable cursorline within fugitiveblame
-
-  " temporary disabled during the refactoring period
-  " autocmd BufWritePre * StripWhitespace " strip whitespaces on save
-
   autocmd VimResized * wincmd =  " make panes responsive on window resize
   autocmd FocusGained,BufEnter * checktime " make autoread behave intuitively
 augroup END
 
-" should add proper ability detection
-if empty($TERMINATOR_UUID) && empty($SESSION_TYPE)
-  if exists('+termguicolors')
-    set termguicolors
-  endif
-endif
-
-" some OS detection and customization here, should bind some dark/light theme
-" switcher hotkey
-let s:uname = system('uname -s')
-let s:hostname = system('uname -n')
-
-" change leader key
-let g:mapleader=' '
-
-
 " {{{ Python Virtual Env Tweaks start
-"
-" Priority
-" - active conda environment
-" - clever_conda_path
-" - wherever the current python from
-"
-if isdirectory(glob("$__conda_env_root"))
-  let g:py3_path = glob("$__conda_env_root/py3/bin/python")
+if isdirectory(glob('$__conda_env_root'))
+  let g:py3_path = glob('$__conda_env_root/py3/bin/python')
 endif
 
-" active Python path is currently determined by CONDA_PREFIX
-" TODO
-" - [ ] should delegate this to the system function
-let g:py_virtual_env_dir = $CONDA_PREFIX
-
-if empty(g:py_virtual_env_dir)
-
-  if argc()
-    let s:current_path = expand('%:p')
-  else
-    let s:current_path = getcwd()
-  endif
-
+if exists('$CONDA_PREFIX')
+  " use Python from active conda environment
+  let g:py_virtual_env_dir = '$CONDA_PREFIX'
+else
+  " or find the suitable environment by given file or cwd using bash add-on
+  let s:current_path = argc() ? expand('%:p') : getcwd()
   let g:py_virtual_env_dir = system('2>/dev/null' . ' ' . '__.venv.python.prefix' . ' ' . s:current_path)
 endif
 
-" XXX For historical reason, $VIRTUAL_ENV is used by many Python
-" plugins so we just have to abide by it for now
+" XXX
+" According to [pep-0486](https://www.python.org/dev/peps/pep-0486/#id5)
+" both virtual_env and the core venv module set the VIRTUAL_ENV environment
+" variable thus it's been used by many Python plugins, so we set it here too
+" to get their features for free
 let $VIRTUAL_ENV = g:py_virtual_env_dir
 let $PYTHONPATH = g:py_virtual_env_dir
 let $PATH = g:py_virtual_env_dir . '/bin' . ':' . $PATH
-" XXX https://mypy.readthedocs.io/en/latest/running_mypy.html#finding-imports
+" FIXME https://mypy.readthedocs.io/en/latest/running_mypy.html#finding-imports
 " let $MYPYPATH = expand(g:py_virtual_env_dir . '/lib/*/site-packages')
 " }}}
 
 " better find and replace
 vnoremap <C-r> "hy:%s/<C-r>h//c<left><left>
 
-vnoremap <C-s> :<C-r>0<Home><right>
-
-
 " seamless vim/tmux navigation
 let g:tmux_navigator_no_mappings = 1
-
-let g:linter_sign = ' •'
-let g:git_sign = '┃ '
 
 "
 " color tweaks
@@ -312,34 +237,6 @@ function! s:get_highlight(group) abort
     \ l:ctermfg,
     \ ]
 endfunction
-
-function! ColorSchemeTweaks()
-  highlight SignColumn            guibg=NONE
-  highlight VertSplit             guibg=NONE guifg=#666666
-
-  " TODO use colour blend function instead of hard-code
-  highlight Pmenu      guibg=#ebdab2 guifg=#333333
-  highlight PmenuSel   guibg=#98C379 guifg=#333333
-
-  " FIXME ts highlighting is doing this seems?
-  " Should be the job of linters
-  set colorcolumn=0
-  " vim-better-whitespace
-  highlight link ExtraWhitespace WarningMsg
-  highlight link PeskyTabs WarningMsg
-  highlight SpellBad cterm=underline gui=undercurl
-  " this is needed after switched colorscheme on the fly to trigger correct re-render
-  syntax on
-endfunction
-let g:show_spaces_that_precede_tabs=1
-
-" Adapt sign color upon color theme change
-augroup colorscheme_tweaks
-  autocmd!
-  autocmd ColorSchemePre syntax off
-  autocmd ColorScheme * call ColorSchemeTweaks()
-augroup END
-" }}}
 
 "
 " smarter project root by vim-rooter, very useful when combined with fzf below
@@ -406,16 +303,6 @@ noremap <space>c ea<C-x><C-s>
 " - run the file if it's executable and has shebang set
 nnoremap <leader>r :!%:p<CR>
 
-function EchoOutput(job_id, data, event)
-  if a:data == 0
-    echom 'compiled!'
-    !notify-send 'compiled'
-  else
-    echom 'failed!'
-    !notify-send 'failed'
-  endif
-endfunction
-
 "
 " Centralized movement
 "
@@ -442,14 +329,12 @@ nnoremap <leader>V :e $MYVIMRC<CR>
 " Break line at cursor
 nnoremap <leader>j i<return><esc>
 
-
 " find word under cursor
 nnoremap <silent> <leader>ag :Ag <C-R><C-W><CR>
 " find whitespace delimited segments
 nnoremap <silent> <leader>AG :Ag <C-R><C-A><CR>
 " find selection
 xnoremap <silent> <leader>rw y:Ag <C-R>"<CR>
-
 
 nnoremap <silent> <leader>f :call SmartFindFiles()<CR>
 nnoremap <silent> <leader>B :Buffers<CR>
@@ -464,21 +349,11 @@ nnoremap <silent> <A-k> :TmuxNavigateUp<CR>
 nnoremap <silent> <A-l> :TmuxNavigateRight<CR>
 nnoremap <silent> <A-.> :TmuxNavigatePrevious<CR>
 
-
 " FIXME need to have a second thought on this
 " nnoremap <silent> <C-h> :vertical res +10<CR>
 " nnoremap <silent> <C-j> :res +5<CR>
 " nnoremap <silent> <C-k> :res -5<CR>
 " nnoremap <silent> <C-l> :vertical res -10<CR>
-
-" FIXME default colour setting of deusBg2 is too dark
-highlight! link NonText deusBg3
-
-if filereadable(g:after_hook)
-  execute 'source' g:after_hook
-endif
-
-hi Comment cterm=italic
 
 "
 " load plugin configs
@@ -491,8 +366,11 @@ for config in split(glob(g:vim_conf_root . '/nvim/pluginrc.d/*.vim'), '\n')
   endif
 endfor
 
+if filereadable(g:after_hook)
+  execute 'source' g:after_hook
+endif
+
 " {{{ Initialization
-"
 augroup welcome
   let has_piped_input = 0
   autocmd StdinReadPost * let has_piped_input = 1
