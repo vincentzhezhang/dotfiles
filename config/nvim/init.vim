@@ -181,14 +181,6 @@ function! TextMagic()
   " hi ColorColumn ctermbg=239 guibg=#242a32
 endfunction
 
-function! PythonMagic(state)
-  if a:state == 'on'
-    set cursorcolumn
-  else
-    set nocursorcolumn
-  endif
-endfunction
-
 "
 " Custom Highlight rules
 " XXX note vim-better-whitespace does not deal with leading tabs
@@ -208,8 +200,6 @@ augroup general_enhancements
   autocmd BufCreate * call SetUpBuffer()
   autocmd BufEnter *.log set nospell " no spell check for log files
   autocmd BufEnter *.md,*.txt,*.doc,*.rst call TextMagic()
-  autocmd BufEnter *.py call PythonMagic('on')
-  autocmd BufLeave *.py call PythonMagic('off')
   autocmd BufEnter,InsertLeave * set cursorline
   autocmd BufLeave,InsertEnter * set nocursorline
   autocmd BufEnter * call CustomHighlights()
@@ -444,6 +434,7 @@ nnoremap <expr> N (v:searchforward ? 'Nzz' : 'nzz')
 nnoremap <silent> <F12> :set number!<CR>
 nnoremap <silent> <F8> :execute ':silent !google-chrome %'<CR>
 nnoremap <silent> <F4> :set ts=4 sw=4<CR>
+nnoremap <silent> <F9> :set cursorcolumn!<CR>
 
 " Quick edit .vimrc
 nnoremap <leader>V :e $MYVIMRC<CR>
