@@ -1,5 +1,7 @@
 #! /usr/bin/env bash
 # shellcheck disable=SC1090
+# FIXME
+# - https://google.github.io/styleguide/shellguide.html
 
 # per box environment setup
 if [[ -f ~/.bash.env ]]; then

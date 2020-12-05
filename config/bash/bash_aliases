@@ -1,5 +1,6 @@
 #! /usr/bin/env bash
 #
+# FIXME
 # Any non-trival alias that not straightforward enough need to be functions, because:
 #   - functions are more powerful
 #   - functions are easy to trace, e.g. declare -F EXAMPLE_FUNCTION
@@ -24,4 +25,3 @@ alias mkdir='mkdir --parents --verbose'
 alias mv='mv --interactive'
 alias sl='ls'  # :(
 alias tree='tree -CF'
-alias x='cd $XDG_CONFIG_HOME'

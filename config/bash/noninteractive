@@ -1,4 +1,7 @@
 #! /usr/bin/env bash
+# FIXME
+# - https://google.github.io/styleguide/shellguide.html
+# - re-think about the loading logic
 
 #
 # bash functions loader for noninteractive apps

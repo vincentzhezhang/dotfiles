@@ -1,4 +1,6 @@
 #! /usr/bin/env bash
+# FIXME
+# - https://google.github.io/styleguide/shellguide.html
 
 #
 # XDG support hacks :(

@@ -1,4 +1,6 @@
 #! /usr/bin/env bash
+# FIXME
+# - https://google.github.io/styleguide/shellguide.html
 #
 # Uncategorized functions
 #
@@ -554,6 +556,27 @@ diff_dir() {
   src_dir=$1
   tgt_dir=$2
   diff -Naur "${src_dir:?}" "${tgt_dir:?}" | delta --side-by-side
+}
+
+###################################################
+# Fast access to directories under $XDG_CONFIG_HOME
+#
+# Globals:
+#   XDG_CONFIG_HOME
+# Arguments:
+#   None
+###################################################
+x() {
+  local dir
+  if dir=$(
+    find "$XDG_CONFIG_HOME" -mindepth 1 -maxdepth 1 -type d -exec basename {} \; \
+      | sort -i \
+      | fzf --reverse --height=12 --prompt="config> "
+  ); then
+    cd "$XDG_CONFIG_HOME/$dir" || return 1
+  else
+    return 1
+  fi
 }
 
 # vim: set ai ts=2 tw=79:

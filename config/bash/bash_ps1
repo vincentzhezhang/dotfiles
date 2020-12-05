@@ -1,4 +1,6 @@
 #! /usr/bin/env bash
+# FIXME
+# - https://google.github.io/styleguide/shellguide.html
 #
 # XXX no single function in this file can take more than 50ms to execute, that's the rule
 #
