@@ -413,17 +413,6 @@ let $PATH = g:py_virtual_env_dir . '/bin' . ':' . $PATH
 " let $MYPYPATH = expand(g:py_virtual_env_dir . '/lib/*/site-packages')
 " }}}
 
-
-
-
-" Nerd Commenter
-let g:NERDCommentEmptyLines = 1
-let g:NERDDefaultAlign = 'left'
-let g:NERDSpaceDelims = 1
-let g:NERDTrimTrailingWhitespace = 1
-nnoremap <C-_> :call NERDComment('n', 'toggle')<CR>
-xnoremap <C-_> :call NERDComment('x', 'toggle')<CR>
-
 " better find and replace
 vnoremap <C-r> "hy:%s/<C-r>h//c<left><left>
 
