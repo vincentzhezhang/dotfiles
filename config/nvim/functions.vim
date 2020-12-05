@@ -172,3 +172,54 @@ endfunction
 augroup poly_file_type
   autocmd BufEnter *.mako call PolyFT()
 augroup END
+
+
+" https://vi.stackexchange.com/questions/744/can-i-pass-a-custom-string-to-the-gx-command/751
+function! EnhancedBrowseX()
+  let l:keyword = expand('<cfile>')
+  let l:line = getline('.')
+
+  " add support for go to Github for Plug plugins
+  if l:line =~? '\v^Plug ([''"])[a-zA-Z0-9-_./]*\1'
+    let l:keyword = 'https://github.com/' . l:keyword
+  endif
+
+  call netrw#BrowseX(l:keyword, netrw#CheckIfRemote())
+endfunction
+
+nnoremap gx :call EnhancedBrowseX()<CR>
+xnoremap gx :call EnhancedBrowseX()<CR>
+
+
+function! TextMagic()
+  " make editing text files more intuitive
+  set wrap
+  nmap j gj
+  nmap k gk
+  nmap 0 g0
+  nmap $ g$
+endfunction
+
+augroup text_file_enhancements
+  autocmd BufEnter *.md,*.txt,*.doc,*.rst call TextMagic()
+augroup END
+
+
+" adaptive theme with extra fine tuning, also fast switching by F5
+" XXX this has to be put after ColorSchemeTweaks in order to detect correct bg
+" color for the gutter
+function! AdaptiveTheme()
+  let g:luminance=system('get_luminance')
+  if g:luminance ==? 'high'
+    call SunnyDays()
+  elseif g:luminance ==? 'low'
+    call LateNight()
+  else
+    call InDoor()
+  endif
+  call airline#switch_theme(g:colors_name)
+endfunction
+
+augroup adaptive_theme
+  autocmd VimEnter * call AdaptiveTheme()
+augroup END

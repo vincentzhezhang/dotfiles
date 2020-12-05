@@ -134,3 +134,16 @@ command! -bang -nargs=* Ag
   \                 <bang>0 ? fzf#vim#with_preview('up:70%')
   \                         : fzf#vim#with_preview('right:50%:hidden', '?'),
   \                 <bang>0)
+
+" find word under cursor
+nnoremap <silent> <leader>rg :Rg <C-R><C-W><CR>
+" find whitespace delimited segments
+nnoremap <silent> <leader>RG :Rg <C-R><C-A><CR>
+" find selection
+xnoremap <silent> <leader>rw y:Ag <C-R>"<CR>
+
+nnoremap <silent> <leader>f :call SmartFindFiles()<CR>
+nnoremap <silent> <leader>B :Buffers<CR>
+" fast switch with previous buffer
+nnoremap <silent> <leader>b :b#<CR>
+nnoremap <silent> <leader>L :Lines<CR>

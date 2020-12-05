@@ -22,16 +22,15 @@ endif
 
 " Make use of bash utilities in vim
 let $BASH_ENV = g:vim_conf_root . '/bash/noninteractive'
+
+execute 'set wildignore +=' . system("grep -oP '^[^# ].+' ~/.config/git/ignore | paste -sd ','")
 " }}}
 
 let g:before_hook = g:vim_conf_root . '/nvim/before.vim'
-let g:after_hook = g:vim_conf_root . '/nvim/after.vim'
-
 if filereadable(g:before_hook)
   execute 'source' g:before_hook
 endif
 
-execute 'source' g:vim_conf_root . '/nvim/variables.vim'
 execute 'source' g:vim_conf_root . '/nvim/functions.vim'
 
 " load my personal plugins
@@ -134,38 +133,12 @@ let g:netrw_silent=1
 let g:linter_sign = ' •'
 let g:git_sign = '┃ '
 
-" https://vi.stackexchange.com/questions/744/can-i-pass-a-custom-string-to-the-gx-command/751
-function! EnhancedBrowseX()
-  let l:keyword = expand('<cfile>')
-  let l:line = getline('.')
-
-  " add support for go to Github for Plug plugins
-  if l:line =~? '\v^Plug ([''"])[a-zA-Z0-9-_./]*\1'
-    let l:keyword = 'https://github.com/' . l:keyword
-  endif
-
-  call netrw#BrowseX(l:keyword, netrw#CheckIfRemote())
-endfunction
-
-nnoremap gx :call EnhancedBrowseX()<CR>
-xnoremap gx :call EnhancedBrowseX()<CR>
-
 vmap <LeftRelease> "*ygv
-
-function! TextMagic()
-  " make editing text files more intuitive
-  set wrap
-  nmap j gj
-  nmap k gk
-  nmap 0 g0
-  nmap $ g$
-endfunction
 
 augroup general_enhancements
   autocmd!
   autocmd FileType tagbar,nerdtree,help setlocal signcolumn=no
   autocmd BufEnter *.log setlocal nospell
-  autocmd BufEnter *.md,*.txt,*.doc,*.rst call TextMagic()
   autocmd VimResized * wincmd =  " make panes responsive on window resize
   autocmd FocusGained,BufEnter * checktime " make autoread behave intuitively
 augroup END
@@ -236,23 +209,8 @@ function! s:get_highlight(group) abort
     \ ]
 endfunction
 
-
-" adaptive theme with extra fine tuning, also fast switching by F5
-" XXX this has to be put after ColorSchemeTweaks in order to detect correct bg
-" color for the gutter
-let g:luminance=system('get_luminance')
-if g:luminance ==? 'high'
-  call SunnyDays()
-elseif g:luminance ==? 'low'
-  call LateNight()
-else
-  call InDoor()
-endif
-
+" {{{ Key Mappings
 "
-" Key Mappings
-"
-
 " turn off Ex mode
 map Q <Nop>
 " turn off Recording mode
@@ -307,40 +265,25 @@ nnoremap <silent> <F9> :set cursorcolumn!<CR>
 " Quick edit .vimrc
 nnoremap <leader>V :e $MYVIMRC<CR>
 
-" Break line at cursor
-nnoremap <leader>j i<return><esc>
-
-" find word under cursor
-nnoremap <silent> <leader>ag :Ag <C-R><C-W><CR>
-" find whitespace delimited segments
-nnoremap <silent> <leader>AG :Ag <C-R><C-A><CR>
-" find selection
-xnoremap <silent> <leader>rw y:Ag <C-R>"<CR>
-
-nnoremap <silent> <leader>f :call SmartFindFiles()<CR>
-nnoremap <silent> <leader>B :Buffers<CR>
-" fast switch with previous buffer
-nnoremap <silent> <leader>b :b#<CR>
-nnoremap <silent> <leader>L :Lines<CR>
-
-
 " FIXME need to have a second thought on this
 " nnoremap <silent> <C-h> :vertical res +10<CR>
 " nnoremap <silent> <C-j> :res +5<CR>
 " nnoremap <silent> <C-k> :res -5<CR>
 " nnoremap <silent> <C-l> :vertical res -10<CR>
+" }}}
 
 "
 " load plugin configs
 "
-for config in split(glob(g:vim_conf_root . '/nvim/pluginrc.d/*.vim'), '\n')
+for f in split(glob(g:vim_conf_root . '/nvim/pluginrc.d/*.vim'), '\n')
   " use base filename without extension as the plugin name
-  let s:plugin_name = split(config, '/')[-1][0:-5]
+  let s:plugin_name = split(f, '/')[-1][0:-5]
   if has_key(g:plugs, s:plugin_name)
-    execute 'source' config
+    execute 'source' f
   endif
 endfor
 
+let g:after_hook = g:vim_conf_root . '/nvim/after.vim'
 if filereadable(g:after_hook)
   execute 'source' g:after_hook
 endif
