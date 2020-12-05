@@ -94,7 +94,7 @@ Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
 Plug 'junegunn/vim-easy-align'
 Plug 'Lokaltog/vim-easymotion'
-Plug 'liuchengxu/vista.vim' " Beteralternative to TagBar. TODO more Vista tweaks
+Plug 'liuchengxu/vista.vim'
 Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
 Plug 'mhinz/vim-startify'
 Plug 'NLKNguyen/papercolor-theme'
@@ -219,15 +219,6 @@ let &showbreak='↪ '                       " Make soft wrap visually appealing 
 "   U+259x  ▐  ░  ▒  ▓  ▔  ▕  ▖  ▗  ▘  ▙  ▚  ▛  ▜  ▝  ▞  ▟
 "
 "
-
-" function! NearestMethodOrFunction() abort
-"   return get(b:, 'vista_nearest_method_or_function', '')
-" endfunction
-"
-" autocmd VimEnter * call vista#RunForNearestMethodOrFunction()
-
-
-
 
 " make some commands case-insensitive
 command! Q q
@@ -610,18 +601,6 @@ nnoremap <expr> N (v:searchforward ? 'Nzz' : 'nzz')
 nnoremap <silent> <F12> :set number!<CR>
 nnoremap <silent> <F8> :execute ':silent !google-chrome %'<CR>
 nnoremap <silent> <F4> :set ts=4 sw=4<CR>
-
-" Vista Toggle (better alternative of TagBar)
-" FIXME why wincmd not working here
-nnoremap <silent><C-t> :Vista!! <Bar> wincmd =<CR>
-nnoremap <silent><leader>t :Vista finder<CR>
-" TODO
-" - [ ] maybe enable this again when find a good font
-let g:vista#renderer#enable_icon = 0
-let g:vista_sidebar_width = 60
-" FIXME consistent styling of floating window
-let g:vista_echo_cursor_strategy = 'floating_win'
-let g:vista_keep_fzf_colors = 1
 
 " Quick edit .vimrc
 nnoremap <leader>V :e $MYVIMRC<CR>
