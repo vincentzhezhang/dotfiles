@@ -189,31 +189,6 @@ set winblend=9                            " Pseudo transparency for floating win
 let &showbreak='↪ '                       " Make soft wrap visually appealing FIXME not showing up?
 " }}}
 
-" {{{ airline
-"
-
-" call airline#parts#define_accent('file', 'bold')
-
-if !exists('g:airline_symbols')
-  let g:airline_symbols = {}
-endif
-let g:airline_symbols.linenr = ''
-let g:airline_symbols.maxlinenr = ''
-let g:airline_symbols.paste = 'P'
-let g:airline_mode_map = {
-    \ '__' : '-',
-    \ 'n'  : '',
-    \ 'i'  : '',
-    \ 'R'  : 'R',
-    \ 'c'  : 'C',
-    \ 'v'  : '',
-    \ 'V'  : '',
-    \ '' : '',
-    \ 's'  : 'S',
-    \ 'S'  : 'S',
-    \ '' : 'S',
-    \ 't'  : 'T',
-    \ }
 
 " handy selection of symbols
 " - poker suits:    ♠ ♥ ♣ ♦
@@ -254,39 +229,8 @@ let g:airline_mode_map = {
 "
 " autocmd VimEnter * call vista#RunForNearestMethodOrFunction()
 
-let g:airline#extensions#vista#enabled = 1
-let g:airline#extensions#branch#enabled        = 0
-let g:airline#extensions#tabline#enabled       = 0
-let g:airline#extensions#tabline#tab_nr_type   = 2
-let g:airline#extensions#whitespace#enabled    = 0
-let g:airline#parts#ffenc#skip_expected_string = 'utf-8[unix]'
-let g:airline_detect_spell                     = 0
-let g:airline_inactive_collapse                = 1
-let g:airline_left_alt_sep                     = ''
-let g:airline_left_sep                         = ''
-let g:airline_powerline_fonts                  = 0
-let g:airline_right_alt_sep                    = ''
-let g:airline_right_sep                        = ''
-let g:airline_section_a                        = '' " (mode, crypt, paste, spell, iminsert)
-let g:airline_section_b                        = '' " (hunks, branch)[*]
-" FIXME looks like there is a bug on virtualenv
-" let g:airline_section_c                        = '' " (bufferline or filename, readonly)
-" let g:airline_section_c                        = airline#section#create(["%{NearestMethodOrFunction()}"])
-" let g:airline_section_gutter                   = ' ' (csv)
-let g:airline_section_x                        = '' " (tagbar, filetype, virtualenv)
-let g:airline_section_y                        = '' " (fileencoding, fileformat)
-let g:airline_section_z                        = airline#section#create(["%{col('.')}:%{line('.')}"]) " (percentage, line number, column number)
-" let g:airline_section_error                  = '' (ycm_error_count, syntastic-err, eclim, languageclient_error_count)
-" let g:airline_section_warning                = '' (ycm_warning_count, syntastic-warn, languageclient_warning_count, whitespace)
-let g:airline_symbols_ascii                    = 1
-" }}}
 
 
-" Trigger configuration. Do not use <tab> if you use https://github.com/Valloric/YouCompleteMe.
-" TODO get familiar with this
-let g:UltiSnipsExpandTrigger='<A-e>'
-let g:UltiSnipsJumpForwardTrigger='<c-f>'
-let g:UltiSnipsJumpBackwardTrigger='<c-b>'
 
 " make some commands case-insensitive
 command! Q q
@@ -434,12 +378,6 @@ let s:hostname = system('uname -n')
 " change leader key
 let g:mapleader=' '
 
-" some key remappings to resolve conflict brought by vim-multiple-cursors
-let g:multi_cursor_use_default_mapping = 0
-let g:multi_cursor_next_key            = '<C-n>'
-let g:multi_cursor_prev_key            = '<C-p>'
-let g:multi_cursor_skip_key            = '<C-x>'
-let g:multi_cursor_quit_key            = '<Esc>'
 
 " {{{ Python Virtual Env Tweaks start
 "
