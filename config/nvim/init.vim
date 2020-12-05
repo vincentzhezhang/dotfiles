@@ -199,8 +199,6 @@ let $PATH = g:py_virtual_env_dir . '/bin' . ':' . $PATH
 " better find and replace
 vnoremap <C-r> "hy:%s/<C-r>h//c<left><left>
 
-" seamless vim/tmux navigation
-let g:tmux_navigator_no_mappings = 1
 
 "
 " color tweaks
@@ -342,12 +340,6 @@ nnoremap <silent> <leader>B :Buffers<CR>
 nnoremap <silent> <leader>b :b#<CR>
 nnoremap <silent> <leader>L :Lines<CR>
 
-" Tmux/Vim seamless navigation
-nnoremap <silent> <A-h> :TmuxNavigateLeft<CR>
-nnoremap <silent> <A-j> :TmuxNavigateDown<CR>
-nnoremap <silent> <A-k> :TmuxNavigateUp<CR>
-nnoremap <silent> <A-l> :TmuxNavigateRight<CR>
-nnoremap <silent> <A-.> :TmuxNavigatePrevious<CR>
 
 " FIXME need to have a second thought on this
 " nnoremap <silent> <C-h> :vertical res +10<CR>
