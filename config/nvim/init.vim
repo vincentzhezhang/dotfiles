@@ -411,11 +411,6 @@ let $PYTHONPATH = g:py_virtual_env_dir
 let $PATH = g:py_virtual_env_dir . '/bin' . ':' . $PATH
 " XXX https://mypy.readthedocs.io/en/latest/running_mypy.html#finding-imports
 " let $MYPYPATH = expand(g:py_virtual_env_dir . '/lib/*/site-packages')
-
-" disable ale's virtual env auto discover feature and use the envvar instead
-" because we know the environment better
-let g:ale_virtualenv_dir_names = []
-"
 " }}}
 
 
@@ -480,7 +475,6 @@ let g:tmux_navigator_no_mappings = 1
 "
 "
 
-" let g:ale_sign_error = ' ■' " good on fantasque mono, but why it's so fucking huge in Ubuntu mono?
 " TODO
 " not sure if this is feasible but if we can merge linter symbols
 " and git status symbols it will look great!
@@ -492,17 +486,6 @@ let g:linter_sign = ' •'   " good on Ubuntu mono
 " let g:git_sign = '▐ '      " good on Ubuntu mono
 let g:git_sign = '┃ '      " good on Ubuntu mono
 
-" FIXME still buggy 23 Nov, now check again 2019
-" let g:ale_completion_enabled = 1
-let g:ale_lint_delay = 666
-let g:ale_linters = {'javascript': ['eslint', 'tsserver']}
-let g:ale_sign_column_always = 1
-let g:ale_sign_error = g:linter_sign
-let g:ale_sign_warning = g:linter_sign
-
-" FIXME temporary workaround for neovim ALE issue, see:
-" https://github.com/neovim/neovim/issues/9388
-let g:ale_sign_offset = 1000
 
 
 "
@@ -542,12 +525,6 @@ function! s:get_highlight(group) abort
 endfunction
 
 function! ColorSchemeTweaks()
-  "TODO get color from ALE?
-  " let [l:guibg, l:guifg, l:ctermbg, l:ctermfg] = s:get_highlight('SignColumn')
-
-  highlight ALEErrorSign          guifg=#FB4934 guibg=NONE
-  highlight ALEWarningSign        guifg=#FABD2F guibg=NONE
-
   highlight SignColumn            guibg=NONE
   highlight VertSplit             guibg=NONE guifg=#666666
 
@@ -654,8 +631,6 @@ endfunction
 "
 nnoremap <silent> <CR> :nohlsearch<CR><CR>
 nnoremap <silent> gg ggzz
-nnoremap <silent> <A-[> :ALEPreviousWrap <CR> zz
-nnoremap <silent> <A-]> :ALENextWrap <CR> zz
 
 "
 " more intuitive next/prev result keymapping
