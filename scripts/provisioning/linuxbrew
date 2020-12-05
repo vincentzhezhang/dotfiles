@@ -137,6 +137,7 @@ install_linuxbrew_apps(){
   __.brew.upinstall hadolint    # Dockerfile
   __.brew.upinstall shellcheck  # shell
   __.brew.upinstall yamllint    # yaml
+  __.brew.upinstall vint        # vim
 
   # Web dev tools
   __.brew.upinstall httpie        # better alternative for curl
