@@ -80,23 +80,6 @@ for f in split(glob(g:vim_conf_root . '/nvim/my/*.vim'), '\n')
   execute 'source' f
 endfor
 
-let g:tex_conceal = ''
-let g:vim_markdown_conceal = 0
-let g:vim_markdown_folding_disabled = 1
-let g:vim_markdown_math = 1
-let g:vim_markdown_strikethrough = 1
-let g:markdown_fenced_languages = [
-      \ 'bash=sh',
-      \ 'c',
-      \ 'css',
-      \ 'html',
-      \ 'javascript',
-      \ 'python',
-      \ 'ruby',
-      \ 'scss',
-      \ 'sql',
-      \]
-
 " {{{ Plugins
 call EnsureVimPlug()
 call plug#begin(g:vim_conf_root . '/nvim/plugged')
