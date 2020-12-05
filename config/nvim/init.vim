@@ -965,16 +965,16 @@ endif
 
 hi Comment cterm=italic
 
-" FIXME no lowercase color name supported yet, check later
+" see: https://github.com/norcalli/nvim-colorizer.lua#customization
 function! LuaColorizer()
 lua << EOF
 require 'colorizer'.setup({
-  '*';
-  css = { names = true };
-  scss = { names = true };
-  html = { names = true };
-}, {
-  rgb_fn = true;
+  'css';
+  'scss';
+  'sass';
+  'html';
+  'javascript';
+  'typescript';
 })
 EOF
 endfunction
