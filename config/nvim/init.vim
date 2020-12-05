@@ -414,12 +414,7 @@ let $PATH = g:py_virtual_env_dir . '/bin' . ':' . $PATH
 " }}}
 
 
-let g:NERDTreeMinimalUI = 1
-let g:NERDTreeStatusline = '%#NonText#'
-let g:NERDTreeWinSize = 30
 
-" color filename as well by file type in NERDTree
-let g:NERDTreeFileExtensionHighlightFullName = 1
 
 " Nerd Commenter
 let g:NERDCommentEmptyLines = 1
@@ -434,7 +429,6 @@ vnoremap <C-r> "hy:%s/<C-r>h//c<left><left>
 
 vnoremap <C-s> :<C-r>0<Home><right>
 
-" NerdTree git plugin
 " TODO
 " - [ ] find better icons, the previous one looks too bulky and not
 " consistent, thus replaced by ascii characters
@@ -662,9 +656,6 @@ nnoremap <leader>V :e $MYVIMRC<CR>
 
 " Break line at cursor
 nnoremap <leader>j i<return><esc>
-
-" NERDTree
-map <C-\> :NERDTreeFind <Bar> wincmd =<CR>
 
 " TODO
 " - add more precise ext based matching instead of the naïve one below
