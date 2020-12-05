@@ -2,6 +2,7 @@
 " - [ ] colorscheme load is delayed when open multiple files
 " - [ ] fix cursorline caused slowness, in fast scroll and gblame
 " - [ ] this is too buggy but the idea is great: Plug 'jiangmiao/auto-pairs'
+" - [ ] follow styleguide: https://google.github.io/styleguide/vimscriptguide.xml
 " }}}
 "
 " {{{ TODO
@@ -16,6 +17,7 @@
 " - [ ] try coc.vim as an alternative to YCM
 " - [ ] think about the colorscheme crap
 " }}}
+"
 "
 " {{{ handy selection of symbols
 " - poker suits:    [♠ ♥ ♣ ♦ ]
@@ -74,7 +76,7 @@ if isdirectory(glob("$HOMEBREW_PREFIX"))
 endif
 
 " load my personal plugins
-for f in split(glob(g:vim_conf_root . '/nvim/pluginrc.d/*.vim'), '\n')
+for f in split(glob(g:vim_conf_root . '/nvim/my/*.vim'), '\n')
   execute 'source' f
 endfor
 
@@ -601,14 +603,6 @@ let g:ale_sign_warning = g:linter_sign
 " https://github.com/neovim/neovim/issues/9388
 let g:ale_sign_offset = 1000
 
-let g:gitgutter_map_keys = 0 " no need of mapping, visual clue only
-let g:gitgutter_override_sign_column_highlight = 0
-let g:gitgutter_sign_added = g:git_sign
-let g:gitgutter_sign_modified = g:git_sign
-let g:gitgutter_sign_modified_removed = g:git_sign
-let g:gitgutter_sign_removed = '‣ '
-let g:gitgutter_sign_removed_first_line = '‣ '
-
 let g:ycm_error_symbol = g:linter_sign
 let g:ycm_warning_symbol = g:linter_sign
 
@@ -658,20 +652,12 @@ function! ColorSchemeTweaks()
   highlight YcmErrorSign          guifg=#FB4934 guibg=NONE
   highlight YcmWarningSign        guifg=#FABD2F guibg=NONE
 
-  highlight GitGutterAdd          guifg=#98C379 guibg=NONE ctermbg=NONE
-  highlight GitGutterChange       guifg=#FABD2F guibg=NONE ctermbg=NONE
-  " a changed line followed by at least one removed line
-  highlight GitGutterChangeDelete guifg=#2C323B guibg=NONE ctermbg=NONE
-  highlight GitGutterDelete       guifg=#FB4934 guibg=NONE ctermbg=NONE
-
   highlight SignColumn            guibg=NONE
   highlight VertSplit             guibg=NONE guifg=#666666
 
   " TODO use colour blend function instead of hard-code
   highlight Pmenu      guibg=#ebdab2 guifg=#333333
   highlight PmenuSel   guibg=#98C379 guifg=#333333
-
-
 
   " FIXME ts highlighting is doing this seems?
   " Should be the job of linters
@@ -772,8 +758,6 @@ endfunction
 "
 nnoremap <silent> <CR> :nohlsearch<CR><CR>
 nnoremap <silent> gg ggzz
-nnoremap <silent> <A-}> :GitGutterNextHunk <CR> zz
-nnoremap <silent> <A-{> :GitGutterPrevHunk <CR> zz
 nnoremap <silent> <A-[> :ALEPreviousWrap <CR> zz
 nnoremap <silent> <A-]> :ALENextWrap <CR> zz
 
@@ -947,7 +931,7 @@ nnoremap <silent> <A-h> :TmuxNavigateLeft<CR>
 nnoremap <silent> <A-j> :TmuxNavigateDown<CR>
 nnoremap <silent> <A-k> :TmuxNavigateUp<CR>
 nnoremap <silent> <A-l> :TmuxNavigateRight<CR>
-nnoremap <silent> <A-,> :TmuxNavigatePrevious<CR>
+nnoremap <silent> <A-.> :TmuxNavigatePrevious<CR>
 
 
 " FIXME need to have a second thought on this
@@ -964,6 +948,17 @@ if filereadable(g:after_hook)
 endif
 
 hi Comment cterm=italic
+
+"
+" load plugin configs
+"
+for config in split(glob(g:vim_conf_root . '/nvim/pluginrc.d/*.vim'), '\n')
+  " use base filename without extension as the plugin name
+  let s:plugin_name = split(config, '/')[-1][0:-5]
+  if has_key(g:plugs, s:plugin_name)
+    execute 'source' config
+  endif
+endfor
 
 " see: https://github.com/norcalli/nvim-colorizer.lua#customization
 function! LuaColorizer()
