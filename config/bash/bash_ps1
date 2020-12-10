@@ -49,11 +49,12 @@ __.ps1.status_line() {
   # not here
   pwd_str=$(readlink -f "$PWD")
 
-  if [[ ${#pwd_str} -gt $(( 2 * COLUMNS / 3 )) ]]; then
+  # FIXME better calculation based on host name and time
+  if [[ ${#pwd_str} -gt $(( 3 * COLUMNS / 4 )) ]]; then
     # not here
     echo -e "${dash_color}.../$(basename "$PWD")${COFF}\\n"
     return 0
-  elif [[ ${#pwd_str} -gt $(( COLUMNS / 2)) ]]; then
+  elif [[ ${#pwd_str} -gt $(( 2 * COLUMNS / 3)) ]]; then
     pwd_str="$(sed "s:\\([^/]\\)[^/]*/:\\1/:g" <<< "$pwd_str")"
   fi
 
