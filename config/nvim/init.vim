@@ -241,6 +241,8 @@ noremap <space>c ea<C-x><C-s>
 " - render plantuml for puml files
 " - run the file if it's executable and has shebang set
 nnoremap <leader>r :!%:p<CR>
+nnoremap <leader>m :vnew term://glow % <Bar> windo set scrollbind<CR>
+
 
 "
 " Centralized movement
