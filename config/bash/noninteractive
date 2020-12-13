@@ -1,10 +1,6 @@
 #! /usr/bin/env bash
-# FIXME
-# - https://google.github.io/styleguide/shellguide.html
-# - re-think about the loading logic
-
 #
-# bash functions loader for noninteractive apps
+# bash functions loader for noninteractive apps, e.g. vim
 #
 
 this_file="${BASH_SOURCE[0]}"
@@ -14,3 +10,5 @@ this_dir=$(dirname "$this_file")
 source "$this_dir/addons/conda"
 # shellcheck source=./addons/misc
 source "$this_dir/addons/misc"
+
+# vim: set autoindent tabstop=2 shiftwidth=2 textwidth=79:

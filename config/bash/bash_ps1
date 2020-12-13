@@ -1,20 +1,12 @@
 #! /usr/bin/env bash
-# FIXME
-# - https://google.github.io/styleguide/shellguide.html
-#
-# XXX no single function in this file can take more than 50ms to execute, that's the rule
-#
-# TODO
-# - fix branch name detection with dot
-#
+# XXX 
+# - no single function in this file can take more than 50ms to execute, that's the rule
+# - ideally we should have 60fps, so 16ms here in total
 
 #
 # basic setups
 #
-# TODO threshold should really based on key repeat interval, or
-# make it quick as possible so we can have 60 fps
 PS1_UPDATE_THRESHOLD=100
-PS1_MINIMUM_COLUMN_WIDTH=60
 
 # SSH detection, courtesy https://unix.stackexchange.com/a/9607
 if [[ -n "$SSH_CLIENT" ]] || [[ -n "$SSH_TTY" ]]; then
@@ -27,8 +19,6 @@ fi
 
 # benchmark ~= 5.84 ms
 __.ps1.status_line() {
-  # FIXME
-  # - length calculation of full-width character is broken
   # TODO
   # - fit paths as much as possible before abbreviate it
   #   e.g. /s/v/workspace/webapp/vol_tracker instead of /s/v/w/vol_tracker
@@ -49,7 +39,6 @@ __.ps1.status_line() {
   # not here
   pwd_str=$(readlink -f "$PWD")
 
-  # FIXME better calculation based on host name and time
   if [[ ${#pwd_str} -gt $(( 3 * COLUMNS / 4 )) ]]; then
     # not here
     echo -e "${dash_color}.../$(basename "$PWD")${COFF}\\n"
@@ -190,3 +179,5 @@ __.ps1() {
 }
 
 PROMPT_COMMAND="__.ps1; $PROMPT_COMMAND"
+
+# vim: set autoindent tabstop=2 shiftwidth=2 textwidth=79:

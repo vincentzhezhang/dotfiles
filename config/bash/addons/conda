@@ -27,10 +27,6 @@ __.conda.ps1()
   #
   # XXX
   # - last benchmark avg 10.34 ms (clever_prefix 6.99ms)
-  #
-  # TODO
-  # - [ ] replace hard-coded colour code with variables
-  # - [ ] rethink the prompt logic, current one looks unintuitive
   local active_conda_env
   local detected_conda_env
 

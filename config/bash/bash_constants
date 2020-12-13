@@ -1,35 +1,19 @@
 #! /usr/bin/env bash
-# FIXME
-# - https://google.github.io/styleguide/shellguide.html
-
 #
 # XDG support hacks :(
 #
-
-# TODO check if support is added, last checked 06-27
-export PYLINTRC="$XDG_CONFIG_HOME/pylintrc"
-export PYLINTHOME="$XDG_DATA_HOME/pylint.d"
-
 export INPUTRC="$XDG_CONFIG_HOME/readline/inputrc"
 
 export GEMRC="$XDG_CONFIG_HOME/ruby/gemrc"
 export GEM_HOME="$XDG_DATA_HOME/gem"
 export GEM_SPEC_CACHE="$XDG_CACHE_HOME/gem"
 
-# TODO this kinda pollutes the environment variables, needs a better solution
-
 # Colour Off
 # shellcheck disable=SC2034
 COFF="\[\e[0m\]"
 
 #
-# Solarized Colour theme in convenient naming
-# TODO removed solarized colour pallate and replace with base16 like codes for
-# better look across different terminal color schemes
-#
-#
-#
-# XXX Please note the color palette below is using 256 color codes
+# Base16 like Colours in convenient naming
 #
 color_codes=(234 235 240 241 244 245 254 230 3 1 5 4 6 2)
 color_names=(BASE03 BASE02 BASE01 BASE00 BASE0 BASE1 BASE2 BASE3 YELLOW RED MAGENTA BLUE CYAN GREEN)
@@ -42,47 +26,4 @@ done
 unset color_codes
 unset color_names
 
-# generate base 256 colors codes
-colorize()
-{
-  for fgbg in 38 48 ; do #Foreground/Background
-    for color in {0..16} {232..256}; do #Colors
-      for attr in 0 1 2 3 4 7; do # Attr: normal bold dim italic underline inverted
-        #Display the color
-        local color_code="${attr};${fgbg};5;${color}"
-        echo -en "\e[${color_code}m ${color_code}\t\e[0m"
-      done
-      echo #New line
-    done
-    echo #New line
-  done
-}
-
-# Gnome-terminal specific
-# ^[[9m for strikeout
-
-typeset -A colors
-colors=(
-  [red]=1
-  [green]=2
-  [yellow]=3
-  [blue]=4
-  [magenta]=5
-  [cyan]=6
-  [lred]=9
-  [lgreen]=10
-  [lyellow]=11
-  [lblue]=12
-  [lmagenta]=13
-  [lcyan]=14
-)
-
-typeset -A shades_of_gray
-shades_of_gray=(
-)
-
-typeset -A nord_mapping
-nord_mapping=(
-)
-
-# vim: set ai ts=2 tw=79:
+# vim: set autoindent tabstop=2 shiftwidth=2 textwidth=79:

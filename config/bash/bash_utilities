@@ -1,6 +1,4 @@
 #! /usr/bin/env bash
-# FIXME
-# - https://google.github.io/styleguide/shellguide.html
 #
 # Uncategorized functions
 #
@@ -579,4 +577,4 @@ x() {
   fi
 }
 
-# vim: set ai ts=2 tw=79:
+# vim: set autoindent tabstop=2 shiftwidth=2 textwidth=79:

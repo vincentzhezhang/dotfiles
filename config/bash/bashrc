@@ -1,28 +1,8 @@
 #! /usr/bin/env bash
 # shellcheck disable=SC1090
-# FIXME
-# - https://google.github.io/styleguide/shellguide.html
 
-# per box environment setup
-if [[ -f ~/.bash.env ]]; then
-  source ~/.bash.env
-fi
-
-if [[ -z $XDG_CONFIG_HOME ]]; then
-  export XDG_CONFIG_HOME="$HOME/.config"
-fi
-
-if [[ -z $XDG_CACHE_HOME ]]; then
-  export XDG_CACHE_HOME="$HOME/.cache"
-fi
-
-if [[ -z $XDG_DATA_HOME ]]; then
-  export XDG_DATA_HOME="$HOME/.local/share"
-fi
-
-if [[ ! -w ${XDG_RUNTIME_DIR:="/run/user/$UID"} ]]; then
-  XDG_RUNTIME_DIR=/tmp
-fi
+# handy box specific injection before we load the main part
+[[ -f "$XDG_CONFIG_HOME/bash/before" ]] && source "$XDG_CONFIG_HOME/bash/before"
 
 # TODO
 # - update basic configurations according to latest ubuntu bashrc
@@ -38,9 +18,6 @@ case $- in
     return
     ;;
 esac
-
-# handy box specific injection before we load the main part
-# [[ -f "$XDG_CONFIG_HOME/bash/before" ]] && source "$XDG_CONFIG_HOME/bash/before"
 
 #
 # load bash related script modules
@@ -133,15 +110,15 @@ export GIT_DEFAULT_LS_COMMAND
 # Load fzf
 [[ -f "${XDG_CONFIG_HOME:-$HOME/.config}"/fzf/fzf.bash ]] && source "${XDG_CONFIG_HOME:-$HOME/.config}"/fzf/fzf.bash
 
-# handy box specific injection after we load the main part
-# [[ -f "$XDG_CONFIG_HOME/bash/after" ]] && source "$XDG_CONFIG_HOME/bash/after"
-
 #
 # load addons
 #
 for addon in "$XDG_CONFIG_HOME/bash/addons"/*; do
   source "$addon"
 done
+
+# handy box specific injection after we load the main part
+[[ -f "$XDG_CONFIG_HOME/bash/after" ]] && source "$XDG_CONFIG_HOME/bash/after"
 
 # FIXME
 # - proper fix to eliminate the possibility of duplicates, instead of remove

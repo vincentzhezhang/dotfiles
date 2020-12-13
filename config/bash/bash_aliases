@@ -1,6 +1,6 @@
 #! /usr/bin/env bash
 #
-# FIXME
+# XXX
 # Any non-trival alias that not straightforward enough need to be functions, because:
 #   - functions are more powerful
 #   - functions are easy to trace, e.g. declare -F EXAMPLE_FUNCTION
@@ -24,4 +24,5 @@ alias lt='ll --sort=time'
 alias mkdir='mkdir --parents --verbose'
 alias mv='mv --interactive'
 alias sl='ls'  # :(
-alias tree='tree -CF'
+
+# vim: set autoindent tabstop=2 shiftwidth=2 textwidth=79:
