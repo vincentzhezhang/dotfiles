@@ -20,45 +20,8 @@ install_linuxbrew(){
   fi
 
   __.log_info 'Installing linuxbrew...'
-  getent group linuxbrew || sudo groupadd linuxbrew
-  sudo usermod --append --groups linuxbrew "$USER"
-  __.log_info "Added $USER to linuxbrew group, you need to logout and log in again to make it work."
-
-  sudo mkdir --parents "$__prefix_linuxbrew"
-  sudo chown --recursive "$(whoami):linuxbrew" "$__prefix_linuxbrew"
-
-  (
-    cd "$__prefix_linuxbrew"
-
-    git init --quiet
-    git config remote.origin.url https://github.com/Homebrew/brew
-    git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
-    git config core.autocrlf false
-    git fetch origin --force
-    git fetch origin --tags --force
-    git reset --hard origin/master
-
-    sudo mkdir --parents \
-      Cellar \
-      etc \
-      include \
-      lib \
-      opt \
-      sbin \
-      share \
-      var/homebrew/linked
-    sudo chmod --recursive ug+rwx \
-      Cellar \
-      etc \
-      include \
-      lib \
-      opt \
-      sbin \
-      share \
-      var/homebrew/linked
-  )
-  sudo chown --recursive "$(whoami):linuxbrew" "$__prefix_linuxbrew"
-
+  sudo mkdir -p "$__prefix_linuxbrew"
+  CI=true /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
   __.log_info 'Configuring linuxbrew...'
 
   set +u # some path brew want to update may not be defined yet
@@ -89,20 +52,6 @@ __.brew.upinstall(){
 
 install_linuxbrew_apps(){
   #
-  # Args for easier installation, these should be also be exported in dotfiles
-  #
-  # also if we need proxy:
-  # export all_proxy=socks5://$HOST:$PORT
-  export HOMEBREW_BAT=1
-  export HOMEBREW_CURLRC=1
-  export HOMEBREW_CURL_RETRIES=3
-  export HOMEBREW_FORCE_BREWED_CURL=1
-  export HOMEBREW_FORCE_BREWED_GIT=1
-  export HOMEBREW_NO_AUTO_UPDATE=1
-  export GIT_SSL_NO_VERIFY=true
-  export GIT_CURL_VERBOSE=1
-
-  #
   # homebrew prerequisites
   #
   # newer than system git
@@ -112,6 +61,24 @@ install_linuxbrew_apps(){
   __.brew.upinstall curl
 
   which -a git curl
+
+  #
+  # Args for easier installation, these should be also be exported in dotfiles
+  #
+  # see: https://docs.brew.sh/Manpage#environment
+  #
+  # FIXME workaround for patchelf for rust, see
+  # - https://github.com/Homebrew/brew/issues/9513
+  export HOMEBREW_PATCHELF_RB_WRITE=1
+  export HOMEBREW_BAT=1
+  export HOMEBREW_CURLRC=1
+  export HOMEBREW_CURL_RETRIES=3
+  export HOMEBREW_FORCE_BREWED_CURL=1
+  export HOMEBREW_FORCE_BREWED_GIT=1
+  export HOMEBREW_NO_AUTO_UPDATE=1
+  # don't want to compile anything
+  export HOMEBREW_NO_BOTTLE_SOURCE_FALLBACK=1
+  export GIT_CURL_VERBOSE=1
 
   #
   # extra taps
@@ -150,7 +117,7 @@ install_linuxbrew_apps(){
   __.brew.upinstall bat         # Rust alternative to cat
   __.brew.upinstall cowsay      # moo
   __.brew.upinstall dfc         # df with colour
-  __.brew.upinstall diff-delta  # Rust alternative to diff-so-fancy
+  __.brew.upinstall git-delta   # Rust alternative to diff-so-fancy
   __.brew.upinstall exa         # Rust alternative to ls
   __.brew.upinstall fd          # Rust alternative to find
   __.brew.upinstall fortune     # fortune teller
@@ -162,7 +129,7 @@ install_linuxbrew_apps(){
   __.brew.upinstall monolith    # Rust, save everything of a webpage in a single HTML!
   __.brew.upinstall nyancat     # Nyan
   __.brew.upinstall rg          # Rust alternative to grep
-  __.brew.upinstall skim        # Rust alternative to fzf, TODO: try this out
+  __.brew.upinstall sk          # Rust alternative to fzf, TODO: try this out
   __.brew.upinstall spark       # handy CLI spark line
   __.brew.upinstall tealdeer    # Rust alternative to tldr
   __.brew.upinstall tmux        # Terminal multiplexer
@@ -180,7 +147,9 @@ install_linuxbrew_apps(){
   # TODO also need upinstall for ctags
   # HACK fix cpan issue
   sudo ln -sf /usr/include/locale.h /usr/include/xlocale.h
-  brew install --HEAD universal-ctags/universal-ctags/universal-ctags
+  # FIXME brew has changed default python and this should be fixed by ctags upstream
+  __.brew.upinstall python@3.8
+  brew install --HEAD --without-xml universal-ctags/universal-ctags/universal-ctags
 
   # misc
   __.brew.upinstall aria2       # Download with resuming and segmented downloading
@@ -195,14 +164,17 @@ install_linuxbrew_apps(){
 
   # set up tpm for tmux
   local tpm_dir="$XDG_CONFIG_HOME/tmux/plugins/tpm"
+  __.log_info 'Setting up tpm for tmux...'
   if [[ -d "$tpm_dir" ]]; then
+    __.log_info "Updating existing dir at: $tpm_dir"
     git -C "$tpm_dir" pull
   else
+    __.log_info "Creating tpm dir at: $tpm_dir"
     git clone https://github.com/tmux-plugins/tpm "$tpm_dir"
   fi
 
   # set up fzf
-  "$HOMEBREW_PREFIX/opt/fzf/install" --xdg --key-bindings --completion --no-update-rc --no-zsh --no-fish
+  "$(brew --prefix)/opt/fzf/install" --xdg --key-bindings --completion --no-update-rc --no-zsh --no-fish
 
   unset BREW_OUTDATED
 }
