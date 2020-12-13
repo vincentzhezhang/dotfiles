@@ -83,7 +83,7 @@ set autowrite                             " Save changes before switching buffer
 set cursorline                            " Highlight the screen line of the cursor with CursorLine
 set completeopt-=preview                  " Get rid of the annoying preview window on autocomplete
 set expandtab                             " Expand tabs to spaces
-set fillchars+=vert:│                     " Make vertical split bar prettier
+set fillchars+=vert:│,eob:\               " Make vertical split bar prettier
 set foldopen+=jump                        " Open folded region when jump to it
 set ignorecase                            " Make search case-insensitive
 set list                                  " Enable whitespace characters' display
