@@ -131,7 +131,7 @@ let g:netrw_silent=1
 
 " global variables shared by plugins
 let g:linter_sign = ' •'
-let g:git_sign = '▍ '
+let g:git_sign = '┃ '
 
 vmap <LeftRelease> "*ygv
 

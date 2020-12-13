@@ -2,6 +2,11 @@
 # You can find the default configuration file with documentation for all
 # available fields on the GitHub releases page for each release.
 # https://github.com/alacritty/alacritty/blob/master/alacritty.yml
+# FIXME
+# - note the blurry box-drawing characters are due to the fact
+#   Alacirtty just use the characters from the font directly, intead
+#   of replacing them with good fonts
+#   check out: https://github.com/alacritty/alacritty/issues/3262
 env:
   WINIT_HIDPI_FACTOR: "1.0"
 window:
@@ -10,12 +15,11 @@ window:
     columns: 120
     lines: 30
   decorations: none
-scrolling:
-  history: 99999
+dynamic_padding: true
 font:
   normal:
     family: Cascadia Code
-  size: 9
+  size: 12
 draw_bold_text_with_bright_colors: true
 schemes:
   nord: &dark

@@ -63,7 +63,7 @@ __.ps1.status_line() {
   dash_line_width=$((COLUMNS - ${#host_str} - ${#pwd_str} - ${#time_str} - dash_line_padding))
 
   while [[ $dash_line_width -gt 0 ]]; do
-    dash_line="-${dash_line}"
+    dash_line="─${dash_line}"
     ((dash_line_width-=1))
   done
 
