@@ -1,13 +1,7 @@
-" {{{ FIXME
-" }}}
-
 " {{{ TODO
 " - function for setting correct python path if a venv is available
-" - add contional loading for pluggins
 " - make use of prettier, yapf, and other fixers with ALE
-" - check if there is a way to only highlight search keywords in current buffer
 " - learn far.vim
-" - think about the colorscheme crap
 " }}}
 
 " force utf-8 encoding cause we have multi-bytes chars here
@@ -23,6 +17,8 @@ endif
 " Make use of bash utilities in vim
 let $BASH_ENV = g:vim_conf_root . '/bash/noninteractive'
 
+" TODO
+" - include gitgnore from current working tree too
 execute 'set wildignore +=' . system("grep -oP '^[^# ].+' ~/.config/git/ignore | paste -sd ','")
 " }}}
 
@@ -116,7 +112,7 @@ set termguicolors                         " Enables 24-bit RGB color in the TUI.
 set undofile                              " Persistent undo, note undodir default to xdg data
 set updatetime=128                        " Make update related events slightly faster
 set winblend=9                            " Pseudo transparency for floating window
-let &showbreak='↪ '                       " Make soft wrap visually appealing FIXME not showing up?
+let &showbreak='↪ '                       " Make soft wrap visually appealing
 " }}}
 
 " change leader key
@@ -165,13 +161,11 @@ endif
 let $VIRTUAL_ENV = g:py_virtual_env_dir
 let $PYTHONPATH = g:py_virtual_env_dir
 let $PATH = g:py_virtual_env_dir . '/bin' . ':' . $PATH
-" FIXME https://mypy.readthedocs.io/en/latest/running_mypy.html#finding-imports
-" let $MYPYPATH = expand(g:py_virtual_env_dir . '/lib/*/site-packages')
+let $MYPYPATH = expand(g:py_virtual_env_dir . '/lib/*/site-packages')
 " }}}
 
 " better find and replace
 vnoremap <C-r> "hy:%s/<C-r>h//c<left><left>
-
 
 "
 " color tweaks
@@ -267,11 +261,11 @@ nnoremap <silent> <F9> :set cursorcolumn!<CR>
 " Quick edit .vimrc
 nnoremap <leader>V :e $MYVIMRC<CR>
 
-" FIXME need to have a second thought on this
-" nnoremap <silent> <C-h> :vertical res +10<CR>
-" nnoremap <silent> <C-j> :res +5<CR>
-" nnoremap <silent> <C-k> :res -5<CR>
-" nnoremap <silent> <C-l> :vertical res -10<CR>
+" Resize vim split
+nnoremap <silent> <C-H> :vertical res +10<CR>
+nnoremap <silent> <C-J> :res -5<CR>
+nnoremap <silent> <C-K> :res +5<CR>
+nnoremap <silent> <C-L> :vertical res -10<CR>
 " }}}
 
 "
