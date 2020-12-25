@@ -34,6 +34,10 @@ for f in split(glob(g:vim_conf_root . '/nvim/my/*.vim'), '\n')
   execute 'source' f
 endfor
 
+" FIXME sh is farking slow
+let g:polyglot_disabled = ['sh']
+
+
 " {{{ Plugins
 call EnsureVimPlug()
 call plug#begin(g:vim_conf_root . '/nvim/plugged')
