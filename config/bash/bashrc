@@ -1,23 +1,49 @@
 #! /usr/bin/env bash
 # shellcheck disable=SC1090
 
-# handy box specific injection before we load the main part
-[[ -f "$XDG_CONFIG_HOME/bash/before" ]] && source "$XDG_CONFIG_HOME/bash/before"
-
 # TODO
 # - update basic configurations according to latest ubuntu bashrc
 # - extra platform specific settings to a separate script
 
-case $- in
-  *i*)
-    # don't don anything when running interactively
-    ;;
-  *)
-    # otherwise source the noninteractive scripts and return
-    export BASH_ENV="$XDG_CONFIG_HOME/bash/noninteractive"
-    return
-    ;;
-esac
+# don't don anything when running interactively
+[[ -z "$PS1" ]] && return
+
+shopt -s cdspell
+shopt -s checkwinsize # update window size after every command
+shopt -s cmdhist      # force multi-line histories format in a single line
+shopt -s dirspell
+shopt -s extdebug
+shopt -s histappend
+
+# XXX this has to be placed before fzf.bash in order to correctly setup key bindings
+#     see: https://github.com/junegunn/fzf#key-bindings-for-command-line
+set -o vi
+
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_CACHE_HOME="$HOME/.cache"
+export XDG_DATA_HOME="$HOME/.local/share"
+
+#######
+# FIXME
+# - rethink about environment variable injection
+#   - could ask for inject from before hook
+#   - and function definitions should be in after hook
+export LUMINANCE_OVERRIDE="normal"
+export __conda_env_root="/sandbox/vincent/.conda/envs"
+HOMEBREW_PREFIX="/home/linuxbrew/.linuxbrew"
+HOMEBREW_CELLAR="/home/linuxbrew/.linuxbrew/Cellar"
+HOMEBREW_REPOSITORY="/home/linuxbrew/.linuxbrew/Homebrew"
+PATH="/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin${PATH+:$PATH}"
+MANPATH="/home/linuxbrew/.linuxbrew/share/man${MANPATH+:$MANPATH}:"
+INFOPATH="/home/linuxbrew/.linuxbrew/share/info:${INFOPATH:-}"
+PATH="/sandbox/vincent/.conda/bin:$PATH"
+PATH="/sandbox/vincent/.nvm/versions/node/v12.18.4/bin/:$PATH"
+#######
+# FIXME fix the above
+#######
+
+# handy box specific injection before we load the main part
+[[ -f "$XDG_CONFIG_HOME/bash/before" ]] && source "$XDG_CONFIG_HOME/bash/before"
 
 #
 # load bash related script modules
@@ -33,13 +59,6 @@ for s in "${BASH_SCRIPTS[@]}"; do
   p="$XDG_CONFIG_HOME/bash/bash_${s}"
   [[ -f "$p" ]] && source "$p"
 done
-
-shopt -s cdspell
-shopt -s checkwinsize # update window size after every command
-shopt -s cmdhist      # force multi-line histories format in a single line
-shopt -s dirspell
-shopt -s extdebug
-shopt -s histappend
 
 #
 # history settings
@@ -64,15 +83,6 @@ export TERM='xterm-256color'
   # export TERM='tmux-256color'
 # else
 # fi
-
-# Prevent file overwrite on stdout redirection
-# Use `>|` to force redirection to an existing file
-# XXX this seems causing more issues than benefits
-# set -o noclobber
-
-# NOTE: set -o vi has to be placed before fzf.bash in order to correctly setup key bindings
-#   see: https://github.com/junegunn/fzf#key-bindings-for-command-line
-set -o vi
 
 # make less more friendly for non-text input files, see lesspipe(1)
 if hash lesspipe 2>/dev/null; then
@@ -105,7 +115,7 @@ BASH
 export GIT_DEFAULT_LS_COMMAND
 
 # Load fzf
-[[ -f "${XDG_CONFIG_HOME:-$HOME/.config}"/fzf/fzf.bash ]] && source "${XDG_CONFIG_HOME:-$HOME/.config}"/fzf/fzf.bash
+[[ -f "$XDG_CONFIG_HOME/.config/fzf/fzf.bash" ]] && source "$XDG_CONFIG_HOME/.config/fzf/fzf.bash"
 
 #
 # load addons

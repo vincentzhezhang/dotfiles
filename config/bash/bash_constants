@@ -8,6 +8,13 @@ export GEMRC="$XDG_CONFIG_HOME/ruby/gemrc"
 export GEM_HOME="$XDG_DATA_HOME/gem"
 export GEM_SPEC_CACHE="$XDG_CACHE_HOME/gem"
 
+#
+# My conventions
+#
+
+export DEV_REPO_ROOT="${DEV_REPO_ROOT:-/sandbox/$USER/repos}"
+
+
 # Colour Off
 # shellcheck disable=SC2034
 COFF="\[\e[0m\]"
