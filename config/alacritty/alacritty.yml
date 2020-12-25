@@ -15,11 +15,11 @@ window:
     columns: 120
     lines: 30
   decorations: none
-dynamic_padding: true
+  dynamic_padding: true
 font:
   normal:
     family: Cascadia Code
-  size: 12
+  size: 9.5
 draw_bold_text_with_bright_colors: true
 schemes:
   nord: &dark
