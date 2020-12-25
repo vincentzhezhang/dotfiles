@@ -59,7 +59,8 @@ install_tlp() {
 
   __.log_info 'Installing tlp...'
   sudo add-apt-repository --yes ppa:linrunner/tlp
-  sudo apt install --fix-broken --yes --no-install-recommends tlp
+  # https://linrunner.de/tlp/faq/installation.html#ubuntu-how-do-i-prevent-the-installation-of-postfix-as-a-dependency
+  sudo apt install --fix-broken --yes --no-install-recommends tlp tlp-rdw ethtool smartmontools
 }
 
 install_mainline() {

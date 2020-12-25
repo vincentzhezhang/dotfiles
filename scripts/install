@@ -5,6 +5,8 @@ this_file="${BASH_SOURCE[0]}"
 this_dir=$(dirname "$this_file")
 source_dir="$(readlink -f "$this_dir/..")"
 
+
+
 if ! hash stow; then
   >&2 echo 'Please install stow first!'
   exit 1

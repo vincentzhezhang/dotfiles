@@ -118,6 +118,7 @@ install_linuxbrew_apps(){
   __.brew.upinstall cowsay      # moo
   __.brew.upinstall dfc         # df with colour
   __.brew.upinstall git-delta   # Rust alternative to diff-so-fancy
+  __.brew.upinstall glow        # Command-line markdown renderer
   __.brew.upinstall exa         # Rust alternative to ls
   __.brew.upinstall fd          # Rust alternative to find
   __.brew.upinstall fortune     # fortune teller
