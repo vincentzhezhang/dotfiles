@@ -1,0 +1,44 @@
+name: dsl
+channels:
+  - defaults
+dependencies:
+  - _libgcc_mutex=0.1=main
+  - aiohttp=3.7.3=py38h27cfd23_1
+  - async-timeout=3.0.1=py38_0
+  - attrs=20.3.0=pyhd3eb1b0_0
+  - ca-certificates=2020.12.8=h06a4308_0
+  - certifi=2020.12.5=py38h06a4308_0
+  - chardet=3.0.4=py38h06a4308_1003
+  - idna=3.1=pyhd3eb1b0_0
+  - ld_impl_linux-64=2.33.1=h53a641e_7
+  - libedit=3.1.20191231=h14c3975_1
+  - libffi=3.3=he6710b0_2
+  - libgcc-ng=9.1.0=hdf63c60_0
+  - libstdcxx-ng=9.1.0=hdf63c60_0
+  - multidict=4.7.6=py38h7b6447c_1
+  - ncurses=6.2=he6710b0_1
+  - openssl=1.1.1i=h27cfd23_0
+  - pip=20.3.3=py38h06a4308_0
+  - psutil=5.7.2=py38h7b6447c_0
+  - python=3.8.5=h7579374_1
+  - pytz=2020.5=pyhd3eb1b0_0
+  - readline=8.0=h7b6447c_0
+  - setuptools=51.1.2=py38h06a4308_4
+  - sqlite=3.33.0=h62c20be_0
+  - tk=8.6.10=hbc83047_0
+  - typing-extensions=3.7.4.3=0
+  - typing_extensions=3.7.4.3=py_0
+  - wheel=0.36.2=pyhd3eb1b0_0
+  - xz=5.2.5=h7b6447c_0
+  - yarl=1.5.1=py38h7b6447c_0
+  - zlib=1.2.11=h7b6447c_3
+  - pip:
+    - appdirs==1.4.4
+    - black==20.8b1
+    - click==7.1.2
+    - mypy-extensions==0.4.3
+    - pathspec==0.8.1
+    - regex==2020.11.13
+    - toml==0.10.2
+    - typed-ast==1.4.2
+    - uvloop==0.14.0
