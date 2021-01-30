@@ -3,7 +3,7 @@ M = 1024 ** 2
 G = 1024 ** 3
 
 
-def humanize(n) -> str:
+def humanize(n, *, length=5) -> str:
     # TODO
     # - support custom scale
     # - support custom units
@@ -19,5 +19,5 @@ def humanize(n) -> str:
     else:
         h = n / K
 
-    fixed = str(h).ljust(5, "0")[:5]
+    fixed = str(h).ljust(length, "0")[:length]
     return f"{fixed}{unit}"

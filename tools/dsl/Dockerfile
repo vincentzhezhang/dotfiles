@@ -21,4 +21,4 @@ RUN apt-get update \
     && apt-get autoremove \
     && rm -rf /var/lig/apt/lists/* /var/log/dpkh.log
 
-# CMD "bash -c dsl"
+CMD "dsl"
