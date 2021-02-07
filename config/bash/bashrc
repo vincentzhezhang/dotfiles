@@ -114,9 +114,6 @@ read -r -d '' GIT_DEFAULT_LS_COMMAND <<'BASH'
 BASH
 export GIT_DEFAULT_LS_COMMAND
 
-# Load fzf
-[[ -f "$XDG_CONFIG_HOME/.config/fzf/fzf.bash" ]] && source "$XDG_CONFIG_HOME/.config/fzf/fzf.bash"
-
 #
 # load addons
 #

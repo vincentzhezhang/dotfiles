@@ -9,13 +9,17 @@ if ! hash fzf 2>/dev/null; then
   return 0
 fi
 
+# see installation option in ../../../scripts/provisioning/linuxbrew
+[[ -f "$XDG_CONFIG_HOME/fzf/fzf.bash" ]] && source "$XDG_CONFIG_HOME/fzf/fzf.bash"
+
+export FZF_DEFAULT_OPTS='--color=pointer:#bf616a:bold,bg+:#3B4252,gutter:-1 --reverse --height 36%'
 
 s() {
   # handy ssh launcher
   ssh "$(\
     grep -oP 'Host\s+\K([a-zA-Z-_])+' ~/.ssh/config \
       | sort \
-      | fzf --height 40% --reverse --prompt 'ssh: ' \
+      | fzf --prompt 'ssh: ' \
   )"
 }
 
@@ -26,7 +30,7 @@ r() {
     fd --hidden --exclude 'node_modules' --type d '^.git$' "${DEV_REPO_ROOT:?}" --exec echo '{//}' \
       | sed "s|$DEV_REPO_ROOT/||g" \
       | sort -i \
-      | fzf --height 40% --reverse --prompt "repo: " \
+      | fzf --prompt "repo: " \
   )
 
   if [[ -z "$repo_name" ]]; then

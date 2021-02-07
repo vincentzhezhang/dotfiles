@@ -128,7 +128,7 @@ gg()
     git branch --no-color -a |\
     grep -vP "${current_branch}$" |\
     sed -r 's/^\s+//g' |\
-    fzf --height=50% --reverse
+    fzf --prompt 'branch: '
   )
 
   if [[ -z "$branch_name" ]]; then
@@ -569,7 +569,7 @@ x() {
   if dir=$(
     find "$XDG_CONFIG_HOME" -mindepth 1 -maxdepth 1 -type d -exec basename {} \; \
       | sort -i \
-      | fzf --reverse --height=12 --prompt="config> "
+      | fzf --prompt="config: "
   ); then
     cd "$XDG_CONFIG_HOME/$dir" || return 1
   else
