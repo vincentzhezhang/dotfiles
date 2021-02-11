@@ -1,9 +1,11 @@
 FROM continuumio/miniconda3:4.9.2 as build_env
-COPY . .
+COPY . /tmp
+WORKDIR /tmp
 RUN env \
     && conda env create --name dsl --file environment.yaml \
     && conda info \
     && conda clean --all --yes --force-pkgs-dirs \
+    && /opt/conda/envs/dsl/bin/python -m pytest \
     && /opt/conda/envs/dsl/bin/python setup.py install
 
 FROM ubuntu:20.04

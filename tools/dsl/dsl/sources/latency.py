@@ -2,12 +2,12 @@ import asyncio
 import typing as t
 from collections import defaultdict
 
-from .utils import humanize
+from .utils import humanize, TimeSeriesStore
 
 
 class Latency:
     def __init__(self) -> None:
-        self._cache: t.DefaultDict[str] = defaultdict(lambda: "N/A")
+        self._cache: t.Dict[str, TimeSeriesStore] = {}
 
     async def shell(self, *cmd, name: str = "Unknown") -> None:
         # FIXME this is not shell, it's coupled with PING behaviour atm
@@ -16,19 +16,21 @@ class Latency:
             stdout=asyncio.subprocess.PIPE,
         )
 
+        self._cache[name] = TimeSeriesStore()
+
         while True:
+            await asyncio.sleep(1)
+
             line = (await proc.stdout.readline()).decode()
+
             if "PING" in line:
                 continue
 
             try:
-                # HACK the format here is hacked, should have the same scale param support
-                latency = humanize(float(line.split(" ")[-2].split("=")[1]) * 1000)[:-1]
-                self._cache[name] = latency
+                latency = float(line.split(" ")[-2].split("=")[1]) * 1000
+                self._cache[name].add(latency)
             except IndexError:
-                self._cache[name] = "N/A"
-
-            await asyncio.sleep(1)
+                continue
 
     async def start(self) -> None:
         await asyncio.gather(
@@ -42,9 +44,9 @@ class Latency:
         return " ".join(
             (
                 ":zap:",
-                str(self._cache["here"]),
-                str(self._cache["vpn"]),
-                str(self._cache["sha_to_syd"]),
-                str(self._cache["sha_to_chi"]),
+                humanize(self._cache["here"].moving_average(), with_unit=False),
+                humanize(self._cache["vpn"].moving_average(), with_unit=False),
+                humanize(self._cache["sha_to_syd"].moving_average(), with_unit=False),
+                humanize(self._cache["sha_to_chi"].moving_average(), with_unit=False),
             )
         )
