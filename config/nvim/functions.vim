@@ -223,3 +223,38 @@ endfunction
 augroup adaptive_theme
   autocmd VimEnter * call AdaptiveTheme()
 augroup END
+
+function! OutOfScopeIndication()
+  if &buftype !=# ''
+    setlocal winhighlight=
+    return
+  endif
+
+  let g:project_root = get(g:, 'project_root', FindRootDirectory())
+  let l:path = resolve(expand('%:p'))
+
+  if stridx(l:path, g:project_root) == 0
+    setlocal winhighlight=
+    return
+  endif
+
+  " FIXME
+  " There is a bug in stable release of neovim that causing CursorLine
+  " highlight not working as expected, newer versions don't have this issue so
+  " not bothered to have workarounds now
+  highlight LibraryFile     guibg=#322818
+  highlight LfHighlight     guibg=#282412
+  highlight NonProjectFile  guibg=#122436
+  highlight NpHighlight     guibg=#082032
+
+  if stridx(l:path, 'lib/python') >= 0
+    setlocal winhighlight=Normal:LibraryFile,SignColumn:LibraryFile,CursorLine:LfHighlight
+    setlocal readonly
+  else
+    setlocal winhighlight=Normal:NonProjectFile,SignColumn:NonProjectFile,CursorLine:NpHighlight
+  endif
+endfunction
+
+augroup magic
+  autocmd BufEnter * call OutOfScopeIndication()
+augroup END
