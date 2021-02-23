@@ -15,6 +15,8 @@ let g:ale_linters = {'javascript': ['eslint', 'tsserver']}
 let g:ale_sign_column_always = 1
 let g:ale_sign_error = g:linter_sign
 let g:ale_sign_warning = g:linter_sign
+let g:ale_detail_to_floating_preview = 1
+let g:ale_cursor_detail=1
 
 " FIXME temporary workaround for neovim ALE issue, see:
 " https://github.com/neovim/neovim/issues/9388
