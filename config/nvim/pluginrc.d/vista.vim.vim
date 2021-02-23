@@ -14,7 +14,11 @@
 " Vista Toggle (better alternative of TagBar)
 " FIXME why wincmd not working here
 nnoremap <silent><C-t> :Vista!! <Bar> wincmd =<CR>
-nnoremap <silent><leader>t :Vista finder<CR>
+
+" FIXME recent version of Vista introduced a bug that finder is unable to
+" focus on the floating preview window for some files
+nnoremap <silent><leader>t :call vista#finder#fzf#Run('coc')<CR>
+
 " TODO
 " - maybe enable this again when find a good font
 let g:vista#renderer#enable_icon = 0
