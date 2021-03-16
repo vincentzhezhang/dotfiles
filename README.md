@@ -79,6 +79,9 @@ I am distro hopper so need a bunch of apps
 - window manager (kinda): GTile https://github.com/gTile/gTile
 - gsettings script:
   - which can automatically set the shortcut keys (really annoying to do it manually), and default system settings don't have it
+- dark mode simulation
+  - https://gitlab.com/rmnvgr/nightthemeswitcher-gnome-shell-extension/
+  - for chrome, in chrome://settings/appearance, change Theme to use GTK+
 
 #### KDE
 

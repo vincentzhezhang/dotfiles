@@ -24,5 +24,6 @@ alias lt='ll --sort=time'
 alias mkdir='mkdir --parents --verbose'
 alias mv='mv --interactive'
 alias sl='ls'  # :(
+alias watch='watch --color'
 
 # vim: set autoindent tabstop=2 shiftwidth=2 textwidth=79:
