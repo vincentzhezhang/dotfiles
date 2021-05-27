@@ -1,0 +1,64 @@
+#! /usr/bin/env bash
+#
+# note you'll need to run chmod 4755 to ddcutils to run it as root without sudo
+# see: https://chmodcommand.com/chmod-4755/
+
+#
+# hardcoded for now
+#
+MONITOR_BUS_ID=11
+BRIGHTNESS_ID=10
+CONTRAST_ID=12
+
+set_vcp() {
+  # https://www.ddcutil.com/performance_options/
+  # - adding bus number can reduce the detection time
+  # - lower sleep multiplier with noverify can drastically reduce operation time
+  ddcutil --bus "$MONITOR_BUS_ID" setvcp --sleep-multiplier .01 --noverify "$@"
+}
+
+set_brightness() {
+  set_vcp "$BRIGHTNESS_ID" "$@"
+}
+
+set_contrast() {
+  set_vcp "$CONTRAST_ID" "$@"
+}
+
+main() {
+  # TODO
+  # - increase/decrese brightness/contrast
+  # - automatic brightness/contrast tuning
+  #   - time based auto tuning
+  #   - weather forecast based auto tuning
+  #   - or even better: ambient light based auto tuning
+  #     - https://github.com/FedeDP/Clight
+  local mode="$1"
+
+  case "$mode" in
+    "sunny")
+      set_brightness 100
+      set_contrast 77
+      ;;
+    "day")
+      set_brightness 100
+      set_contrast 66
+      ;;
+    "cloudy")
+      set_brightness 88
+      set_contrast 66
+      ;;
+    "night")
+      set_brightness 66
+      set_contrast 66
+      ;;
+    "owl")
+      set_brightness 36
+      set_contrast 66
+      ;;
+    *)
+    >&2 echo "what do you want?"
+  esac
+}
+
+main "$1"
